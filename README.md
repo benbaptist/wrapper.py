@@ -9,7 +9,7 @@ Join us on Gitter!
 
 # Quick Start #
 ```
-pip install https://github.com/benbaptist/minecraft-wrapper/archive/lite.zip
+pip install https://github.com/benbaptist/wrapper.py/archive/master.zip
 ```
 
 Just run `wrapper-lite` in the working directory of your Minecraft server to start.
