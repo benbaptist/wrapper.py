@@ -5,6 +5,7 @@
     - Updates to Wrapper should never intrude or require user input to fix problems
     - Resilient to corruption, should repair itself
 - No excess of functionality; only bare bone features will be implemented
+- As few dependencies needed to operate
 - Plugin API, to supplement any specific features or use cases not built into the wrapper
 - Python 2.x and 3.x compatible
 

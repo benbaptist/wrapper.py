@@ -11,6 +11,7 @@ Join us on Gitter!
 ```
 # Install dependencies
 pip install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
+
 # Install stable Wrapper.py
 pip install https://github.com/benbaptist/wrapper.py/archive/master.zip
 ```
@@ -26,5 +27,5 @@ export PATH=$PATH:~/.local/bin
 
 Wrapper.py will automatically accept the Minecraft server EULA on your behalf.
 
-# Wrapper 2.0 #
-This is a complete re-write of Wrapper.py, and is focused on being extremely lightweight and clean.
+# Wrapper.py 2.0 #
+This is a complete re-write of Wrapper.py, and is focused on being extremely lightweight and clean. For the original 1.x repository, [http://github.com/benbaptist/minecraft-wrapper](click here).
