@@ -12,6 +12,7 @@ from wrapper.backups import Backups
 from wrapper.events import Events
 from wrapper.scripts import Scripts
 from wrapper.dashboard import Dashboard
+from wrapper.mojang import Mojang
 from wrapper.commons import *
 
 class Wrapper:
@@ -37,6 +38,7 @@ class Wrapper:
         self.db = self.storify.getDB("main")
 
         # Core functionality
+        self.mojang = Mojang(self)
         self.events = Events()
         self.server = Server(self)
         self.console = Console(self)
@@ -69,7 +71,7 @@ class Wrapper:
             self.log_manager.level = logging.DEBUG
 
         self.log.info("Wrapper starting")
-        self.log.debug("Debug?")
+        self.log.debug("Debug mode is on.")
 
         # Start thread that reads console input
         t = threading.Thread(target=self.console.read_console)

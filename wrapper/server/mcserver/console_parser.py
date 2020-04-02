@@ -32,29 +32,29 @@ class ConsoleParser:
                 server_version = r.group(1)
 
             # Grab server port
-            if "Starting Minecraft server on" in output:
-                r = re.search(": Starting Minecraft server on \*:([0-9]*)", output)
+            r = re.search(": Starting Minecraft server on \*:([0-9]*)", output)
+            if r:
                 server_port = r.group(1)
 
             # Grab world name
-            if "Preparing level" in output:
-                r = re.search(": Preparing level \"(.*)\"", output)
+            r = re.search(": Preparing level \"(.*)\"", output)
+            if r:
                 self.mcserver.world = r.group(1)
+
+            if output == ": The server will make no attempt to authenticate usernames. Beware.":
+                self.mcserver.online_mode = False
 
             # Server started
             if "Done" in output:
                 self.mcserver.state = SERVER_STARTED
-                self.mcserver.run_command("gamerule sendCommandFeedback false")
-                self.mcserver.run_command("gamerule logAdminCommands false")
+                self.mcserver.command("gamerule sendCommandFeedback false")
+                self.mcserver.command("gamerule logAdminCommands false")
                 self.mcserver.events.call("server.started")
 
         if self.mcserver.state == SERVER_STARTED:
             # UUID catcher
-            # print(server_thread)
             if "User Authenticator" in server_thread:
                 r = re.search(": UUID of player (.*) is (.*)", output)
-
-                # print("UUID", r)
 
                 if r:
                     username, uuid_string = r.group(1), r.group(2)
@@ -76,14 +76,12 @@ class ConsoleParser:
 
                 mcuuid = self.mcserver.uuid_cache.get(username)
 
-                player = Player(username=username, mcuuid=mcuuid)
+                player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
 
                 self.mcserver.players.append(player)
 
                 self.mcserver.dirty = True
                 self.mcserver.events.call("server.player.join", player=player)
-
-                # print(username, ip_address, entity_id, position)
 
             # Player Part
             r = re.search(": (.*) lost connection: (.*)", output)
@@ -107,7 +105,8 @@ class ConsoleParser:
                 self.mcserver.events.call(
                     "server.player.message",
                     player=player,
-                    message=message
+                    message=message,
+                    ts=time.time()
                 )
 
                 self.mcserver._chat_scrollback.append([player, message, time.time()])

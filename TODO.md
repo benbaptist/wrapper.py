@@ -34,8 +34,8 @@
 - [x] Auto-accept EULA
 - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
 - [ ] Server
-    - [ ] MCServer object's life should only be during the server's life; once the server stops, the MCServer object should be destroyed. A new one should be created when the server is started again
-    - [x] Sepearate console parsing from MCServer
+    - [x] MCServer object's life should only be during the server's life; once the server stops, the MCServer object should be destroyed. A new one should be created when the server is started again
+    - [x] Decouple console parsing from MCServer
     - [ ] Throttle server start attempts if failing to start (i.e. invalid CLI arguments, wrong server jar name, etc.)
     - [ ] Respect arguments
     - [ ] Respect auto-restart
@@ -51,6 +51,7 @@
     - [x] Cancel ongoing backup
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
+- Make {"text":""} objects universally encoded
 
 # Plugin Ideas #
 - [ ] IRC bridge plugin

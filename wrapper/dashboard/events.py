@@ -1,7 +1,9 @@
 from flask import g
 from flask_socketio import Namespace, send, emit, join_room, leave_room
 
-class Methods(Namespace):
+import time
+
+class Events(Namespace):
     def __init__(self, wrapper, socketio, auth):
         self.wrapper = wrapper
         self.socketio = socketio
@@ -35,24 +37,24 @@ class Methods(Namespace):
             self.socketio.emit("server.status.cpu", {"usage": usage}, room="server")
 
         # Players #
-
         @self.events.hook("server.player.join")
         def server_player_join(player):
             self.socketio.emit(
                 "server.player.join",
                 {
-                    "player": self._serialize_player(player)
+                    "player": player.__serialize__()
                 },
                 room="chat"
             )
 
         @self.events.hook("server.player.message")
-        def server_player_message(player, message):
+        def server_player_message(player, message, ts):
             self.socketio.emit(
                 "server.player.message",
                 {
-                    "player": self._serialize_player(player),
-                    "message": message
+                    "player": player.__serialize__(),
+                    "message": message,
+                    "ts": ts
                 },
                 room="chat"
             )
@@ -62,18 +64,12 @@ class Methods(Namespace):
             self.socketio.emit(
                 "server.player.part",
                 {
-                    "player": self._serialize_player(player)
+                    "player": player.__serialize__()
                 },
                 room="chat"
             )
 
-        super(Methods, self).__init__()
-
-    def _serialize_player(self, player):
-        return {
-            "username": player.username,
-            "uuid": str(player.mcuuid),
-        }
+        super(Events, self).__init__()
 
     def on_server(self):
         self.verify_token()
@@ -85,7 +81,7 @@ class Methods(Namespace):
 
         for player in server.players:
             players.append(
-                self._serialize_player(player)
+                player.__serialize__()
             )
 
         emit("server", {
@@ -100,25 +96,45 @@ class Methods(Namespace):
         })
 
     def on_chat(self):
+        self.verify_token()
+
         join_room("chat")
 
         chat_scrollback = []
 
         for chat in self.wrapper.server.mcserver._chat_scrollback:
-            player, message = chat
+            player, message, ts = chat
             chat_scrollback.append({
-                "player": self._serialize_player(player),
-                "message": message
+                "player": player.__serialize__(),
+                "message": message,
+                "ts": ts
             })
 
         emit("chat", chat_scrollback)
 
     def on_send_chat(self, message):
+        self.verify_token()
+
         self.events.call(
             "server.player.message",
-            player=self.wrapper.server.mcserver._console_player,
-            message=message
+            player=self.wrapper.server._console_player,
+            message=message,
+            ts=time.time()
         )
 
+        self.wrapper.server._console_player.message(message)
 
-        self.wrapper.server.broadcast("<$Console$> %s" % message)
+    def on_server_start(self):
+        self.verify_token()
+
+        self.wrapper.server.start()
+
+    def on_server_restart(self):
+        self.verify_token()
+
+        self.wrapper.server.restart()
+
+    def on_server_stop(self):
+        self.verify_token()
+
+        self.wrapper.server.stop()

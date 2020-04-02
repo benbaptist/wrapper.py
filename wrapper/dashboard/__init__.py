@@ -8,7 +8,7 @@ import logging
 from wrapper.dashboard.login import blueprint_login
 from wrapper.dashboard.admin import blueprint_admin
 from wrapper.dashboard.auth import Auth
-from wrapper.dashboard.methods import Methods
+from wrapper.dashboard.events import Events
 
 class Dashboard:
     def __init__(self, wrapper):
@@ -20,6 +20,7 @@ class Dashboard:
         self.app.config['SECRET_KEY'] = os.urandom(32)
         self.app.config['TEMPLATES_AUTO_RELOAD'] = True
 
+        # Only log crucial errors
         log = logging.getLogger("werkzeug")
         log.setLevel(logging.ERROR)
 
@@ -27,12 +28,10 @@ class Dashboard:
 
         self.socketio = SocketIO(self.app)
 
-        # IOMethods(self.wrapper, self.socketio)
-
         self.auth = Auth(self.wrapper)
 
-        self.methods = Methods(self.wrapper, self.socketio, self.auth)
-        self.socketio.on_namespace(self.methods)
+        self.ioevents = Events(self.wrapper, self.socketio, self.auth)
+        self.socketio.on_namespace(self.ioevents)
 
         self.do_decorators()
         self.register_blueprints()

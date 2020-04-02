@@ -109,6 +109,6 @@ class Console:
                     continue
 
             try:
-                self.server.run_command(data)
+                self.server.command(data)
             except ServerStopped:
                 self.log.info("Failed to run command, because server is currently stopped")
