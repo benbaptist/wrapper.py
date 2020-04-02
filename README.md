@@ -9,11 +9,14 @@ Join us on Gitter!
 
 # Quick Start #
 ```
+# Install dependencies
+pip install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
+# Install stable Wrapper.py
 pip install https://github.com/benbaptist/wrapper.py/archive/master.zip
 ```
 
-Just run `wrapper-lite` in the working directory of your Minecraft server to start.
-On first start, it'll write a configuration file to `wrapper-data/config.json`. Edit to your needs, and then run `wrapper-lite` again.
+Just run `mcwrapper` in the working directory of your Minecraft server to start.
+On first start, it'll write a configuration file to `wrapper-data/config.json`. Edit to your needs, and then run `mcwrapper` again.
 
 You may need to adjust your shell's $PATH to incorporate your local bin folder, depending on your system. For some systems, adding this to your .bashrc may work:
 
@@ -23,15 +26,5 @@ export PATH=$PATH:~/.local/bin
 
 Wrapper.py will automatically accept the Minecraft server EULA on your behalf.
 
-# 'Lite' Version #
-This is a new branch of Wrapper.py. It's a complete re-write of Wrapper.py, and is focused on being extremely lightweight and clean.
-
-### **Design Goals of the 'Lite' Version**
-- Quick setup
-- Robust, stable, set-it-and-forget-it design
-    - Wrapper should always be able to start without user input (e.g. with a physical server boot)
-    - Updates to Wrapper should never intrude or require user input to fix problems
-    - Resilient to corruption, should repair itself
-- No excess of functionality; only bare bone features will be implemented
-- Plugin API, to supplement any specific features or use cases not built into the wrapper
-- Python 2.x and 3.x compatible
+# Wrapper 2.0 #
+This is a complete re-write of Wrapper.py, and is focused on being extremely lightweight and clean.

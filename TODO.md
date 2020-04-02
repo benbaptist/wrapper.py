@@ -1,3 +1,13 @@
+# Design Goals #
+- Quick setup
+- Robust, stable, set-it-and-forget-it design
+    - Wrapper should always be able to start without user input (e.g. with a physical server boot)
+    - Updates to Wrapper should never intrude or require user input to fix problems
+    - Resilient to corruption, should repair itself
+- No excess of functionality; only bare bone features will be implemented
+- Plugin API, to supplement any specific features or use cases not built into the wrapper
+- Python 2.x and 3.x compatible
+
 # Major To-Do #
 
 - [x] Wrapper shuts down on first start, to allow user to edit generated config file
@@ -25,7 +35,7 @@
 - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
 - [ ] Server
     - [ ] MCServer object's life should only be during the server's life; once the server stops, the MCServer object should be destroyed. A new one should be created when the server is started again
-    - [ ] Sepearate console parsing from MCServer
+    - [x] Sepearate console parsing from MCServer
     - [ ] Throttle server start attempts if failing to start (i.e. invalid CLI arguments, wrong server jar name, etc.)
     - [ ] Respect arguments
     - [ ] Respect auto-restart

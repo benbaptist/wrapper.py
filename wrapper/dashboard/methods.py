@@ -48,7 +48,6 @@ class Methods(Namespace):
 
         @self.events.hook("server.player.message")
         def server_player_message(player, message):
-            print("emit", player, message)
             self.socketio.emit(
                 "server.player.message",
                 {

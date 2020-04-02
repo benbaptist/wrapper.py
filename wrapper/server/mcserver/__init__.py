@@ -1,4 +1,3 @@
-import re
 import json
 import uuid
 import time
@@ -8,6 +7,7 @@ import resource
 from wrapper.server.process import Process
 from wrapper.server.player import Player
 from wrapper.server.uuid_cache import UUID_Cache
+from wrapper.server.mcserver.console_parser import ConsoleParser
 from wrapper.commons import *
 from wrapper.exceptions import *
 
@@ -24,6 +24,7 @@ class MCServer:
         self.target_state = (SERVER_STOPPED, time.time())
 
         self.uuid_cache = UUID_Cache()
+        self.console_parser = ConsoleParser(self)
 
         self._reset()
 
@@ -207,109 +208,7 @@ class MCServer:
             # Print line to console
             print(line)
 
-            # Compatible with most recent versions of Minecraft server
-            r = re.search("(\[[0-9:]*\]) \[([A-z #0-9]*)\/([A-z #]*)\](.*)", line)
-
-            # If regex did not match, continue to prevent issues
-            if r == None:
-                continue
-
-            log_time = r.group(1)
-            server_thread = r.group(2)
-            log_level = r.group(3)
-            output = r.group(4)
-
-            # Parse output
-            if self.state == SERVER_STARTING:
-                # Grab server version
-                if "Starting minecraft" in output:
-                    r = re.search(": Starting minecraft server version (.*)", output)
-                    server_version = r.group(1)
-
-                # Grab server port
-                if "Starting Minecraft server on" in output:
-                    r = re.search(": Starting Minecraft server on \*:([0-9]*)", output)
-                    server_port = r.group(1)
-
-                # Grab world name
-                if "Preparing level" in output:
-                    r = re.search(": Preparing level \"(.*)\"", output)
-                    self.world = r.group(1)
-
-                # Server started
-                if "Done" in output:
-                    self.state = SERVER_STARTED
-                    self.run_command("gamerule sendCommandFeedback false")
-                    self.run_command("gamerule logAdminCommands false")
-                    self.events.call("server.started")
-
-            if self.state == SERVER_STARTED:
-                # UUID catcher
-                # print(server_thread)
-                if "User Authenticator" in server_thread:
-                    r = re.search(": UUID of player (.*) is (.*)", output)
-
-                    # print("UUID", r)
-
-                    if r:
-                        username, uuid_string = r.group(1), r.group(2)
-                        uuid_obj = uuid.UUID(hex=uuid_string)
-
-                        self.uuid_cache.add(username, uuid_obj)
-
-                # Player Join
-                r = re.search(": (.*)\[\/(.*):(.*)\] logged in with entity id (.*) at \((.*), (.*), (.*)\)", output)
-                if r:
-                    username = r.group(1)
-                    ip_address = r.group(2)
-                    entity_id = r.group(4)
-                    position = [
-                        float(r.group(5)),
-                        float(r.group(6)),
-                        float(r.group(7))
-                    ]
-
-                    uuid_obj = self.uuid_cache.get(username)
-
-                    player = Player(username=username, mcuuid=uuid_obj)
-
-                    self.players.append(player)
-
-                    self.dirty = True
-                    self.events.call("server.player.join", player=player)
-
-                    # print(username, ip_address, entity_id, position)
-
-                # Player Part
-                r = re.search(": (.*) lost connection: (.*)", output)
-                if r:
-                    username = r.group(1)
-                    server_disconnect_reason = r.group(2)
-
-                    player = self.get_player(username=username)
-                    if player:
-                        self.events.call("server.player.part", player=player)
-
-                        # print("Removing %s from players" % player)
-                        self.players.remove(player)
-
-                # Chat messages
-                r = re.search(": <(.*)> (.*)", output)
-                if r:
-                    username, message = r.group(1), r.group(2)
-
-                    player = self.get_player(username=username)
-                    self.events.call(
-                        "server.player.message",
-                        player=player,
-                        message=message
-                    )
-
-                    self._chat_scrollback.append([player, message, time.time()])
-
-                    # Purge chat scrollback to 200 lines
-                    while len(self._chat_scrollback) > 200:
-                        del self._chat_scrollback[0]
+            self.console_parser.parse(line)
 
         # Dirty hack, let's make this better later using process.read_console()
         self.process.console_output = []
