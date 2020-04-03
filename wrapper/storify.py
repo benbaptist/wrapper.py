@@ -149,11 +149,10 @@ class Database:
 			self.backups = [int(i) for i in self.backups]
 			self.backups.sort()
 
-			while len(self.backups) > 15:
+			while len(self.backups) > 30:
 				self.log.debug("Deleting backup %s/%s..." % (self.name, self.backups[0]))
 				os.remove(os.path.join(self.root, ".backups", self.name, str(self.backups[0])))
 				del self.backups[0]
-
 
 		try:
 			with open(path, "wb") as f:

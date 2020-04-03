@@ -20,7 +20,7 @@ class Process:
             raise StartingException("Cannot start java process, because it is already running.")
 
         command = [java_bin] + java_args + ["-jar", jar_name] + jar_args
-        # command = ["python3", "-u", "/home/benbaptist/Documents/Programming/minecraft-wrapper/tools/fake_minecraft_server.py"]
+        command = ["python3", "-u", "/home/benbaptist/Documents/Programming/minecraft-wrapper/tools/fake_minecraft_server.py"]
 
         self.process = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
         self.process_status = psutil.Process(self.process.pid)

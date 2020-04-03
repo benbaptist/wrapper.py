@@ -19,13 +19,13 @@ pip install https://github.com/benbaptist/wrapper.py/archive/master.zip
 Just run `mcwrapper` in the working directory of your Minecraft server to start.
 On first start, it'll write a configuration file to `wrapper-data/config.json`. Edit to your needs, and then run `mcwrapper` again.
 
-You may need to adjust your shell's $PATH to incorporate your local bin folder, depending on your system. For some systems, adding this to your .bashrc may work:
+You may need to adjust your shell's $PATH to incorporate your local bin folder, depending on your system or how you installed it. For some systems, adding this to your .bashrc may work:
 
 ```
 export PATH=$PATH:~/.local/bin
 ```
 
-Wrapper.py will automatically accept the Minecraft server EULA on your behalf.
+Wrapper.py will automatically accept the Minecraft server EULA on your behalf, if you have not already done so.
 
 # Wrapper.py 2.0 #
-This is a complete re-write of Wrapper.py, and is focused on being extremely lightweight and clean. For the original 1.x repository, [http://github.com/benbaptist/minecraft-wrapper](click here).
+This is a complete re-write of Wrapper.py, and is focused on being extremely lightweight and clean. For the original 1.x repository, [click here](http://github.com/benbaptist/minecraft-wrapper).

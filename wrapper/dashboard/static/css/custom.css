@@ -62,12 +62,12 @@ canvas.face{
 
     /* darken on hover */
     .sidenav .nav-sub li:hover{
-        background-color: rgba(0, 0, 0, .2);
+        background-color: rgba(0, 0, 0, 0.2);
     }
 
     /* darken when active page */
     .sidenav li.active {
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, .2);
     }
 
     .nav-header{

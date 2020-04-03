@@ -194,6 +194,14 @@ class Backups:
                 self.last_backup = time.time()
                 return
 
+        # Purge older backups
+        while len(self.backup_db["backups"]) > self.config["history"]:
+            backup = self.backup_db["backups"][0]
+
+            self.log.info("Purging backup %s" % backup["name"])
+
+            self.delete(backup["id"])
+
         # Check when backup is ready
         if time.time() - self.last_backup > self.config["interval-seconds"]:
             # If backup destination path doesn't exist or isn't set, skip backup

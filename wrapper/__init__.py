@@ -61,8 +61,8 @@ class Wrapper:
         if self.config.updated_from_template:
             self.log.info(
                 "Configuration file has been updated with new entries. Open "
-                "config.json, and make sure your settings are good "
-                "before running."
+                "wrapper-data/config.json, and make sure your settings are "
+                "good before running."
             )
             return
 
@@ -73,12 +73,12 @@ class Wrapper:
         self.log.info("Wrapper starting")
         self.log.debug("Debug mode is on.")
 
-        # Start thread that reads console input
+        # Start console input thread
         t = threading.Thread(target=self.console.read_console)
         t.daemon = True
         t.start()
 
-        # Run dashboard
+        # Start dashboard thread
         t = threading.Thread(target=self.dashboard.run)
         t.daemon = True
         t.start()

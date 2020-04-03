@@ -85,11 +85,13 @@
             $("#server-state").text("Server stopping")
             $("#card-status").removeClass("green red grey darken-2")
             $("#card-status").addClass("yellow darken-3")
+            ui.on_player_join([])
         }
         ui.on_offline = function(){
             $("#server-state").text("Server offline")
             $("#card-status").removeClass("green red yellow darken-3")
             $("#card-status").addClass("grey darken-2")
+            ui.on_player_join([])
         }
 
         ui.on_player_join = function(player){
@@ -199,15 +201,7 @@
                             <th>Username</th>
                             <th>Actions</th>
                         </thead>
-                        <tbody id="table-players">
-                            <tr id="players_">
-                                <td><img src="/static/images/steve_skin_face.png" height="32"/></td>
-                                <td>benbaptist</td>
-                                <td>
-                                    <button class="btn btn-small">Kick</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody id="table-players"></tbody>
                     </table>
                 </div>
             </div>

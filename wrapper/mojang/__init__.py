@@ -5,24 +5,27 @@ import time
 
 class Mojang:
     def __init__(self, wrapper):
-        if wrapper:
-            self.wrapper = wrapper
-            self.log = wrapper.log_manager.get_logger("mojang")
+        self.wrapper = wrapper
+        self.log = wrapper.log_manager.get_logger("mojang")
 
-        self._cache = []
+        self.db = wrapper.storify.getDB("mojang-api-cache")
+        if "cache" not in self.db:
+            self.db["cache"] = []
 
     def _get_cache(self, action, value):
-        for obj in self._cache:
+        for obj in self.db["cache"]:
             if obj["action"] == action and obj["value"] == value:
 
                 # If cache object is older than 24 hours, discard
                 if time.time() - obj["time"] > 60 * 60 * 24:
+                    self.log.debug("Discarding cache %s/%s" % (action, value))
+                    self.db["cache"].remove(obj)
                     return
 
                 return obj["payload"]
 
     def _write_cache(self, action, value, payload):
-        self._cache.append({
+        self.db["cache"].append({
             "action": action,
             "value": value,
             "payload": payload,
@@ -44,8 +47,6 @@ class Mojang:
 
         payload = r.json()
 
-        print(payload)
-
         assert payload["id"] == mcuuid
 
         self.log.debug("Fetch profile from UUID %s " % mcuuid)
@@ -63,8 +64,6 @@ class Mojang:
                 value_b64 = base64.b64decode(prop["value"])
                 value_json = value_b64.decode("utf-8")
                 value = json.loads(value_json)
-
-                print(value)
 
                 if "SKIN" in value["textures"]:
                     skin = value["textures"]["SKIN"]

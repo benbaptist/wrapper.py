@@ -114,7 +114,7 @@
 
                     <ul class="nav-sub">
                         <li{% if request.endpoint == "admin.landing" %} class="active"{% endif %}><a href="/">Overview</a></li>
-                        <li><a href="/chat"{% if request.endpoint == "admin.chat" %} class="active"{% endif %}>Chat</a></li>
+                        <li{% if request.endpoint == "admin.chat" %} class="active"{% endif %}><a href="/chat">Chat</a></li>
                         <li><a href="/logs">Logs</a></li>
                         <li><a href="/config">Config</a></li>
                     </ul>
