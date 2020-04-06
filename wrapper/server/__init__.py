@@ -26,7 +26,7 @@ class Server(object):
         self._console_player = Player(
             self,
             username="$Console$",
-            mcuuid=UUID(bytes=bytes(16)),
+            mcuuid=UUID(bytes=bytes(bytearray(16))),
             online_mode=False
         )
 

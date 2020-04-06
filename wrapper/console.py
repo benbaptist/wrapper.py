@@ -57,8 +57,27 @@ class Console:
 
                     continue
 
+                if command == "plugins":
+                    subcommand = args(1)
+
+                    if subcommand == "list":
+                        plugins = []
+
+                        for plugin in self.wrapper.plugins.plugins:
+                            plugins.append(plugin.name)
+
+                        self.log.info("Plugins: %s" % ", ".join(plugins))
+                    elif subcommand == "reload":
+                        self.log.info("Reloading plugins")
+                        self.wrapper.plugins.reload_plugins()
+                    else:
+                        self.log.info("Usage: /plugins <list/reload>")
+
+                    continue
+
                 if command == "backups":
                     subcommand = args(1)
+
                     if subcommand == "start":
                         self.wrapper.backups.start()
                     elif subcommand == "list":
@@ -98,6 +117,7 @@ class Console:
 
                 if command == "wrapper":
                     subcommand = args(1)
+
                     if subcommand in ("halt", "stop"):
                         self.log.info("Wrapper.py shutdown initiated from console")
                         self.wrapper.shutdown()

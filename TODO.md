@@ -20,11 +20,12 @@
     - [x] Option to stop backup if no players have logged in
     - [ ] Automatic world rollback through dashboard
 - [x] Implement shell script calls
-- [ ] Implement dashboard using Flask
+- [x] Implement dashboard using Flask
     - [ ] Multi-user support with permissions
 - [ ] Implement locales, potentially
 - [ ] Implement plugin API
     - [ ] Server object
+        - [ ] Minecraft object
         - [ ] World object
         - [ ] Player object
         - [ ] (if proxy mode is implemented) Entity object
@@ -46,14 +47,17 @@
     - [x] Compress old logs using gzip
     - [x] Respect debug-mode settings
 - [ ] Backups
-    - [ ] Purge old backups
+    - [x] Purge old backups
     - [ ] Respect ingame-notification settings
     - [x] Console commands for controlling backups
     - [x] Cancel ongoing backup
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
-- Make {"text":""} objects universally encoded
+- [ ] Plugins
+    - [ ] Events need to unhook upon plugin reload
+
+- [ ] Make {"text":""} objects universally encoded
 
 # Plugin Ideas #
-- [ ] IRC bridge plugin
 - [ ] Essentials Clone
+- [ ] IRC bridge plugin

@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, \
     request, make_response, Response, Markup, g
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from waitress import serve
 
 import os
 import logging
@@ -26,7 +27,7 @@ class Dashboard:
 
         self.app.wrapper = self.wrapper
 
-        self.socketio = SocketIO(self.app)
+        self.socketio = SocketIO(self.app, async_mode="threading")
 
         self.auth = Auth(self.wrapper)
 
@@ -44,10 +45,16 @@ class Dashboard:
         self.app.register_blueprint(blueprint_admin)
 
     def run(self):
-        self.socketio.run(
+        serve(
             self.app,
             host=self.config["bind"]["ip"],
-            port=self.config["bind"]["port"],
-            debug=self.wrapper.debug,
-            use_reloader=False
+            port=self.config["bind"]["port"]
         )
+
+        # self.socketio.run(
+        #     self.app,
+        #     host=self.config["bind"]["ip"],
+        #     port=self.config["bind"]["port"],
+        #     debug=self.wrapper.debug,
+        #     use_reloader=False
+        # )

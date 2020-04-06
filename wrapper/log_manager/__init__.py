@@ -65,6 +65,7 @@ class LogManager:
 		logger.addHandler(self.ch)
 		logger.addHandler(self.fh)
 		logger.setLevel(logging.DEBUG)
+		logger.propagate = False
 
 		logger = Logger(self, logger)
 

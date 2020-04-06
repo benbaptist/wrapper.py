@@ -4,3 +4,4 @@ Flask==1.0
 msgpack_python==0.5.6
 psutil
 future
+waitress==1.4.3

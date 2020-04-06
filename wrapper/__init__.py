@@ -12,6 +12,7 @@ from wrapper.backups import Backups
 from wrapper.events import Events
 from wrapper.scripts import Scripts
 from wrapper.dashboard import Dashboard
+from wrapper.plugins import Plugins
 from wrapper.mojang import Mojang
 from wrapper.commons import *
 
@@ -45,6 +46,7 @@ class Wrapper:
         self.backups = Backups(self)
         self.scripts = Scripts(self)
         self.dashboard = Dashboard(self)
+        self.plugins = Plugins(self)
 
         self.abort = False
         self.initiate_shutdown = False
@@ -83,6 +85,9 @@ class Wrapper:
         t.daemon = True
         t.start()
 
+        # Load plugins
+        self.plugins.load_plugins()
+
         try:
             self.run()
         except KeyboardInterrupt:
@@ -98,6 +103,7 @@ class Wrapper:
         self.initiate_shutdown = True
 
     def cleanup(self):
+        self.plugins.unload_plugins()
         self.server.stop(save=False)
         self.storify.flush()
 
