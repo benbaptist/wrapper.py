@@ -1,12 +1,19 @@
-class Events:
+import fnmatch
+import copy
 
+class Events:
     def __init__(self):
         self.listeners = []
 
     def call(self, event, *args, **kwargs):
         for listener in self.listeners:
-            if listener.event == event:
-                listener.callback(*args, **kwargs)
+            _kwargs = copy.copy(kwargs)
+
+            if "*" in listener.event:
+                _kwargs["__event__"] = event
+
+            if fnmatch.filter([event], listener.event):
+                listener.callback(*args, **_kwargs)
 
     def _hook(self, event, callback):
         listener = Listener(event, callback)

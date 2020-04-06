@@ -20,11 +20,20 @@ body{
     position: absolute;
     top: 50%;
     left: 50%;
-    /*transform: translateX(-50%), translateY(-50%);*/
     -webkit-transform-origin: 50%;
     -moz-transform-origin: 50%;
     transform-origin: 50%;
     -webkit-transform: translate(-50%, -50%);
+}
+
+/* canvases */
+canvas.face{
+    width: 32px;
+    height: 32px;
+
+    vertical-align: middle;
+
+    image-rendering: pixelated;
 }
 
 /* inputs */
@@ -53,12 +62,12 @@ body{
 
     /* darken on hover */
     .sidenav .nav-sub li:hover{
-        background-color: rgba(0, 0, 0, .2);
+        background-color: rgba(0, 0, 0, 0.2);
     }
 
     /* darken when active page */
     .sidenav li.active {
-        background-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, .2);
     }
 
     .nav-header{

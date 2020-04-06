@@ -12,6 +12,8 @@ from wrapper.backups import Backups
 from wrapper.events import Events
 from wrapper.scripts import Scripts
 from wrapper.dashboard import Dashboard
+from wrapper.plugins import Plugins
+from wrapper.mojang import Mojang
 from wrapper.commons import *
 
 class Wrapper:
@@ -37,6 +39,8 @@ class Wrapper:
         self.db = self.storify.getDB("main")
 
         # Core functionality
+        self.plugins = Plugins(self)
+        self.mojang = Mojang(self)
         self.events = Events()
         self.server = Server(self)
         self.console = Console(self)
@@ -53,14 +57,14 @@ class Wrapper:
         return self.config["general"]["debug-mode"]
 
     def start(self):
-        """ Starts wrapper. """
+        """ Starts Wrapper.py. """
 
         # Alert user if config was changed from an update, and shutdown
         if self.config.updated_from_template:
             self.log.info(
                 "Configuration file has been updated with new entries. Open "
-                "config.json, and make sure your settings are good "
-                "before running."
+                "wrapper-data/config.json, and make sure your settings are "
+                "good before running."
             )
             return
 
@@ -69,17 +73,20 @@ class Wrapper:
             self.log_manager.level = logging.DEBUG
 
         self.log.info("Wrapper starting")
-        self.log.debug("Debug?")
+        self.log.debug("Debug mode is on.")
 
-        # Start thread that reads console input
+        # Start console input thread
         t = threading.Thread(target=self.console.read_console)
         t.daemon = True
         t.start()
 
-        # Run dashboard
+        # Start dashboard thread
         t = threading.Thread(target=self.dashboard.run)
         t.daemon = True
         t.start()
+
+        # Load plugins
+        self.plugins.load_plugins()
 
         try:
             self.run()
@@ -96,6 +103,7 @@ class Wrapper:
         self.initiate_shutdown = True
 
     def cleanup(self):
+        self.plugins.unload_plugins()
         self.server.stop(save=False)
         self.storify.flush()
 

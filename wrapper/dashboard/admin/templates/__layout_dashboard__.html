@@ -32,6 +32,63 @@
     })
 
     __socketio_ready = function(){}
+
+    // server object
+    server = new Object()
+
+    server._add_player = function(player){
+        server.players[servers.players.length] = player
+    }
+    server._remove_player = function(player){
+        for(i in server.players){
+            var pl = server.players[i]
+            if(pl == player){
+                delete server.players[i]
+            }
+        }
+    }
+
+    server.players = []
+
+    server.start = function(){
+        socket.emit("server_start")
+    }
+
+    server.restart = function(){
+        socket.emit("server_restart")
+    }
+
+    server.stop = function(){
+        socket.emit("server_stop")
+    }
+
+    server.freeze = function(){
+        socket.emit("server_freeze")
+    }
+
+    // often-used ui functions
+    ui = new Object()
+    ui.generate_face = function(url, size){
+        canvas = $("<canvas>")
+        var ctx = canvas[0].getContext("2d")
+
+        canvas[0].width = 8
+        canvas[0].height = 8
+
+        ctx.fillStyle = "yellow"
+        ctx.fillRect(0, 0, 8, 8)
+
+        var img = new Image()
+        img.src = url
+        img.onload = function(data){
+            console.log("LOAD READY", data)
+            ctx.drawImage(img, 8, 8, 8, 8, 0, 0, 8, 8)
+        }
+
+        canvas.addClass("face")
+
+        return canvas[0]
+    }
 </script>
 
 {% block subhead %}{% endblock %}
@@ -57,7 +114,7 @@
 
                     <ul class="nav-sub">
                         <li{% if request.endpoint == "admin.landing" %} class="active"{% endif %}><a href="/">Overview</a></li>
-                        <li><a href="/chat"{% if request.endpoint == "admin.chat" %} class="active"{% endif %}>Chat</a></li>
+                        <li{% if request.endpoint == "admin.chat" %} class="active"{% endif %}><a href="/chat">Chat</a></li>
                         <li><a href="/logs">Logs</a></li>
                         <li><a href="/config">Config</a></li>
                     </ul>

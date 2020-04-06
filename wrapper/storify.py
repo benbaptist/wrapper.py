@@ -132,7 +132,7 @@ class Database:
 
 		# Backup before flushing
 		if os.path.exists(path):
-			self.log.debug("Backing up data")
+			self.log.debug("Backing up %s" % self.name)
 			backupID = str(self.grabLatestBackup() + 1)
 
 			try:
@@ -149,21 +149,20 @@ class Database:
 			self.backups = [int(i) for i in self.backups]
 			self.backups.sort()
 
-			while len(self.backups) > 15:
+			while len(self.backups) > 30:
 				self.log.debug("Deleting backup %s/%s..." % (self.name, self.backups[0]))
 				os.remove(os.path.join(self.root, ".backups", self.name, str(self.backups[0])))
 				del self.backups[0]
 
-
 		try:
 			with open(path, "wb") as f:
-				self.log.warning("Syncing data to disk")
+				self.log.warning("Syncing '%s' to disk" % self.name)
 				f.write(msgpack.packb(self.data))
 			self.lastFlush = time.time()
 		except IOError:
 			self.log.error(
-				"Possibly out of space... not sure how to handle this one. "
-				"Just hopefully some space is made before the script goes down "
+				"IOError thrown... not sure how to handle this one. "
+				"Hopefully some space is made before the program goes down "
 				"to ensure this data gets written.")
 
 	def __getitem__(self, index):

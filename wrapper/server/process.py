@@ -20,7 +20,7 @@ class Process:
             raise StartingException("Cannot start java process, because it is already running.")
 
         command = [java_bin] + java_args + ["-jar", jar_name] + jar_args
-        command = ["python3", "-u", "/home/benbaptist/Documents/Programming/minecraft-wrapper/tools/fake_minecraft_server.py"]
+        # command = ["python3", "-u", "/home/benbaptist/Documents/Programming/minecraft-wrapper/tools/fake_minecraft_server.py"]
 
         self.process = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
         self.process_status = psutil.Process(self.process.pid)
@@ -76,7 +76,6 @@ class Process:
             elif read == "stderr":
                 std = self.process.stderr
 
-            print("__stread__ start // %s" % read)
             while self.process:
                 blob = std.readline()
 
@@ -95,8 +94,6 @@ class Process:
 
             # After loop is killed, ensure process is cleaned up
             self.kill()
-
-            # print("__stread__ end // %s" % read)
         except:
             # If a fatal error occurs, print traceback and ensure process is cleaned up
             traceback.print_exc()

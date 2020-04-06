@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, render_template, \
     request, make_response, Response, Markup, g
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from waitress import serve
 
 import os
 import logging
@@ -8,7 +9,7 @@ import logging
 from wrapper.dashboard.login import blueprint_login
 from wrapper.dashboard.admin import blueprint_admin
 from wrapper.dashboard.auth import Auth
-from wrapper.dashboard.methods import Methods
+from wrapper.dashboard.events import Events
 
 class Dashboard:
     def __init__(self, wrapper):
@@ -20,19 +21,18 @@ class Dashboard:
         self.app.config['SECRET_KEY'] = os.urandom(32)
         self.app.config['TEMPLATES_AUTO_RELOAD'] = True
 
+        # Only log crucial errors
         log = logging.getLogger("werkzeug")
         log.setLevel(logging.ERROR)
 
         self.app.wrapper = self.wrapper
 
-        self.socketio = SocketIO(self.app)
-
-        # IOMethods(self.wrapper, self.socketio)
+        self.socketio = SocketIO(self.app, async_mode="threading")
 
         self.auth = Auth(self.wrapper)
 
-        self.methods = Methods(self.wrapper, self.socketio, self.auth)
-        self.socketio.on_namespace(self.methods)
+        self.ioevents = Events(self.wrapper, self.socketio, self.auth)
+        self.socketio.on_namespace(self.ioevents)
 
         self.do_decorators()
         self.register_blueprints()
@@ -45,10 +45,17 @@ class Dashboard:
         self.app.register_blueprint(blueprint_admin)
 
     def run(self):
-        self.socketio.run(
+        serve(
             self.app,
             host=self.config["bind"]["ip"],
             port=self.config["bind"]["port"],
-            debug=self.wrapper.debug,
-            use_reloader=False
+            threads=32
         )
+
+        # self.socketio.run(
+        #     self.app,
+        #     host=self.config["bind"]["ip"],
+        #     port=self.config["bind"]["port"],
+        #     debug=self.wrapper.debug,
+        #     use_reloader=False
+        # )

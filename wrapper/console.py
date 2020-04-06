@@ -18,7 +18,10 @@ class Console:
 
     def read_console(self):
         while not self.wrapper.abort:
-            data = input("> ")
+            try:
+                data = input("> ")
+            except EOFError:
+                continue
 
             def args(i):
                 try:
@@ -57,8 +60,27 @@ class Console:
 
                     continue
 
+                if command == "plugins":
+                    subcommand = args(1)
+
+                    if subcommand == "list":
+                        plugins = []
+
+                        for plugin in self.wrapper.plugins.plugins:
+                            plugins.append(plugin.name)
+
+                        self.log.info("Plugins: %s" % ", ".join(plugins))
+                    elif subcommand == "reload":
+                        self.log.info("Reloading plugins")
+                        self.wrapper.plugins.reload_plugins()
+                    else:
+                        self.log.info("Usage: /plugins <list/reload>")
+
+                    continue
+
                 if command == "backups":
                     subcommand = args(1)
+
                     if subcommand == "start":
                         self.wrapper.backups.start()
                     elif subcommand == "list":
@@ -98,6 +120,7 @@ class Console:
 
                 if command == "wrapper":
                     subcommand = args(1)
+
                     if subcommand in ("halt", "stop"):
                         self.log.info("Wrapper.py shutdown initiated from console")
                         self.wrapper.shutdown()
@@ -109,6 +132,6 @@ class Console:
                     continue
 
             try:
-                self.server.run_command(data)
+                self.server.command(data)
             except ServerStopped:
                 self.log.info("Failed to run command, because server is currently stopped")

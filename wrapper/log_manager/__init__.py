@@ -45,9 +45,10 @@ class LogManager:
 
 				# Compress log file
 				self.log.info("Compressing %s" % log)
-				with gzip.open(log_compressed_path, "wb") as cf, \
-					open(log_path, "r") as uf:
-					cf.write(uf.read())
+				with gzip.open(log_compressed_path, "wb") as compressed_log, \
+					open(log_path, "rb") as uncompressed_log:
+						log_data = uncompressed_log.read()
+						compressed_log.write(log_data)
 
 	def grab_log_file(self):
 		if self.fh:
@@ -64,6 +65,7 @@ class LogManager:
 		logger.addHandler(self.ch)
 		logger.addHandler(self.fh)
 		logger.setLevel(logging.DEBUG)
+		logger.propagate = False
 
 		logger = Logger(self, logger)
 
