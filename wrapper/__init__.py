@@ -39,6 +39,7 @@ class Wrapper:
         self.db = self.storify.getDB("main")
 
         # Core functionality
+        self.plugins = Plugins(self)
         self.mojang = Mojang(self)
         self.events = Events()
         self.server = Server(self)
@@ -46,7 +47,6 @@ class Wrapper:
         self.backups = Backups(self)
         self.scripts = Scripts(self)
         self.dashboard = Dashboard(self)
-        self.plugins = Plugins(self)
 
         self.abort = False
         self.initiate_shutdown = False
@@ -57,7 +57,7 @@ class Wrapper:
         return self.config["general"]["debug-mode"]
 
     def start(self):
-        """ Starts wrapper. """
+        """ Starts Wrapper.py. """
 
         # Alert user if config was changed from an update, and shutdown
         if self.config.updated_from_template:

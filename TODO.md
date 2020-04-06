@@ -32,7 +32,7 @@
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
 - [ ] (Very Low Priority) Implement Proxy mode
 
-# Minor To-Do List #
+# Minor/Specific To-Do List #
 - [x] Auto-accept EULA
 - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
 - [ ] Server
@@ -54,8 +54,9 @@
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
 - [ ] Plugins
-    - [ ] Events need to unhook upon plugin reload
-
+    - [x] Events need to unhook upon plugin reload
+    - [ ] Commands need to un-register upon plugin reload
+    - [ ] Rename player.message to something else, so that player.message can be used to send the player a message
 - [ ] Make {"text":""} objects universally encoded
 
 # Plugin Ideas #

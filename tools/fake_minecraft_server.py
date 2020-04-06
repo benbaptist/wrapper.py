@@ -69,6 +69,9 @@ def read_console():
             fancy_print("UUID of player benbaptist is 8e9a15c6-98c2-4cb8-8184-8d845085a846", thread="User Authenticator #1")
             fancy_print("benbaptist[/127.0.0.1:52068] logged in with entity id 270 at (-98.85761606250753, 5.0, 32.550918344641936)")
 
+        if blob == "cmd":
+            fancy_print("<benbaptist> .hello")
+
 t = threading.Thread(target=read_console, args=())
 t.daemon = True
 t.start()

@@ -4,6 +4,7 @@ from uuid import UUID
 
 from wrapper.server.mcserver import MCServer
 from wrapper.server.player import Player
+from wrapper.server.commands import Commands
 from wrapper.exceptions import *
 from wrapper.commons import *
 
@@ -30,6 +31,9 @@ class Server(object):
             online_mode=False
         )
 
+        # Commands handler
+        self.commands = Commands(self)
+
     @property
     def state(self):
         if self.mcserver:
@@ -51,14 +55,6 @@ class Server(object):
     def online_mode(self):
         if self.mcserver:
             return self.mcserver.online_mode
-
-    @property
-    def dirty(self):
-        return self.mcserver.dirty
-
-    @dirty.setter
-    def dirty(self, value):
-        self.mcserver.dirty = value
 
     def broadcast(self, message):
         if len(self.players) < 1:
@@ -138,7 +134,3 @@ class Server(object):
                 self.log.info("Server stopped")
                 self.events.call("server.stopped")
                 return
-
-            # Check if server is 'dirty'
-            if len(self.players) > 0:
-                self.dirty = True

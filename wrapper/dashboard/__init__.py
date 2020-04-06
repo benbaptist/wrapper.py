@@ -48,7 +48,8 @@ class Dashboard:
         serve(
             self.app,
             host=self.config["bind"]["ip"],
-            port=self.config["bind"]["port"]
+            port=self.config["bind"]["port"],
+            threads=32
         )
 
         # self.socketio.run(

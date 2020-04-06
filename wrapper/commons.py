@@ -18,6 +18,18 @@ def bytes_to_human(bytesize, suffix="B"):
         bytesize /= 1024.0
     return "%.1f%s%s" % (bytesize, "Yi", suffix)
 
+def args(i, string):
+    try:
+        return string.split(" ")[i]
+    except:
+        return
+
+def args_after(i, string):
+    try:
+        return " ".join(string.split(" ")[i:])
+    except:
+        return
+
 CONFIG_TEMPLATE = {
     "general": {
         "debug-mode": True

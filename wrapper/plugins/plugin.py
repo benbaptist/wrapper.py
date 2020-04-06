@@ -59,5 +59,8 @@ class Plugin:
         if self._main:
             try:
                 self._main.__disable__()
+                self._main = None
+
+                self._api.__disable__()
             except:
                 self.log.traceback("Failed to unload plugin")

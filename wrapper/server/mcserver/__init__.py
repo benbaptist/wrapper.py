@@ -23,7 +23,6 @@ class MCServer:
         self.world = None
         self.mcversion = None
         self.port = None
-        self.dirty = False
         self.online_mode = True
 
         self.process = None
@@ -35,7 +34,6 @@ class MCServer:
 
         self._timeout = 0
 
-        self._chat_scrollback = []
         self._resource_analytics = []
 
         self._start()
@@ -155,6 +153,9 @@ class MCServer:
         for std, line in self.process.read_console():
             # Print line to console
             print(line)
+
+            # Call event for line
+            self.events.call("server.console.output", line=line)
 
             # Parse line
             self.console_parser.parse(line)

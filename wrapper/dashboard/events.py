@@ -10,6 +10,9 @@ class Events(Namespace):
         self.verify_token = auth.verify_token
         self.events = wrapper.events
 
+        self._chat_scrollback = []
+        self._log_scrollback = []
+
         # Server state
         @self.events.hook("server.starting")
         def server_starting():
@@ -26,6 +29,20 @@ class Events(Namespace):
         @self.events.hook("server.stopped")
         def server_stopped():
             self.socketio.emit("server.stopped", room="server")
+
+        # Server console output
+        @self.events.hook("server.console.output")
+        def server_console_output(line):
+            while len(self._log_scrollback) > 500:
+                del self._log_scrollback[0]
+
+            self._log_scrollback.append(line)
+
+            self.socketio.emit(
+                "server.console.output",
+                line,
+                room="server"
+            )
 
         # Server status
         @self.events.hook("server.status.ram")
@@ -48,13 +65,17 @@ class Events(Namespace):
             )
 
         @self.events.hook("server.player.message")
-        def server_player_message(player, message, ts):
+        def server_player_message(player, message):
+            self._chat_scrollback.append({
+                "player": player.__serialize__(),
+                "message": message
+            })
+
             self.socketio.emit(
                 "server.player.message",
                 {
                     "player": player.__serialize__(),
-                    "message": message,
-                    "ts": ts
+                    "message": message
                 },
                 room="chat"
             )
@@ -92,7 +113,8 @@ class Events(Namespace):
                 "size": None
             },
             "mcversion": None,
-            "free_disk_space": None
+            "free_disk_space": None,
+            "log": self._log_scrollback
         })
 
     def on_chat(self):
@@ -100,17 +122,7 @@ class Events(Namespace):
 
         join_room("chat")
 
-        chat_scrollback = []
-
-        for chat in self.wrapper.server.mcserver._chat_scrollback:
-            player, message, ts = chat
-            chat_scrollback.append({
-                "player": player.__serialize__(),
-                "message": message,
-                "ts": ts
-            })
-
-        emit("chat", chat_scrollback)
+        emit("chat", self._chat_scrollback)
 
     def on_send_chat(self, message):
         self.verify_token()
@@ -118,8 +130,7 @@ class Events(Namespace):
         self.events.call(
             "server.player.message",
             player=self.wrapper.server._console_player,
-            message=message,
-            ts=time.time()
+            message=message
         )
 
         self.wrapper.server._console_player.message(message)

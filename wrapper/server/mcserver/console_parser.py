@@ -80,7 +80,6 @@ class ConsoleParser:
 
                 self.mcserver.players.append(player)
 
-                self.mcserver.dirty = True
                 self.mcserver.events.call("server.player.join", player=player)
 
             # Player Part
@@ -105,12 +104,5 @@ class ConsoleParser:
                 self.mcserver.events.call(
                     "server.player.message",
                     player=player,
-                    message=message,
-                    ts=time.time()
+                    message=message
                 )
-
-                self.mcserver._chat_scrollback.append([player, message, time.time()])
-
-                # Purge chat scrollback to 200 lines
-                while len(self.mcserver._chat_scrollback) > 200:
-                    del self.mcserver._chat_scrollback[0]

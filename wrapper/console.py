@@ -18,7 +18,10 @@ class Console:
 
     def read_console(self):
         while not self.wrapper.abort:
-            data = input("> ")
+            try:
+                data = input("> ")
+            except EOFError:
+                continue
 
             def args(i):
                 try:

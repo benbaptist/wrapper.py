@@ -172,7 +172,7 @@ class Backups:
 
                 self.events.call("backups.complete", details=self.current_backup.details)
 
-                self.server.dirty = False
+                self.dirty = False
                 self.backup_db["backups"].append(self.current_backup.details)
                 self.current_backup = None
                 self.last_backup = time.time()
@@ -187,8 +187,12 @@ class Backups:
         if self.server.state != SERVER_STARTED:
             return
 
+        # Mark server as dirty if needed
+        if len(self.server.players) > 0:
+            self.dirty = True
+
         # If server hasn't had a player join, skip tick
-        if not self.server.dirty:
+        if not self.dirty:
             if self.config["only-backup-if-player-joins"]:
                 # This ensures backup counter STARTS once a player joins
                 self.last_backup = time.time()
