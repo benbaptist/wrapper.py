@@ -47,8 +47,10 @@ class ConsoleParser:
             # Server started
             if "Done" in output:
                 self.mcserver.state = SERVER_STARTED
-                self.mcserver.command("gamerule sendCommandFeedback false")
-                self.mcserver.command("gamerule logAdminCommands false")
+
+                self.mcserver.command("gamerule sendCommandFeedback")
+                self.mcserver.command("gamerule logAdminCommands")
+
                 self.mcserver.events.call("server.started")
 
         if self.mcserver.state == SERVER_STARTED:
@@ -61,6 +63,53 @@ class ConsoleParser:
                     mcuuid = UUID(hex=uuid_string)
 
                     self.mcserver.uuid_cache.add(username, mcuuid)
+
+            # Gamerule capture
+            r = re.search(
+                ": Gamerule (.*) is currently set to: (true|false)",
+                output
+            )
+            if r:
+                gamerule = r.group(1)
+                value = bool(r.group(2))
+
+                self.mcserver.gamerules[gamerule] = value
+
+                # Surpress
+                return False
+
+            r = re.search(
+                ": Gamerule (.*) is now set to: (true|false)",
+                output
+            )
+            if r:
+                # Surpress
+                return False
+
+            # Player Position
+            r = re.search(
+                ": Teleported (.*) to (.*), (.*), (.*)",
+                output
+            )
+            if r:
+                username = r.group(1)
+                x, y, z = r.group(2), r.group(3), r.group(4)
+                x, y, z = float(x), float(y), float(z)
+
+                player = self.mcserver.get_player(username=username)
+                player.position = [x, y, z]
+
+                self.mcserver.events.call(
+                    "server.player.position",
+                    player=player,
+                    x=x,
+                    y=y,
+                    z=z
+                )
+
+                player._callback("poll_position", x, y, z)
+
+                return False
 
             # Player Join
             r = re.search(": (.*)\[\/(.*):(.*)\] logged in with entity id (.*) at \((.*), (.*), (.*)\)", output)
@@ -77,6 +126,7 @@ class ConsoleParser:
                 mcuuid = self.mcserver.uuid_cache.get(username)
 
                 player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
+                player.online = True
 
                 self.mcserver.players.append(player)
 
@@ -89,6 +139,7 @@ class ConsoleParser:
                 server_disconnect_reason = r.group(2)
 
                 player = self.mcserver.get_player(username=username)
+                player.online = False
                 if player:
                     self.mcserver.events.call("server.player.part", player=player)
 

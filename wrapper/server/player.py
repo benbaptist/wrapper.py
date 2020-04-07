@@ -1,3 +1,5 @@
+import json
+
 class Player:
     def __init__(self, server, username, mcuuid, online_mode=None):
         self.server = server
@@ -8,6 +10,11 @@ class Player:
         self.position = None
         self.ip_address = None
         self.entity_id = None
+        self.online = False
+
+        self._callbacks = {
+            "poll_position": []
+        }
 
         if online_mode in (False, True):
             self.online_mode = online_mode
@@ -27,7 +34,28 @@ class Player:
             "skin": self.skin
         }
 
+    def _callback(self, method, *args):
+        for callback in self._callbacks[method]:
+            callback(*args)
+
+        self._callbacks[method] = []
+
     def message(self, message):
+        """ Sends a /tellraw message to this player. """
+        self.server.tellraw(self.username, message)
+
+    def poll_position(self, callback=None):
+        self.server.command("gamerule logAdminCommands true")
+
+        self.server.command("execute at %s run tp %s ~ ~ ~"
+            % (self.username, self.username)
+        )
+
+        self.server.command("gamerule logAdminCommands false")
+
+        self._callbacks["poll_position"].append(callback)
+
+    def message_as_player(self, message):
         """ Simulates sending a message as this player. """
         self.server.log.info("<%s> %s" % (self.username, message))
         self.server.broadcast("<%s> %s" % (self.username, message))
@@ -35,7 +63,7 @@ class Player:
     def kick(self, reason="Kicked from server"):
         self.server.command(
             "kick %s %s"
-            % (self.username, {
+            % (self.username, json.dumps({
                 "text": reason
-            })
+            }))
         )

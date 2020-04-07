@@ -1,4 +1,5 @@
 import json
+import time
 
 from uuid import UUID
 
@@ -47,6 +48,11 @@ class Server(object):
             return self.mcserver.players
 
     @property
+    def gamerules(self):
+        if self.mcserver:
+            return self.mcserver.gamerules
+
+    @property
     def world(self):
         if self.mcserver:
             return self.mcserver.world
@@ -56,7 +62,7 @@ class Server(object):
         if self.mcserver:
             return self.mcserver.online_mode
 
-    def broadcast(self, message):
+    def tellraw(self, target, message):
         if len(self.players) < 1:
             return
 
@@ -67,7 +73,10 @@ class Server(object):
                 "text": message
             })
 
-        self.command("tellraw @a %s" % json_blob)
+        self.command("tellraw %s %s" % (target, json_blob))
+
+    def broadcast(self, message):
+        self.tellraw("@a", message)
 
     def title(self, message, target="@a", title_type="title", fade_in=None, stay=None, fade_out=None):
         if len(self.players) < 1:
@@ -89,9 +98,24 @@ class Server(object):
             % (target, title_type, json_blob)
         )
 
-    def command(self, cmd):
+    def command(self, cmd, output=False):
         if self.mcserver:
+            # print("cmd", cmd)
+            if output:
+                if not self.gamerules["logAdminCommands"]:
+                    self.mcserver.command("gamerule logAdminCommands true")
+            else:
+                if self.gamerules["logAdminCommands"]:
+                    self.mcserver.command("gamerule logAdminCommands false")
+
             self.mcserver.command(cmd)
+
+            if output:
+                if not self.gamerules["logAdminCommands"]:
+                    self.mcserver.command("gamerule logAdminCommands false")
+            else:
+                if self.gamerules["logAdminCommands"]:
+                    self.mcserver.command("gamerule logAdminCommands true")
 
     def start(self):
         self.db["server"]["state"] = SERVER_STARTED
@@ -103,6 +127,8 @@ class Server(object):
 
             self.mcserver.abort = True
 
+        time.sleep(.1)
+
         self.start()
 
     def stop(self, reason="Server stopping", save=True):
@@ -111,6 +137,8 @@ class Server(object):
 
             for player in self.players:
                 player.kick(reason)
+
+        time.sleep(.1)
 
         if save:
             self.db["server"]["state"] = SERVER_STOPPED

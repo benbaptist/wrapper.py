@@ -119,4 +119,7 @@ class Wrapper:
             self.server.tick()
             self.backups.tick()
             self.storify.tick()
+
+            self.events.call("wrapper.tick")
+
             time.sleep(1 / 20.0) # 20 ticks per second

@@ -17,6 +17,7 @@ class Plugin:
         self.path = path
         self.name = os.path.basename(self.path)
         self.success = None
+        self._main = None
 
         self.log = self.wrapper.log_manager.get_logger("plugin/%s" % self.name)
 

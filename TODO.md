@@ -56,8 +56,8 @@
 - [ ] Plugins
     - [x] Events need to unhook upon plugin reload
     - [ ] Commands need to un-register upon plugin reload
-    - [ ] Rename player.message to something else, so that player.message can be used to send the player a message
-- [ ] Make {"text":""} objects universally encoded
+    - [x] Rename player.message to something else, so that player.message can be used to send the player a message
+- [ ] Make {"text": ""} objects universally encoded
 
 # Plugin Ideas #
 - [ ] Essentials Clone

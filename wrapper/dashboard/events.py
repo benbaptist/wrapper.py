@@ -133,7 +133,7 @@ class Events(Namespace):
             message=message
         )
 
-        self.wrapper.server._console_player.message(message)
+        self.wrapper.server._console_player.message_as_player(message)
 
     def on_server_start(self):
         self.verify_token()

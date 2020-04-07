@@ -24,6 +24,10 @@ class MCServer:
         self.mcversion = None
         self.port = None
         self.online_mode = True
+        self.gamerules = {
+            "sendCommandFeedback": True,
+            "logAdminCommands": True
+        }
 
         self.process = None
         self.abort = False
@@ -151,11 +155,10 @@ class MCServer:
 
         # Process server output
         for std, line in self.process.read_console():
-            # Print line to console
-            print(line)
+            # Parse line
+            if self.console_parser.parse(line) != False:
+                # Print line to console
+                print(line)
 
             # Call event for line
             self.events.call("server.console.output", line=line)
-
-            # Parse line
-            self.console_parser.parse(line)
