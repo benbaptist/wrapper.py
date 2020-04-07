@@ -88,14 +88,7 @@ class Wrapper:
         # Load plugins
         self.plugins.load_plugins()
 
-        try:
-            self.run()
-        except KeyboardInterrupt:
-            self.log.info("Wrapper caught KeyboardInterrupt, shutting down")
-        except:
-            self.log.traceback("Fatal error, shutting down")
-            self.server.kill()
-            # This won't properly wait for the server to stop. This needs to be fixed.
+        self.run()
 
         self.cleanup()
 
@@ -109,17 +102,29 @@ class Wrapper:
 
     def run(self):
         while not self.abort:
-            if self.initiate_shutdown and self.server.state != SERVER_STOPPING:
-                self.server.stop(save=False)
+            try:
+                self.tick()
+            except KeyboardInterrupt:
+                self.log.info("Wrapper caught KeyboardInterrupt, shutting down")
+                self.shutdown()
+            except:
+                self.shutdown()
+                self.log.traceback("Fatal error, shutting down")
 
-            if self.initiate_shutdown and self.server.state == SERVER_STOPPED:
-                self.abort = True
-                break
+        self.cleanup()
 
-            self.server.tick()
-            self.backups.tick()
-            self.storify.tick()
+    def tick(self):
+        if self.initiate_shutdown and self.server.state != SERVER_STOPPING:
+            self.server.stop(save=False)
 
-            self.events.call("wrapper.tick")
+        if self.initiate_shutdown and self.server.state == SERVER_STOPPED:
+            self.abort = True
+            return
 
-            time.sleep(1 / 20.0) # 20 ticks per second
+        self.server.tick()
+        self.backups.tick()
+        self.storify.tick()
+
+        self.events.call("wrapper.tick")
+
+        time.sleep(1 / 20.0) # 20 ticks per second

@@ -48,8 +48,8 @@ class ConsoleParser:
             if "Done" in output:
                 self.mcserver.state = SERVER_STARTED
 
-                self.mcserver.command("gamerule sendCommandFeedback")
-                self.mcserver.command("gamerule logAdminCommands")
+                self.mcserver.command("gamerule sendCommandFeedback false")
+                self.mcserver.command("gamerule logAdminCommands true")
 
                 self.mcserver.events.call("server.started")
 
@@ -86,6 +86,34 @@ class ConsoleParser:
                 # Surpress
                 return False
 
+            # Server Reload
+            r1 = re.search(
+                ": \[(.*)\: Reloading!]",
+                output
+            )
+
+            r2 = re.search(
+                ": Reloading!",
+                output
+            )
+
+            r3 = re.search(
+                ": Reloading ResourceManager: Default",
+                output
+            )
+
+            if r1 or r2 or r3:
+                if r1:
+                    username = r1.group(1)
+                    player = self.mcserver.get_player(username=username)
+                else:
+                    player = None
+
+                self.mcserver.events.call(
+                    "server.reload",
+                    player=player
+                )
+
             # Player Position
             r = re.search(
                 ": Teleported (.*) to (.*), (.*), (.*)",
@@ -99,15 +127,15 @@ class ConsoleParser:
                 player = self.mcserver.get_player(username=username)
                 player.position = [x, y, z]
 
-                self.mcserver.events.call(
-                    "server.player.position",
-                    player=player,
-                    x=x,
-                    y=y,
-                    z=z
-                )
-
-                player._callback("poll_position", x, y, z)
+                # self.mcserver.events.call(
+                #     "server.player.position",
+                #     player=player,
+                #     x=x,
+                #     y=y,
+                #     z=z
+                # )
+                #
+                # player._callback("poll_position", x, y, z)
 
                 return False
 
@@ -143,7 +171,6 @@ class ConsoleParser:
                 if player:
                     self.mcserver.events.call("server.player.part", player=player)
 
-                    # print("Removing %s from players" % player)
                     self.mcserver.players.remove(player)
 
             # Chat messages

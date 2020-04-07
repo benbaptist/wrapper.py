@@ -22,7 +22,6 @@
 - [x] Implement shell script calls
 - [x] Implement dashboard using Flask
     - [ ] Multi-user support with permissions
-- [ ] Implement locales, potentially
 - [ ] Implement plugin API
     - [ ] Server object
         - [ ] Minecraft object
@@ -30,18 +29,19 @@
         - [ ] Player object
         - [ ] (if proxy mode is implemented) Entity object
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
-- [ ] (Very Low Priority) Implement Proxy mode
+- [ ] Implement Proxy mode
+    - Utilize `https://github.com/barneygale/quarry` instead of redundantly re-implementing Minecraft protocol
 
 # Minor/Specific To-Do List #
-- [x] Auto-accept EULA
-- [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
 - [ ] Server
     - [x] MCServer object's life should only be during the server's life; once the server stops, the MCServer object should be destroyed. A new one should be created when the server is started again
     - [x] Decouple console parsing from MCServer
     - [ ] Throttle server start attempts if failing to start (i.e. invalid CLI arguments, wrong server jar name, etc.)
-    - [ ] Respect arguments
-    - [ ] Respect auto-restart
+    - [x] Respect arguments
+    - [x] Respect auto-restart
     - [x] Custom java executable
+    - [x] Auto-accept EULA
+    - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
 - [ ] log_manager
     - [PARTIAL] Rotate logs
     - [x] Compress old logs using gzip
@@ -50,14 +50,16 @@
     - [x] Purge old backups
     - [ ] Respect ingame-notification settings
     - [x] Console commands for controlling backups
-    - [x] Cancel ongoing backup
+    - [x] Ability to cancel ongoing backup
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
 - [ ] Plugins
     - [x] Events need to unhook upon plugin reload
     - [ ] Commands need to un-register upon plugin reload
     - [x] Rename player.message to something else, so that player.message can be used to send the player a message
-- [ ] Make {"text": ""} objects universally encoded
+- [ ] Misc. stuff
+    - [ ] Make {"text": ""} objects universally encoded
+    - [ ] Use curses to make console input a little nicer
 
 # Plugin Ideas #
 - [ ] Essentials Clone

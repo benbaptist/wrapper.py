@@ -20,12 +20,18 @@ class Events:
         for listener in self.listeners:
             if fnmatch.filter([event], listener.event):
                 try:
-                    listener.callback(*args, **kwargs)
-                except TypeError:
-                    _kwargs = copy.copy(kwargs)
-                    del _kwargs["__event__"]
+                    try:
+                        listener.callback(*args, **kwargs)
+                    except TypeError:
+                        _kwargs = copy.copy(kwargs)
+                        del _kwargs["__event__"]
 
-                    listener.callback(*args, **_kwargs)
+                        listener.callback(*args, **_kwargs)
+                except:
+                    self.api._plugin.log.traceback(
+                        "Failed to call event %s"
+                        % event
+                    )
 
     def hook(self, event):
         def wrap(func):

@@ -100,10 +100,11 @@ class Events(Namespace):
         server = self.wrapper.server
         players = []
 
-        for player in server.players:
-            players.append(
-                player.__serialize__()
-            )
+        if self.wrapper.server.mcserver:
+            for player in server.players:
+                players.append(
+                    player.__serialize__()
+                )
 
         emit("server", {
             "state": server.state,

@@ -66,8 +66,18 @@ class MCServer:
         if not custom_java_bin:
             custom_java_bin = "java"
 
+        if len(self.config["server"]["arguments"]) > 0:
+            arguments = self.config["server"]["arguments"].split(" ")
+        else:
+            arguments = []
+
         self.process = Process()
-        self.process.start(self.config["server"]["jar"], java_bin=custom_java_bin)
+        self.process.start(
+            jar_name=self.config["server"]["jar"],
+            java_args=arguments,
+            java_bin=custom_java_bin
+        )
+
         self.state = SERVER_STARTING
 
     # Control server states

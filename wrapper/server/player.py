@@ -34,6 +34,11 @@ class Player:
             "skin": self.skin
         }
 
+    def _poll_position(self):
+        self.server.command("execute at %s run tp %s ~ ~ ~"
+            % (self.username, self.username)
+        )
+
     def _callback(self, method, *args):
         for callback in self._callbacks[method]:
             callback(*args)
@@ -44,16 +49,16 @@ class Player:
         """ Sends a /tellraw message to this player. """
         self.server.tellraw(self.username, message)
 
-    def poll_position(self, callback=None):
-        self.server.command("gamerule logAdminCommands true")
-
-        self.server.command("execute at %s run tp %s ~ ~ ~"
-            % (self.username, self.username)
-        )
-
-        self.server.command("gamerule logAdminCommands false")
-
-        self._callbacks["poll_position"].append(callback)
+    # def poll_position(self, callback=None):
+    #     self.server.command("gamerule logAdminCommands true")
+    #
+    #     self.server.command("execute at %s run tp %s ~ ~ ~"
+    #         % (self.username, self.username)
+    #     )
+    #
+    #     self.server.command("gamerule logAdminCommands false")
+    #
+    #     self._callbacks["poll_position"].append(callback)
 
     def message_as_player(self, message):
         """ Simulates sending a message as this player. """
@@ -63,7 +68,5 @@ class Player:
     def kick(self, reason="Kicked from server"):
         self.server.command(
             "kick %s %s"
-            % (self.username, json.dumps({
-                "text": reason
-            }))
+            % (self.username, reason)
         )

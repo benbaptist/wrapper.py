@@ -18,11 +18,29 @@ class Commands:
         raw_message = raw_message[1:]
 
         command_name = args(0, raw_message)
-        command_args = args_after(1, raw_message)
+        command_args = args_after(1, raw_message).split(" ")
 
-        for command in self.commands:
+        commands = [] + self.commands
+
+        # Find commands registered to plugins here
+
+        # Process commands
+        for command in commands:
             if command.name == command_name:
-                command.run(player, *command_args)
+                try:
+                    command.run(player, *command_args)
+                except:
+                    self.server.log.traceback(
+                        "Failure while processing command '%s'"
+                        % command_name
+                    )
+
+                    player.message({
+                        "text":
+                            "An error occured while processing this "
+                            "command. Please try again later.",
+                        "color": "red"
+                    })
 
     def _register(self, name, func, permission, domain):
         command = Command(name, func, permission, domain=None)
