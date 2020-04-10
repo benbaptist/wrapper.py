@@ -8,12 +8,22 @@ to create Bukkit-like plugins without any server modding.
 Join us on Gitter!
 
 # Quick Start #
+### Stable branch
 ```
 # Install dependencies
 pip install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
 
 # Install stable Wrapper.py
 pip install https://github.com/benbaptist/wrapper.py/archive/master.zip
+```
+
+### Development branch
+```
+# Install dependencies
+pip install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/development/requirements.txt
+
+# Install stable Wrapper.py
+pip install https://github.com/benbaptist/wrapper.py/development/master.zip
 ```
 
 Just run `mcwrapper` in the working directory of your Minecraft server to start.
