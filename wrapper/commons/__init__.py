@@ -1,3 +1,5 @@
+import json
+
 SERVER_STARTING= 0x00
 SERVER_STARTED = 0x01
 SERVER_STOPPING = 0x02
@@ -34,6 +36,17 @@ STYLE_STRIKETHROUGH = "m"
 STYLE_UNDERLINED = "n"
 STYLE_ITALIC = "o"
 STYLE_RESET = "r"
+
+try:
+    # Python 3.7+ only
+    import importlib.resources as pkg_resources
+except ImportError:
+    # Python <3.7
+    import importlib_resources as pkg_resources
+
+from . import files
+
+PROTOCOL_VERSIONS = json.loads(pkg_resources.read_text(files, "protocolVersions.json"))
 
 # Translate byte size to human-readable size
 def bytes_to_human(bytesize, suffix="B"):

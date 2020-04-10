@@ -23,6 +23,7 @@ class Commands:
         commands = [] + self.commands
 
         # Find commands registered to plugins here
+        # ...
 
         # Process commands
         for command in commands:

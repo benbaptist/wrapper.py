@@ -28,10 +28,12 @@ class Storify:
 
 		if not os.path.exists(os.path.join(self.root, ".backups")):
 			os.mkdir(os.path.join(self.root, ".backups"))
+
 	def getDB(self, name):
 		db = Database(name, self.root, self.log)
 		self.databases.append(db)
 		return db
+
 	def tick(self, force=False):
 		a = len(self.databases)
 		i = 0
@@ -46,6 +48,7 @@ class Storify:
 					db.flush()
 
 			i += 1
+			
 	def flush(self):
 		self.tick(force=True)
 
@@ -156,7 +159,7 @@ class Database:
 
 		try:
 			with open(path, "wb") as f:
-				self.log.warning("Syncing '%s' to disk" % self.name)
+				self.log.debug("Syncing '%s' to disk" % self.name)
 				f.write(msgpack.packb(self.data))
 			self.lastFlush = time.time()
 		except IOError:

@@ -32,6 +32,7 @@ class Backups:
 
         self.last_backup = time.time()
         self.current_backup = None
+        self.dirty = False
 
     def start(self):
         """ Forces a backup to start, regardless of conditions. """

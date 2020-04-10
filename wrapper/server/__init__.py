@@ -40,6 +40,11 @@ class Server(object):
         @self.events.hook("server.reload")
         def reload(player):
             if player:
+                player.message({
+                    "text": "Server reloading",
+                    "color": "yellow"
+                })
+                
                 self.log.info(
                     "Server being reloaded by %s, triggering plugin reload"
                     % player.username
@@ -74,25 +79,23 @@ class Server(object):
             return self.mcserver.world
 
     @property
+    def features(self):
+        if self.mcserver:
+            return self.mcserver.features
+
+    @property
     def online_mode(self):
         if self.mcserver:
             return self.mcserver.online_mode
 
     def tellraw(self, target, message):
+        raise Exception("Use self.mcserver.features.message ")
+
+    def broadcast(self, message):
         if len(self.players) < 1:
             return
 
-        if type(message) == dict:
-            json_blob = json.dumps(message)
-        else:
-            json_blob = json.dumps({
-                "text": message
-            })
-
-        self.command("tellraw %s %s" % (target, json_blob))
-
-    def broadcast(self, message):
-        self.tellraw("@a", message)
+        self.mcserver.features.message("@a", message)
 
     def title(self, message, target="@a", title_type="title", fade_in=None, stay=None, fade_out=None):
         if len(self.players) < 1:
@@ -109,12 +112,12 @@ class Server(object):
             }
             json_blob = json.dumps(json_blob)
 
-        self.command(
+        self.run(
             "title %s %s %s"
             % (target, title_type, json_blob)
         )
 
-    def command(self, cmd, output=False):
+    def run(self, cmd, output=False):
         if self.mcserver:
             # if output:
             #     if not self.gamerules["logAdminCommands"]:
@@ -153,7 +156,7 @@ class Server(object):
             self.mcserver.stop()
             self.db["server"]["state"] = SERVER_RESTART
 
-    def stop(self, reason="Server stopping", save=True):
+    def stop(self, reason="Server closed", save=True):
         if self.mcserver:
             for player in self.players:
                 player.kick(reason)
@@ -171,6 +174,9 @@ class Server(object):
 
     def tick(self):
         if not self.mcserver:
+            if self.db["server"]["state"] == SERVER_RESTART:
+                self.db["server"]["state"] = SERVER_STARTED
+
             if self.db["server"]["state"] not in (SERVER_RESTART, SERVER_STARTED):
                 return
 
@@ -178,13 +184,9 @@ class Server(object):
             return
 
         if self.mcserver:
-            if self.db["server"]["state"] == SERVER_RESTART:
-                self.db["server"]["state"] = SERVER_STARTED
-
             try:
                 self.mcserver.tick()
             except ServerStopped:
-                print("serverstopped exception")
                 self.mcserver = None
 
                 self.log.info("Server stopped")
@@ -192,6 +194,11 @@ class Server(object):
 
                 # Check if wrapper is shutting down too
                 if not self.wrapper.initiate_shutdown:
+
+                    # If server was in restart state, move along and let it start
+                    if self.db["server"]["state"] == SERVER_RESTART:
+                        return
+
                     # If auto-restart is off, don't let server restart itself
                     if not self.wrapper.config["server"]["auto-restart"]:
                         self.db["server"]["state"] = SERVER_STOPPED
@@ -200,7 +207,7 @@ class Server(object):
 
             # Poll every 200ms
             if time.time() - self._timeout > .2:
-                for player in self.players:
-                    player._poll_position()
+                #for player in self.players:
+                #     player._poll_position()
 
                 self._timeout = time.time()

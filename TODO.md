@@ -30,7 +30,7 @@
         - [ ] (if proxy mode is implemented) Entity object
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
 - [ ] Implement Proxy mode
-    - Utilize `https://github.com/barneygale/quarry` instead of redundantly re-implementing Minecraft protocol
+    - Utilize the [Quarry](https://github.com/barneygale/quarry) project to implement Minecraft's protocol
 
 # Minor/Specific To-Do List #
 - [ ] Server
@@ -42,6 +42,7 @@
     - [x] Custom java executable
     - [x] Auto-accept EULA
     - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
+    - [ ] Pre-1.7 server console parsing (e.g. `[11:11:11] [INFO] ...`)
 - [ ] log_manager
     - [PARTIAL] Rotate logs
     - [x] Compress old logs using gzip
@@ -53,7 +54,7 @@
     - [x] Ability to cancel ongoing backup
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
-- [ ] Plugins
+- [ ] Plugins / API
     - [x] Events need to unhook upon plugin reload
     - [ ] Commands need to un-register upon plugin reload
     - [x] Rename player.message to something else, so that player.message can be used to send the player a message

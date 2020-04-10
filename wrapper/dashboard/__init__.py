@@ -1,7 +1,11 @@
 from flask import Flask, redirect, url_for, render_template, \
     request, make_response, Response, Markup, g
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
-from waitress import serve
+
+try:
+    from waitress import serve
+except ImportError:
+    serve = None
 
 import os
 import logging
@@ -45,17 +49,18 @@ class Dashboard:
         self.app.register_blueprint(blueprint_admin)
 
     def run(self):
-        serve(
-            self.app,
-            host=self.config["bind"]["ip"],
-            port=self.config["bind"]["port"],
-            threads=32
-        )
-
-        # self.socketio.run(
-        #     self.app,
-        #     host=self.config["bind"]["ip"],
-        #     port=self.config["bind"]["port"],
-        #     debug=self.wrapper.debug,
-        #     use_reloader=False
-        # )
+        if serve:
+            serve(
+                self.app,
+                host=self.config["bind"]["ip"],
+                port=self.config["bind"]["port"],
+                threads=32
+            )
+        else:
+            self.socketio.run(
+                self.app,
+                host=self.config["bind"]["ip"],
+                port=self.config["bind"]["port"],
+                debug=self.wrapper.debug,
+                use_reloader=False
+            )

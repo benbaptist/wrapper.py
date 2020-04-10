@@ -5,3 +5,4 @@ msgpack_python==0.5.6
 psutil
 future
 waitress==1.4.3
+importlib_resources

@@ -98,14 +98,3 @@ class Process:
             # If a fatal error occurs, print traceback and ensure process is cleaned up
             traceback.print_exc()
             self.kill()
-
-# For experimentaion purposes, this module can be called directly
-# This will be removed later
-# from builtins import input
-if __name__ == "__main__":
-    proc = Process()
-    proc.start("server.jar")
-
-    while True:
-        data = input("> ")
-        proc.write(data)

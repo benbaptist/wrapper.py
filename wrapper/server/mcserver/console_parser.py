@@ -30,6 +30,12 @@ class ConsoleParser:
             r = re.search(": Starting minecraft server version (.*)", output)
             if r:
                 server_version = r.group(1)
+                self.mcserver.server_version = server_version
+
+                for release in PROTOCOL_VERSIONS:
+                    if release["minecraftVersion"] == server_version:
+                        self.mcserver.server_version_protocol = \
+                            release["version"]
 
             # Grab server port
             r = re.search(": Starting Minecraft server on \*:([0-9]*)", output)
@@ -114,6 +120,8 @@ class ConsoleParser:
                     player=player
                 )
 
+                return False
+
             # Player Position
             r = re.search(
                 ": Teleported (.*) to (.*), (.*), (.*)",
@@ -184,3 +192,11 @@ class ConsoleParser:
                     player=player,
                     message=message
                 )
+
+            # Misc. surpressions
+            r = re.search(
+                ": Showing new (.*) for (.*)",
+                output
+            )
+            if r:
+                return False

@@ -35,11 +35,12 @@ class Player:
         }
 
     def _poll_position(self):
-        self.server.command("execute at %s run tp %s ~ ~ ~"
+        self.server.run("execute at %s run tp %s ~ ~ ~"
             % (self.username, self.username)
         )
 
     def _callback(self, method, *args):
+        # this is stupid
         for callback in self._callbacks[method]:
             callback(*args)
 
@@ -47,18 +48,7 @@ class Player:
 
     def message(self, message):
         """ Sends a /tellraw message to this player. """
-        self.server.tellraw(self.username, message)
-
-    # def poll_position(self, callback=None):
-    #     self.server.command("gamerule logAdminCommands true")
-    #
-    #     self.server.command("execute at %s run tp %s ~ ~ ~"
-    #         % (self.username, self.username)
-    #     )
-    #
-    #     self.server.command("gamerule logAdminCommands false")
-    #
-    #     self._callbacks["poll_position"].append(callback)
+        self.server.features.message(self.username, message)
 
     def message_as_player(self, message):
         """ Simulates sending a message as this player. """
@@ -66,7 +56,7 @@ class Player:
         self.server.broadcast("<%s> %s" % (self.username, message))
 
     def kick(self, reason="Kicked from server"):
-        self.server.command(
+        self.server.run(
             "kick %s %s"
             % (self.username, reason)
         )

@@ -8,6 +8,7 @@ from wrapper.server.process import Process
 from wrapper.server.player import Player
 from wrapper.server.uuid_cache import UUID_Cache
 from wrapper.server.mcserver.console_parser import ConsoleParser
+from wrapper.server.mcserver.features import Features
 from wrapper.commons import *
 from wrapper.exceptions import *
 
@@ -21,13 +22,16 @@ class MCServer:
 
         self.players = []
         self.world = None
-        self.mcversion = None
+        self.server_version = None
+        self.server_version_protocol = None
         self.port = None
         self.online_mode = True
         self.gamerules = {
             "sendCommandFeedback": True,
             "logAdminCommands": True
         }
+
+        self.features = Features(self)
 
         self.process = None
         self.abort = False
@@ -104,10 +108,12 @@ class MCServer:
 
     # Players
     def list_players(self):
+        """ Returns a list containing all online players.
+            Will eventually contain useful filters"""
         players = []
 
         for player in self.players:
-            # Future criteria filters go here
+            # Future criteria filters should go here
 
             players.append(player)
 
@@ -145,7 +151,7 @@ class MCServer:
         if self.abort:
             # Start server stop, if it hasn't already started
             if self.state == SERVER_STARTED:
-                self.command("stop")
+                self.features.stop()
                 self.state = SERVER_STOPPING
 
             # Check if server stop has been going for too long, and kill server

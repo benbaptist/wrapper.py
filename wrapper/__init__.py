@@ -3,6 +3,7 @@ import time
 import threading
 import logging
 
+from wrapper.__version__ import __version__
 from wrapper.config import Config
 from wrapper.storify import Storify
 from wrapper.log_manager import LogManager
@@ -72,7 +73,7 @@ class Wrapper:
         if self.debug:
             self.log_manager.level = logging.DEBUG
 
-        self.log.info("Wrapper starting")
+        self.log.info("Wrapper starting (%s)" % __version__)
         self.log.debug("Debug mode is on.")
 
         # Start console input thread
@@ -81,9 +82,10 @@ class Wrapper:
         t.start()
 
         # Start dashboard thread
-        t = threading.Thread(target=self.dashboard.run)
-        t.daemon = True
-        t.start()
+        if self.config["dashboard"]["enable"]:
+            t = threading.Thread(target=self.dashboard.run)
+            t.daemon = True
+            t.start()
 
         # Load plugins
         self.plugins.load_plugins()
@@ -91,6 +93,8 @@ class Wrapper:
         self.run()
 
         self.cleanup()
+
+        self.log.info("Wrapper has stopped")
 
     def shutdown(self):
         self.initiate_shutdown = True
@@ -110,8 +114,6 @@ class Wrapper:
             except:
                 self.shutdown()
                 self.log.traceback("Fatal error, shutting down")
-
-        self.cleanup()
 
     def tick(self):
         if self.initiate_shutdown and self.server.state != SERVER_STOPPING:
