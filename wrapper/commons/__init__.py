@@ -103,7 +103,7 @@ def str_to_json(string):
 
 CONFIG_TEMPLATE = {
     "general": {
-        "debug-mode": True
+        "debug-mode": False
     },
     "server": {
         "jar": "server.jar",
