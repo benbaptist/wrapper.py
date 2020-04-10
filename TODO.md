@@ -54,6 +54,8 @@
     - [x] Ability to cancel ongoing backup
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
+    - [ ] "400 Bad request" thru nginx proxy
+    - [ ] Occasional deadlock condition shortly after starting
 - [ ] Plugins / API
     - [x] Events need to unhook upon plugin reload
     - [ ] Commands need to un-register upon plugin reload
