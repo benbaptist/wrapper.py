@@ -1,3 +1,6 @@
+*2020-04-23*
+- Added world object to server
+
 *2020-04-10*
 - `waitress` now an optional dependency
 - Most storify.py output is debug-only now, other than critical errors
