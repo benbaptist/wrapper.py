@@ -6,3 +6,4 @@ psutil
 future
 waitress==1.4.3
 importlib_resources
+nbt==1.5.0

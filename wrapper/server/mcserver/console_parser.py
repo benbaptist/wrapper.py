@@ -4,6 +4,7 @@ import time
 from uuid import UUID
 
 from wrapper.server.player import Player
+from wrapper.server.world import World
 from wrapper.commons import *
 from wrapper.exceptions import *
 
@@ -45,7 +46,8 @@ class ConsoleParser:
             # Grab world name
             r = re.search(": Preparing level \"(.*)\"", output)
             if r:
-                self.mcserver.world = r.group(1)
+                level_name = r.group(1)
+                self.mcserver.world = World(r.group(1))
 
             if output == ": The server will make no attempt to authenticate usernames. Beware.":
                 self.mcserver.online_mode = False

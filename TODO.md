@@ -22,11 +22,11 @@
 - [x] Implement shell script calls
 - [x] Implement dashboard using Flask
     - [ ] Multi-user support with permissions
-- [ ] Implement plugin API
-    - [ ] Server object
-        - [ ] Minecraft object
-        - [ ] World object
-        - [ ] Player object
+- [x] Implement plugin API
+    - [x] Server object
+        - [x] Minecraft object
+        - [x] World object
+        - [x] Player object
         - [ ] (if proxy mode is implemented) Entity object
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
 - [ ] Implement Proxy mode
@@ -42,7 +42,7 @@
     - [x] Custom java executable
     - [x] Auto-accept EULA
     - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
-    - [ ] Pre-1.7 server console parsing (e.g. `[11:11:11] [INFO] ...`)
+    - [ ] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
 - [ ] log_manager
     - [PARTIAL] Rotate logs
     - [x] Compress old logs using gzip
