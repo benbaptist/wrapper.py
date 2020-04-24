@@ -109,7 +109,8 @@ CONFIG_TEMPLATE = {
         "jar": "server.jar",
         "arguments": "",
         "auto-restart": True,
-        "custom-java-bin": None
+        "custom-java-bin": None,
+        "command-prefix": "."
     },
     "dashboard": {
         "enable": False,

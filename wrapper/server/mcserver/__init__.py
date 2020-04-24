@@ -107,13 +107,17 @@ class MCServer:
         self.process.write("%s\n" % cmd)
 
     # Players
-    def list_players(self):
-        """ Returns a list containing all online players.
-            Will eventually contain useful filters"""
+    def list_players(self, online=True):
+        """ Returns a list containing all players.
+            Defaults to online-only. """
         players = []
 
         for player in self.players:
             # Future criteria filters should go here
+            if online and not player.online:
+                continue
+            elif player.online:
+                continue
 
             players.append(player)
 
@@ -146,6 +150,13 @@ class MCServer:
 
         # Don't go further unless a server process exists
         if self.state == SERVER_STOPPED:
+            for player in self.players:
+                if player.online:
+                    self.events.call(
+                        "server.player.part",
+                        player=player
+                    )
+
             raise ServerStopped()
 
         if self.abort:

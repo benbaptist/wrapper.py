@@ -2,7 +2,7 @@ import json
 
 class Features:
     """ This is an abstraction layer to automatically determine the best
-    commands for each version of Minecraft. """
+    commands (and their syntax) for each version of Minecraft. """
 
     def __init__(self, mcserver):
         self.mcserver = mcserver
@@ -46,8 +46,11 @@ class Features:
                     "tell %s %s" % (target, message)
                 )
 
+    def play_sound(self):
+        raise NotImplemented()
+
     def set_block(self):
-        return
+        raise NotImplemented()
 
     def fill(self):
-        return
+        raise NotImplemented()

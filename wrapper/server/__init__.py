@@ -44,7 +44,7 @@ class Server(object):
                     "text": "Server reloading",
                     "color": "yellow"
                 })
-                
+
                 self.log.info(
                     "Server being reloaded by %s, triggering plugin reload"
                     % player.username
@@ -56,6 +56,10 @@ class Server(object):
 
             self.wrapper.plugins.reload_plugins()
 
+        @self.events.hook("server.player.command_response")
+        def response(player, response):
+            player.message(response)
+
     @property
     def state(self):
         if self.mcserver:
@@ -66,7 +70,13 @@ class Server(object):
     @property
     def players(self):
         if self.mcserver:
-            return self.mcserver.players
+            online_players = []
+
+            for player in self.mcserver.players:
+                if player.online:
+                    online_players.append(player)
+
+            return online_players
 
     @property
     def gamerules(self):

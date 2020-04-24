@@ -115,6 +115,8 @@ class Wrapper:
                 self.shutdown()
                 self.log.traceback("Fatal error, shutting down")
 
+                break
+
     def tick(self):
         if self.initiate_shutdown and self.server.state != SERVER_STOPPING:
             self.server.stop(save=False)

@@ -1,3 +1,15 @@
+*2020-04-24 / 0.0.3*
+- Customize command prefix
+- Built-in in-game commands (wrapper, reload)
+- Player objects are now persistent (i.e. they remain when player logs off, useful for doing operations on offline players)
+    - Persistent database for each player
+    - Migrates old-style Wrapper player data (pickled crap)
+    - Keeps track of player logins, IPs, etc.
+- Events:
+    - [server.player.command_response] Vanilla server commands ran by a player
+        - This also allows players to see some command responses despite sendCommandFeedback being false
+- Fixed:
+    - Commands duplicating on plugin reload
 *2020-04-23*
 - Added world object to server
 

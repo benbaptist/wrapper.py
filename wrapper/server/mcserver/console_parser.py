@@ -124,6 +124,23 @@ class ConsoleParser:
 
                 return False
 
+            # Player Command
+            r = re.search(
+                ": \[(.*): (.*)\]",
+                output
+            )
+            if r:
+                username = r.group(1)
+                command_response = r.group(2)
+
+                player = self.mcserver.get_player(username=username)
+
+                self.mcserver.events.call(
+                    "server.player.command_response",
+                    player=player,
+                    command_response=command_response
+                )
+
             # Player Position
             r = re.search(
                 ": Teleported (.*) to (.*), (.*), (.*)",
@@ -165,6 +182,7 @@ class ConsoleParser:
 
                 player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
                 player.online = True
+                player.ip_address = ip_address
 
                 self.mcserver.players.append(player)
 
@@ -177,11 +195,10 @@ class ConsoleParser:
                 server_disconnect_reason = r.group(2)
 
                 player = self.mcserver.get_player(username=username)
-                player.online = False
-                if player:
-                    self.mcserver.events.call("server.player.part", player=player)
 
-                    self.mcserver.players.remove(player)
+                if player:
+                    player.online = False
+                    self.mcserver.events.call("server.player.part", player=player)
 
             # Chat messages
             r = re.search(": <(.*)> (.*)", output)

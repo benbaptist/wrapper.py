@@ -8,8 +8,6 @@ class World:
 
         self.world = WorldFolder(level_name)
 
-        print(self.chunks)
-
         if self.world.type == "Anvil":
             # nbt.world.AnvilWorldFolder(level_name)
             for region in self.world.get_regionfiles():

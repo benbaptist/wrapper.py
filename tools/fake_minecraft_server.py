@@ -70,7 +70,10 @@ def read_console():
             fancy_print("benbaptist[/127.0.0.1:52068] logged in with entity id 270 at (-98.85761606250753, 5.0, 32.550918344641936)")
 
         if blob == "cmd":
-            fancy_print("<benbaptist> .hello")
+            fancy_print("<benbaptist> .test")
+
+        if blob == "cmd2":
+            fancy_print("<benbaptist> .wrapper")
 
 t = threading.Thread(target=read_console, args=())
 t.daemon = True

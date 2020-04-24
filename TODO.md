@@ -58,8 +58,14 @@
     - [ ] Occasional deadlock condition shortly after starting
 - [ ] Plugins / API
     - [x] Events need to unhook upon plugin reload
-    - [ ] Commands need to un-register upon plugin reload
+    - [x] Commands need to un-register upon plugin reload
     - [x] Rename player.message to something else, so that player.message can be used to send the player a message
+    - [ ] Permissions handling for commands
+- [ ] Player object
+    - [x] Check if operator on vanilla server
+    - [x] Make peristent (accessible when offline)
+        - [x] Persistent storage
+        - [ ] Delete persistent player objects if too many are used
 - [ ] Misc. stuff
     - [ ] Make {"text": ""} objects universally encoded
     - [ ] Use curses to make console input a little nicer
