@@ -10,6 +10,8 @@
         - This also allows players to see some command responses despite sendCommandFeedback being false
 - Fixed:
     - Commands duplicating on plugin reload
+    - Backups causing crash
+
 *2020-04-23*
 - Added world object to server
 

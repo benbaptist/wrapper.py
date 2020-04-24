@@ -22,8 +22,8 @@ pip3 install https://github.com/benbaptist/wrapper.py/archive/master.zip
 # Install dependencies
 pip3 install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/development/requirements.txt
 
-# Install stable Wrapper.py
-pip3 install https://github.com/benbaptist/wrapper.py/development/master.zip
+# Install development (unstable) Wrapper.py
+pip3 install https://github.com/benbaptist/wrapper.py/archive/development.zip
 ```
 
 Just run `mcwrapper` in the working directory of your Minecraft server to start.
