@@ -11,19 +11,19 @@ Join us on Gitter!
 ### Stable branch
 ```
 # Install dependencies
-pip install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
+pip3 install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
 
 # Install stable Wrapper.py
-pip install https://github.com/benbaptist/wrapper.py/archive/master.zip
+pip3 install https://github.com/benbaptist/wrapper.py/archive/master.zip
 ```
 
 ### Development branch
 ```
 # Install dependencies
-pip install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/development/requirements.txt
+pip3 install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/development/requirements.txt
 
 # Install stable Wrapper.py
-pip install https://github.com/benbaptist/wrapper.py/development/master.zip
+pip3 install https://github.com/benbaptist/wrapper.py/development/master.zip
 ```
 
 Just run `mcwrapper` in the working directory of your Minecraft server to start.
