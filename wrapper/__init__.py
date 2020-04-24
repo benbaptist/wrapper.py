@@ -114,6 +114,7 @@ class Wrapper:
             except:
                 self.shutdown()
                 self.log.traceback("Fatal error, shutting down")
+                self.server.kill()
 
                 break
 

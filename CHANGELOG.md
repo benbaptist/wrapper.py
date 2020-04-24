@@ -11,6 +11,7 @@
 - Fixed:
     - Commands duplicating on plugin reload
     - Backups causing crash
+    - Fatal errors causing infinite loop
 
 *2020-04-23*
 - Added world object to server
