@@ -56,6 +56,7 @@
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
     - [ ] "400 Bad request" thru nginx proxy
     - [ ] Occasional deadlock condition shortly after starting
+    - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy.
 - [ ] Plugins / API
     - [x] Events need to unhook upon plugin reload
     - [x] Commands need to un-register upon plugin reload

@@ -57,8 +57,9 @@ class Server(object):
             self.wrapper.plugins.reload_plugins()
 
         @self.events.hook("server.player.command_response")
-        def response(player, response):
-            player.message(response)
+        def response(player, command_response):
+            print(player, command_response)
+            player.message(command_response)
 
     @property
     def state(self):
