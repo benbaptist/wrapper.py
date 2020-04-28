@@ -13,6 +13,9 @@ class World:
             for region in self.world.get_regionfiles():
                 pass
 
+    def __str__(self):
+        return self.level_name
+
     @property
     def chunks(self):
         return self.world.get_chunks()

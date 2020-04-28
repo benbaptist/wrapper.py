@@ -34,13 +34,16 @@ class Backup(object):
         elif status_code == None:
             return BACKUP_STARTED
         else:
+            if not self.backup_complete:
+                self.backup_complete = time.time()
+
             return BACKUP_FAILED
 
         return BACKUP_STARTED
 
     @property
     def details(self):
-        if not self.status == BACKUP_COMPLETE:
+        if not self.status in (BACKUP_COMPLETE, BACKUP_FAILED):
             raise EOFError("Backup is not complete")
 
         return {

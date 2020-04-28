@@ -1,7 +1,7 @@
 *2020-04-28 / 0.0.4*
 - Fixed:
     - Crash when player runs command
-    - 
+    - Backup crashes/problems
 
 *2020-04-24 / 0.0.3*
 - Customize command prefix

@@ -169,7 +169,7 @@ class Backups:
 
             if self.current_backup.status in (BACKUP_COMPLETE, BACKUP_FAILED):
                 details = self.current_backup.details
-                
+
                 self.server.title({
                     "text": "Backup complete.",
                     "color": "green"
