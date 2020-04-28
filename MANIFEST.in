@@ -2,6 +2,7 @@ include README.md
 include requirements.txt
 include TODO.md
 
+include wrapper/*.py
 include wrapper/backups/*.py
 include wrapper/dashboard/*.py
 include wrapper/dashboard/login/*.py
