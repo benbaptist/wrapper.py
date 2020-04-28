@@ -143,8 +143,6 @@ class Backups:
     def tick(self):
         # If there's a current backup, check on it
         if self.current_backup:
-            details = self.current_backup.details
-
             if self.current_backup.status == BACKUP_STARTED:
                 self.server.title({
                     "text": "Backup started. Server may lag.",
@@ -152,6 +150,8 @@ class Backups:
                 }, title_type="actionbar")
 
             if self.current_backup.status == BACKUP_COMPLETE:
+                details = self.current_backup.details
+
                 self.log.info(
                     "Backup complete. Took %s seconds, and uses %s of storage."
                     % (details["backup-complete"] - details["backup-start"],
@@ -159,6 +159,8 @@ class Backups:
                 )
 
             if self.current_backup.status == BACKUP_FAILED:
+                details = self.current_backup.details
+
                 self.log.info(
                     "Backup complete, potentially with errors. Took %s seconds, and uses %s of storage."
                     % (details["backup-complete"] - details["backup-start"],
@@ -166,6 +168,8 @@ class Backups:
                 )
 
             if self.current_backup.status in (BACKUP_COMPLETE, BACKUP_FAILED):
+                details = self.current_backup.details
+                
                 self.server.title({
                     "text": "Backup complete.",
                     "color": "green"
