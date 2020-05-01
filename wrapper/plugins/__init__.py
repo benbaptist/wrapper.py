@@ -27,10 +27,13 @@ class Plugins:
                 name, ext = path, None
 
             path = os.path.join("wrapper-data/plugins", path)
+            plugin_name = None
 
             if os.path.isdir(path):
                 if not os.path.join(path, "__init__.py"):
                     continue
+                else:
+                    plugin_name = name
             else:
                 if ext != "py":
                     continue
@@ -38,11 +41,11 @@ class Plugins:
                 if name[0] == ".":
                     continue
 
-            self.load_plugin(path)
+            self.load_plugin(path, plugin_name)
 
-    def load_plugin(self, path):
+    def load_plugin(self, path, name):
         self.log.debug("Loading plugin '%s'" % path)
-        plugin = Plugin(self.wrapper, path)
+        plugin = Plugin(self.wrapper, path, name)
         plugin.load()
 
         self.plugins.append(plugin)

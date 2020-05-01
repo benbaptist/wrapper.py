@@ -112,6 +112,8 @@ class MCServer:
 			Defaults to online-only. """
 		players = []
 
+		print("list_players before")
+
 		# Load offline players
 		for player_data_path in os.listdir("wrapper-data/players"):
 			try:
@@ -122,29 +124,24 @@ class MCServer:
 			if ext != "mpack":
 				continue
 
-			print(player_data_path)
-
 			mcuuid = uuid.UUID(name)
+
 			print("mcuuid", mcuuid)
 
 			try:
-				print("bef444")
-				self.get_player(mcuuid=mcuuid)
-				print("already exists", mcuuid)
+				dank = self.get_player(mcuuid=mcuuid)
+				print("Dank", dank)
 			except TypeError:
-				print("TypeError %s" % mcuuid)
+				# print("TypeError", mcuuid)
 				player = Player(
 					server=self.server,
 					mcuuid=mcuuid
 				)
+				# print(player)
 
-				print(player_data_path)
-
-				print("before append")
 				self.players.append(player)
-				print("After append")
 
-		print("wowdie", self.players)
+		print("self.players", self.players)
 
 		print("list_players after")
 
