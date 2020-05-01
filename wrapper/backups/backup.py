@@ -30,19 +30,24 @@ class Backup(object):
             if not self.backup_complete:
                 self.backup_complete = time.time()
 
+            self.log.debug("BACKUP_COMPLETE")
+
             return BACKUP_COMPLETE
         elif status_code == None:
+            self.log.debug("BACKUP_STARTED")
             return BACKUP_STARTED
         else:
             if not self.backup_complete:
                 self.backup_complete = time.time()
 
+            self.log.debug("BACKUP_FAILED")
             return BACKUP_FAILED
 
         return BACKUP_STARTED
 
     @property
     def details(self):
+        self.log.debug(".details called %s" % self.status)
         if not self.status in (BACKUP_COMPLETE, BACKUP_FAILED):
             raise EOFError("Backup is not complete")
 

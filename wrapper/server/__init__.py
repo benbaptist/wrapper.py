@@ -69,6 +69,11 @@ class Server(object):
             return SERVER_STOPPED
 
     @property
+    def all_players(self):
+        if self.mcserver:
+            return self.mcserver.list_players(everyone=True)
+
+    @property
     def players(self):
         if self.mcserver:
             online_players = []

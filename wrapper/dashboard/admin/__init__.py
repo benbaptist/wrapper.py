@@ -23,3 +23,7 @@ def landing():
 @blueprint_admin.route("/chat", methods=["GET"])
 def chat():
     return render_template("chat.html")
+
+@blueprint_admin.route("/players", methods=["GET"])
+def players():
+    return render_template("players.html")

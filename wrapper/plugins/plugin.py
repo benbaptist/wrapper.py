@@ -14,7 +14,11 @@ class Plugin:
     def __init__(self, wrapper, path):
         self.wrapper = wrapper
 
-        self.path = path
+        if os.path.isdir(path):
+            self.path = os.path.join(path, "__init__.py")
+        else:
+            self.path = path
+
         self.name = os.path.basename(self.path)
         self.success = None
         self._main = None
@@ -27,9 +31,12 @@ class Plugin:
         module_name = "wrapper.plugin.%s" % self.name
 
         if imp:
+            # Python 2.x
             module = imp.load_source(module_name, self.path)
+
             return module
         else:
+            # Python 3.x
             spec = importlib.util.spec_from_file_location(
                 module_name, self.path
             )

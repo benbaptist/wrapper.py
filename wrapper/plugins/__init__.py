@@ -14,11 +14,19 @@ class Plugins:
             os.makedirs("wrapper-data/plugins")
 
     def load_plugins(self):
+        IGNORE = ["__pycache__"]
+
         for path in os.listdir("wrapper-data/plugins"):
+
+            if path in IGNORE:
+                continue
+
             try:
                 name, ext = path.rsplit(".", 1)
             except:
                 name, ext = path, None
+
+            path = os.path.join("wrapper-data/plugins", path)
 
             if os.path.isdir(path):
                 if not os.path.join(path, "__init__.py"):
@@ -29,8 +37,6 @@ class Plugins:
 
                 if name[0] == ".":
                     continue
-
-            path = os.path.join("wrapper-data/plugins", path)
 
             self.load_plugin(path)
 

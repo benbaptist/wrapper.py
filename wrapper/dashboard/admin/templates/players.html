@@ -1,0 +1,26 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = False %}
+{% block pagename %}Players{% endblock %}}
+
+{% block subhead %}
+    <style>
+
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+
+        })
+    </script>
+{% endblock %}
+
+{% block subbody %}
+    {% for player in g.wrapper.server.all_players %}
+        {{player }}| {{ player.mcuuid }}<br/>
+    {% endfor %}
+{% endblock %}

@@ -1,3 +1,8 @@
+*2020-04-30 / 0.0.5*
+- Fixed:
+    - Duplicate player objects when joining/parting multiple times
+    - Directory plugins (__init__.py) not loading
+
 *2020-04-28 / 0.0.4*
 - Fixed:
     - Crash when player runs command

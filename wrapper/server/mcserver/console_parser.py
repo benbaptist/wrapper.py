@@ -178,13 +178,17 @@ class ConsoleParser:
                     float(r.group(7))
                 ]
 
-                mcuuid = self.mcserver.uuid_cache.get(username)
+                try:
+                    player = self.mcserver.get_player(username=username)
+                except TypeError:
+                    mcuuid = self.mcserver.uuid_cache.get(username)
 
-                player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
+                    player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
+
+                    self.mcserver.players.append(player)
+
                 player.online = True
                 player.ip_address = ip_address
-
-                self.mcserver.players.append(player)
 
                 self.mcserver.events.call("server.player.join", player=player)
 

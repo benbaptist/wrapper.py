@@ -45,7 +45,10 @@ class Mojang:
             % mcuuid
         )
 
-        payload = r.json()
+        try:
+            payload = r.json()
+        except:
+            return
 
         assert payload["id"] == mcuuid
 
@@ -57,7 +60,11 @@ class Mojang:
 
     def get_skin_from_uuid(self, mcuuid):
         """ Fetches a skin object from the player UUID. """
+
         profile = self.uuid_to_profile(mcuuid)
+
+        if not profile:
+            return
 
         for prop in profile["properties"]:
             if prop["name"] == "textures":

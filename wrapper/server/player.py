@@ -24,6 +24,12 @@ class Player:
 
         self.db["online"] = False
 
+        if not username:
+            if "username" in self.db:
+                self.username = self.db["username"]
+        else:
+            self.db["username"] = username
+
         if "current_login" not in self.db:
             self.db["current_login"] = None
 
