@@ -1,3 +1,6 @@
+*2020-05-13*
+- Implementing world/chunks stuff
+
 *2020-04-30 / 0.0.5*
 - Fixed:
     - Duplicate player objects when joining/parting multiple times
