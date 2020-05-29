@@ -2,6 +2,7 @@ import os
 import time
 import threading
 import logging
+import argparse
 
 from wrapper.__version__ import __version__
 from wrapper.config import Config
@@ -60,8 +61,19 @@ class Wrapper:
     def start(self):
         """ Starts Wrapper.py. """
 
+        # Parse CLI arguments
+        parser = argparse.ArgumentParser(
+            description="Wrapper.py",
+        )
+
+        parser.add_argument("--ignore-config-updates", "-i",
+            help="Prevent Wrapper from halting when configuration file updates",
+            action="store_true")
+
+        args = parser.parse_args()
+
         # Alert user if config was changed from an update, and shutdown
-        if self.config.updated_from_template:
+        if self.config.updated_from_template and not args.ignore_config_updates:
             self.log.info(
                 "Configuration file has been updated with new entries. Open "
                 "wrapper-data/config.json, and make sure your settings are "

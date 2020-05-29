@@ -47,6 +47,9 @@ class Player:
 
             self.db["current_login"] = None
 
+        if "position_last_updated" not in self.db:
+            self.db["position_last_updated"] = 0
+
         # Migrate old Wrapper.py 1.x pickled files
         old_path = os.path.join("wrapper-data/players", "%s.pkl" % str(self.mcuuid))
         if os.path.exists(old_path):
@@ -125,6 +128,19 @@ class Player:
     # Properties
     @property
     def position(self):
+        if time.time() - self.db["position_last_updated"] > 1:
+            self.server.run("execute at %s run tp %s ~ ~ ~"
+                % (self.username, self.username)
+            )
+
+            poll_start = time.time()
+            while time.time() - self.db["position_last_updated"] > 1:
+                if time.time() - poll_start > 3:
+                    print("Timeout: player.position")
+                    break
+
+                time.sleep(.01)
+
         try:
             return self.db["position"]
         except:

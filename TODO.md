@@ -48,19 +48,13 @@
     - [x] Compress old logs using gzip
     - [x] Respect debug-mode settings
 - [ ] Backups
-    - [x] Purge old backups
     - [ ] Respect ingame-notification settings
-    - [x] Console commands for controlling backups
-    - [x] Ability to cancel ongoing backup
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
     - [ ] "400 Bad request" thru nginx proxy
     - [ ] Occasional deadlock condition shortly after starting
-    - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy.
+    - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy. Bah!
 - [ ] Plugins / API
-    - [x] Events need to unhook upon plugin reload
-    - [x] Commands need to un-register upon plugin reload
-    - [x] Rename player.message to something else, so that player.message can be used to send the player a message
     - [ ] Permissions handling for commands
 - [ ] Player object
     - [x] Check if operator on vanilla server
@@ -68,7 +62,7 @@
         - [x] Persistent storage
         - [ ] Delete persistent player objects if too many are used
 - [ ] Misc. stuff
-    - [ ] Make {"text": ""} objects universally encoded
+    - [ ] Make {"text": ""} objects universally encoded [what?]
     - [ ] Use curses to make console input a little nicer
 
 # Plugin Ideas #

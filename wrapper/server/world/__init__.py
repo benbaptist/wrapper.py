@@ -1,4 +1,5 @@
 import os
+import sys
 
 from nbt.world import WorldFolder
 from nbt.world import AnvilWorldFolder
@@ -11,18 +12,15 @@ class World:
 
         self.world = WorldFolder(level_name)
 
-        if self.world.type == "Anvil":
-            # nbt.world.AnvilWorldFolder(level_name)
-            for region in self.world.get_regionfiles():
-                # print(region)
-                pass
-
     def __str__(self):
         return self.level_name
 
     @property
     def chunks(self):
-        print(".chunks()")
+        # Currently incompatible with Python 3.x and above
+        if sys.version_info.major > 2:
+            raise Exception("This method currently only works with Python 2.x.")
+
         for basic_chunk in self.world.iter_chunks():
             print(basic_chunk)
             x, z = basic_chunk.get_coords()
@@ -38,7 +36,7 @@ class World:
         return
 
 if __name__ == "__main__":
-    print("Called directly for debugging")
+    print("Called directly for debugging purposes")
     # world = AnvilWorldFolder("world")
 
     # for chunk in world.chunks:
@@ -49,8 +47,7 @@ if __name__ == "__main__":
     # print(world.get_boundingbox())
     for chunk in world.chunks:
         for i in chunk.blocks:
-            # print(i)
-            pass
+            break
         break
     #     # help(chunk)
     #     max_height = chunk.get_max_height()

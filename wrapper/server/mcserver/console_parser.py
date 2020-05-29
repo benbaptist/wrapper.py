@@ -153,16 +153,15 @@ class ConsoleParser:
 
                 player = self.mcserver.get_player(username=username)
                 player.position = [x, y, z]
+                player.db["position_last_updated"] = time.time()
 
-                # self.mcserver.events.call(
-                #     "server.player.position",
-                #     player=player,
-                #     x=x,
-                #     y=y,
-                #     z=z
-                # )
-                #
-                # player._callback("poll_position", x, y, z)
+                self.mcserver.events.call(
+                    "server.player.position",
+                    player=player,
+                    x=x,
+                    y=y,
+                    z=z
+                )
 
                 return False
 

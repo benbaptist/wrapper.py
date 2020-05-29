@@ -223,7 +223,7 @@ class Server(object):
 
             # Poll every 200ms
             if time.time() - self._timeout > .2:
-                #for player in self.players:
-                #     player._poll_position()
+                for player in self.players:
+                    pass
 
                 self._timeout = time.time()

@@ -1,17 +1,23 @@
-*2020-05-13*
+## 2020-05-28
+- Re-implemented `player.position`, now polls for position upon request
+- Cleanup
+- Added optional CLI arguments
+    - --ignore-config-updates: Prevent Wrapper from halting when configuration file updates
+
+## 2020-05-13
 - Implementing world/chunks stuff
 
-*2020-04-30 / 0.0.5*
+## 2020-04-30 / 0.0.5
 - Fixed:
     - Duplicate player objects when joining/parting multiple times
     - Directory plugins (__init__.py) not loading
 
-*2020-04-28 / 0.0.4*
+## 2020-04-28 / 0.0.4
 - Fixed:
     - Crash when player runs command
     - Backup crashes/problems
 
-*2020-04-24 / 0.0.3*
+## 2020-04-24 / 0.0.3
 - Customize command prefix
 - Built-in in-game commands (wrapper, reload)
 - Player objects are now persistent (i.e. they remain when player logs off, useful for doing operations on offline players)
@@ -26,10 +32,10 @@
     - Backups causing crash
     - Fatal errors causing infinite loop
 
-*2020-04-23*
+## 2020-04-23
 - Added world object to server
 
-*2020-04-10*
+## 2020-04-10
 - `waitress` now an optional dependency
 - Most storify.py output is debug-only now, other than critical errors
 - Wrapper console output no longer shows date

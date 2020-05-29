@@ -35,6 +35,7 @@ class Chunk:
 
     @property
     def blocks(self):
+        # I wrote this while drunk. So, might be totally insane.
         blocks = [
             [
                 [None] * 16
@@ -64,7 +65,7 @@ class Chunk:
         for block in blocks:
             try:
                 block_name = palette[block]["Name"]
-                print(block_name)
+
                 if block_name == "minecraft:air":
                     block_name = None
 

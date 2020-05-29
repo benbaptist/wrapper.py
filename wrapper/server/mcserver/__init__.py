@@ -112,8 +112,6 @@ class MCServer:
 			Defaults to online-only. """
 		players = []
 
-		print("list_players before")
-
 		# Load offline players
 		for player_data_path in os.listdir("wrapper-data/players"):
 			try:
@@ -141,12 +139,7 @@ class MCServer:
 
 				self.players.append(player)
 
-		print("self.players", self.players)
-
-		print("list_players after")
-
 		for player in self.players:
-			print(player)
 
 			if not everything:
 				# Future criteria filters should go here
@@ -156,8 +149,6 @@ class MCServer:
 				elif online == False and player.online:
 					print("cont False")
 					continue
-
-			print("appended")
 
 			players.append(player)
 

@@ -21,6 +21,6 @@
 
 {% block subbody %}
     {% for player in g.wrapper.server.all_players %}
-        {{player }}| {{ player.mcuuid }}<br/>
+        {{ player }} | {{ player.mcuuid }} <br/>
     {% endfor %}
 {% endblock %}
