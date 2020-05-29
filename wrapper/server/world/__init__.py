@@ -22,7 +22,7 @@ class World:
 
     @property
     def chunks(self):
-        print("hi")
+        print(".chunks()")
         for basic_chunk in self.world.iter_chunks():
             print(basic_chunk)
             x, z = basic_chunk.get_coords()
@@ -48,7 +48,9 @@ if __name__ == "__main__":
     world = World("world")
     # print(world.get_boundingbox())
     for chunk in world.chunks:
-        print(chunk.blocks)
+        for i in chunk.blocks:
+            # print(i)
+            pass
         break
     #     # help(chunk)
     #     max_height = chunk.get_max_height()
