@@ -35,6 +35,10 @@ class World:
     def players(self):
         return
 
+    @property
+    def seed(self):
+        return
+
 if __name__ == "__main__":
     print("Called directly for debugging purposes")
     # world = AnvilWorldFolder("world")

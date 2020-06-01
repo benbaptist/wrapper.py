@@ -1,3 +1,6 @@
+## 2020-05-31
+- Fixed `player.position` always timing out due to a deadlock (by making all commands threaded)
+
 ## 2020-05-28
 - Re-implemented `player.position`, now polls for position upon request
 - Cleanup

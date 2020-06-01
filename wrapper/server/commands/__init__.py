@@ -1,6 +1,8 @@
 from wrapper.commons import *
 from wrapper.server.commands.builtin import BuiltinCommands
 
+from threading import Thread
+
 COMMAND_PREFIX = "."
 
 class Commands:
@@ -14,7 +16,10 @@ class Commands:
         @self.events.hook("server.player.message")
         def player_message(player, message):
             if message[0] == self.server.wrapper.config["server"]["command-prefix"]:
-                self._parse_command(player, message)
+                t = Thread(target=self._parse_command, args=(player, message))
+                t.daemon = True
+                t.start()
+
 
         BuiltinCommands(self.wrapper, self.server, self)
 

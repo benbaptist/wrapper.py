@@ -128,18 +128,22 @@ class Player:
     # Properties
     @property
     def position(self):
-        if time.time() - self.db["position_last_updated"] > 1:
-            self.server.run("execute at %s run tp %s ~ ~ ~"
-                % (self.username, self.username)
-            )
+        if self.online:
+            if time.time() - self.db["position_last_updated"] > 1:
+                self.server.run("execute at %s run tp %s ~ ~ ~"
+                    % (self.username, self.username)
+                )
 
-            poll_start = time.time()
-            while time.time() - self.db["position_last_updated"] > 1:
-                if time.time() - poll_start > 3:
-                    print("Timeout: player.position")
-                    break
+                poll_start = time.time()
+                while time.time() - self.db["position_last_updated"] > 1:
+                    if time.time() - poll_start > 2:
+                        print("Timeout: player.position")
+                        break
 
-                time.sleep(.01)
+                    time.sleep(.01)
+        else:
+            # Read from NBT file
+            pass
 
         try:
             return self.db["position"]
