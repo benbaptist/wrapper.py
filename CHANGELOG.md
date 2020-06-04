@@ -1,3 +1,6 @@
+## 2020-06-03
+- Added "cmd" configuration setting to override server command
+
 ## 2020-05-31
 - Fixed `player.position` always timing out due to a deadlock (by making all commands threaded)
 

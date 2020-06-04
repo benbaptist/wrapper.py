@@ -110,7 +110,8 @@ CONFIG_TEMPLATE = {
         "arguments": "",
         "auto-restart": True,
         "custom-java-bin": None,
-        "command-prefix": "."
+        "command-prefix": ".",
+        "cmd": None
     },
     "dashboard": {
         "enable": False,

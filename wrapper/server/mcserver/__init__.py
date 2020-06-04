@@ -4,9 +4,9 @@ import time
 import os
 import resource
 
-from wrapper.server.process import Process
 from wrapper.server.player import Player
 from wrapper.server.uuid_cache import UUID_Cache
+from wrapper.server.mcserver.process import Process
 from wrapper.server.mcserver.console_parser import ConsoleParser
 from wrapper.server.mcserver.features import Features
 from wrapper.commons import *
@@ -79,7 +79,8 @@ class MCServer:
 		self.process.start(
 			jar_name=self.config["server"]["jar"],
 			java_args=arguments,
-			java_bin=custom_java_bin
+			java_bin=custom_java_bin,
+			command=self.config["server"]["cmd"].split(" ")
 		)
 
 		self.state = SERVER_STARTING
