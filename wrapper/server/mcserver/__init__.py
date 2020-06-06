@@ -75,12 +75,17 @@ class MCServer:
 		else:
 			arguments = []
 
+		if self.config["server"]["cmd"]:
+			command = self.config["server"]["cmd"].split(" ")
+		else:
+			command = None
+
 		self.process = Process()
 		self.process.start(
 			jar_name=self.config["server"]["jar"],
 			java_args=arguments,
 			java_bin=custom_java_bin,
-			command=self.config["server"]["cmd"].split(" ")
+			command=command
 		)
 
 		self.state = SERVER_STARTING

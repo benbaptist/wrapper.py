@@ -1,3 +1,8 @@
+## 2020-06-06
+- Fixed:
+    - Crash on start when 'cmd' configuration setting is set to null
+    - [#4] Crash when user runs tp command on player
+
 ## 2020-06-03
 - Added "cmd" configuration setting to override server command
 
