@@ -150,6 +150,7 @@ class ConsoleParser:
                 "\[(.*): Teleported (.*) to (.*), (.*), (.*)\]",
                 output
             )
+            
             if r and not r2:
                 username = r.group(1)
                 x, y, z = r.group(2), r.group(3), r.group(4)
