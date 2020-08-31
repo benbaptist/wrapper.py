@@ -32,6 +32,7 @@ class Backups:
 
         self.last_backup = time.time()
         self.current_backup = None
+        self.dirty = False
 
     def start(self):
         """ Forces a backup to start, regardless of conditions. """
@@ -158,6 +159,8 @@ class Backups:
                 )
 
             if self.current_backup.status == BACKUP_FAILED:
+                details = self.current_backup.details
+
                 self.log.info(
                     "Backup complete, potentially with errors. Took %s seconds, and uses %s of storage."
                     % (details["backup-complete"] - details["backup-start"],
@@ -165,6 +168,8 @@ class Backups:
                 )
 
             if self.current_backup.status in (BACKUP_COMPLETE, BACKUP_FAILED):
+                details = self.current_backup.details
+
                 self.server.title({
                     "text": "Backup complete.",
                     "color": "green"

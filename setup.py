@@ -9,5 +9,6 @@ setup(
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     license='???',
     long_description=open('README.md').read(),
+    include_package_data=True,
     scripts=["bin/mcwrapper"]
 )

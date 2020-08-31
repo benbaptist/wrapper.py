@@ -15,11 +15,18 @@ class LogManager:
 		# Default to logging level INFO
 		self.level = logging.INFO
 
-		self.formatter = logging.Formatter(fmt="%(asctime)s [Wrapper/%(name)s/%(levelname)s] %(message)s", datefmt='[%Y-%m-%d %H:%M:%S]')
+		self.formatter_file = logging.Formatter(
+			fmt="%(asctime)s [Wrapper/%(name)s/%(levelname)s] %(message)s",
+			datefmt='[%Y-%m-%d %H:%M:%S]'
+		)
+		self.formatter_console = logging.Formatter(
+			fmt="%(asctime)s [Wrapper/%(name)s/%(levelname)s] %(message)s",
+			datefmt='[%H:%M:%S]'
+		)
 
 		self.ch = logging.StreamHandler()
 		self.ch.setLevel(logging.DEBUG)
-		self.ch.setFormatter(self.formatter)
+		self.ch.setFormatter(self.formatter_console)
 
 		self.fh = None
 		self.grab_log_file()
@@ -58,7 +65,7 @@ class LogManager:
 
 		self.fh = logging.FileHandler("logs/wrapper/%s.log" % self.start_date, "a")
 		self.fh.setLevel(logging.DEBUG)
-		self.fh.setFormatter(self.formatter)
+		self.fh.setFormatter(self.formatter_file)
 
 	def get_logger(self, name):
 		logger = logging.getLogger(name)

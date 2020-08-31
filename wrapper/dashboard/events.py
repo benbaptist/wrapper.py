@@ -100,10 +100,11 @@ class Events(Namespace):
         server = self.wrapper.server
         players = []
 
-        for player in server.players:
-            players.append(
-                player.__serialize__()
-            )
+        if self.wrapper.server.mcserver:
+            for player in server.players:
+                players.append(
+                    player.__serialize__()
+                )
 
         emit("server", {
             "state": server.state,
@@ -133,7 +134,7 @@ class Events(Namespace):
             message=message
         )
 
-        self.wrapper.server._console_player.message(message)
+        self.wrapper.server._console_player.message_as_player(message)
 
     def on_server_start(self):
         self.verify_token()

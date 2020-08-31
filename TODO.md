@@ -22,42 +22,48 @@
 - [x] Implement shell script calls
 - [x] Implement dashboard using Flask
     - [ ] Multi-user support with permissions
-- [ ] Implement locales, potentially
-- [ ] Implement plugin API
-    - [ ] Server object
-        - [ ] Minecraft object
-        - [ ] World object
-        - [ ] Player object
+- [x] Implement plugin API
+    - [x] Server object
+        - [x] Minecraft object
+        - [x] World object
+        - [x] Player object
         - [ ] (if proxy mode is implemented) Entity object
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
-- [ ] (Very Low Priority) Implement Proxy mode
+- [ ] Implement Proxy mode
+    - Utilize the [Quarry](https://github.com/barneygale/quarry) project to implement Minecraft's protocol
 
 # Minor/Specific To-Do List #
-- [x] Auto-accept EULA
-- [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
 - [ ] Server
     - [x] MCServer object's life should only be during the server's life; once the server stops, the MCServer object should be destroyed. A new one should be created when the server is started again
     - [x] Decouple console parsing from MCServer
     - [ ] Throttle server start attempts if failing to start (i.e. invalid CLI arguments, wrong server jar name, etc.)
-    - [ ] Respect arguments
-    - [ ] Respect auto-restart
+    - [x] Respect arguments
+    - [x] Respect auto-restart
     - [x] Custom java executable
+    - [x] Auto-accept EULA
+    - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
+    - [ ] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
 - [ ] log_manager
     - [PARTIAL] Rotate logs
     - [x] Compress old logs using gzip
     - [x] Respect debug-mode settings
 - [ ] Backups
-    - [x] Purge old backups
     - [ ] Respect ingame-notification settings
-    - [x] Console commands for controlling backups
-    - [x] Cancel ongoing backup
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
-- [ ] Plugins
-    - [x] Events need to unhook upon plugin reload
-    - [ ] Commands need to un-register upon plugin reload
-    - [ ] Rename player.message to something else, so that player.message can be used to send the player a message
-- [ ] Make {"text":""} objects universally encoded
+    - [ ] "400 Bad request" thru nginx proxy
+    - [ ] Occasional deadlock condition shortly after starting
+    - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy. Bah!
+- [ ] Plugins / API
+    - [ ] Permissions handling for commands
+- [ ] Player object
+    - [x] Check if operator on vanilla server
+    - [x] Make peristent (accessible when offline)
+        - [x] Persistent storage
+        - [ ] Delete persistent player objects if too many are used
+- [ ] Misc. stuff
+    - [ ] Make {"text": ""} objects universally encoded [what?]
+    - [ ] Use curses to make console input a little nicer
 
 # Plugin Ideas #
 - [ ] Essentials Clone

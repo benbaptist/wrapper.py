@@ -29,6 +29,7 @@ class Auth:
                     self.wrapper.config["dashboard"]["root-password"]
                 )
                 self.wrapper.config["dashboard"]["root-password"] = encrypted
+                self.wrapper.config.save()
 
     def _get_pass(self, username):
         if username == "root":

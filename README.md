@@ -1,5 +1,5 @@
 # Overview #
-[![Join the chat at https://gitter.im/benbaptist/wrapper.py](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/benbaptist/minecraft-wrapper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/benbaptist/wrapper.py](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/benbaptist/wrapper.py?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Wrapper.py is an easy to use Minecraft server wrapper for adding extra functionality into the server without modifying
 the Minecraft server jar. It comes with a relatively simple and straight-forward - yet powerful - plugin API that can be used
@@ -8,12 +8,22 @@ to create Bukkit-like plugins without any server modding.
 Join us on Gitter!
 
 # Quick Start #
+### Stable branch
 ```
 # Install dependencies
-pip install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
+pip3 install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
 
 # Install stable Wrapper.py
-pip install https://github.com/benbaptist/wrapper.py/archive/master.zip
+pip3 install https://github.com/benbaptist/wrapper.py/archive/master.zip
+```
+
+### Development branch
+```
+# Install dependencies
+pip3 install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/development/requirements.txt
+
+# Install development (unstable) Wrapper.py
+pip3 install https://github.com/benbaptist/wrapper.py/archive/development.zip
 ```
 
 Just run `mcwrapper` in the working directory of your Minecraft server to start.

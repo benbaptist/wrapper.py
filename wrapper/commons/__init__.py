@@ -1,3 +1,5 @@
+import json
+
 SERVER_STARTING= 0x00
 SERVER_STARTED = 0x01
 SERVER_STOPPING = 0x02
@@ -11,6 +13,42 @@ BACKUP_COMPLETE = 0x11
 BACKUP_FAILED = 0x12
 BACKUP_CANCELED = 0x13
 
+COLOR_BLACK = "0"
+COLOR_DARK_BLUE = "1"
+COLOR_DARK_GREEN = "2"
+COLOR_DARK_CYAN = "3"
+COLOR_DARK_RED = "4"
+COLOR_PURPLE = "5"
+COLOR_GOLD = "6"
+COLOR_GRAY = "7"
+COLOR_DARK_GRAY = "8"
+COLOR_BLUE = "9"
+COLOR_BRIGHT_GREEN = "a"
+COLOR_CYAN = "b"
+COLOR_RED = "c"
+COLOR_PINK = "d"
+COLOR_YELLOW = "e"
+COLOR_WHITE = "f"
+
+STYLE_RANDOM = "k"
+STYLE_BOLD = "l"
+STYLE_STRIKETHROUGH = "m"
+STYLE_UNDERLINED = "n"
+STYLE_ITALIC = "o"
+STYLE_RESET = "r"
+
+try:
+    # Python 3.7+ only
+    import importlib.resources as pkg_resources
+except ImportError:
+    # Python <3.7
+    import importlib_resources as pkg_resources
+
+from . import files
+
+PROTOCOL_VERSIONS = json.loads(pkg_resources.read_text(files, "protocolVersions.json"))
+
+# Translate byte size to human-readable size
 def bytes_to_human(bytesize, suffix="B"):
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(bytesize) < 1024.0:
@@ -18,6 +56,7 @@ def bytes_to_human(bytesize, suffix="B"):
         bytesize /= 1024.0
     return "%.1f%s%s" % (bytesize, "Yi", suffix)
 
+# Divide string
 def args(i, string):
     try:
         return string.split(" ")[i]
@@ -30,15 +69,49 @@ def args_after(i, string):
     except:
         return
 
+# Encode JSON chat objects
+# https://wiki.vg/Chat
+def str_to_json(string):
+    extra = []
+
+    b = ""
+    style = None
+    color = "white"
+    escaped = False
+
+    def pack():
+        extra.append({
+            "text": b,
+            "color": color
+        })
+        b = ""
+
+    for c in string:
+        if escaped:
+            if c == COLOR_WHITE:
+                color = "white"
+            elif c == COLOR_BLACK:
+                color = "black"
+        elif c == "&":
+            escaped = True
+        else:
+            b += c
+
+    return json.dumps({
+        "extra": extra
+    })
+
 CONFIG_TEMPLATE = {
     "general": {
-        "debug-mode": True
+        "debug-mode": False
     },
     "server": {
         "jar": "server.jar",
         "arguments": "",
         "auto-restart": True,
-        "custom-java-bin": None
+        "custom-java-bin": None,
+        "command-prefix": ".",
+        "cmd": None
     },
     "dashboard": {
         "enable": False,

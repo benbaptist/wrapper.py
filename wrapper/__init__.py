@@ -2,7 +2,9 @@ import os
 import time
 import threading
 import logging
+import argparse
 
+from wrapper.__version__ import __version__
 from wrapper.config import Config
 from wrapper.storify import Storify
 from wrapper.log_manager import LogManager
@@ -59,8 +61,19 @@ class Wrapper:
     def start(self):
         """ Starts Wrapper.py. """
 
+        # Parse CLI arguments
+        parser = argparse.ArgumentParser(
+            description="Wrapper.py",
+        )
+
+        parser.add_argument("--ignore-config-updates", "-i",
+            help="Prevent Wrapper from halting when configuration file updates",
+            action="store_true")
+
+        args = parser.parse_args()
+
         # Alert user if config was changed from an update, and shutdown
-        if self.config.updated_from_template:
+        if self.config.updated_from_template and not args.ignore_config_updates:
             self.log.info(
                 "Configuration file has been updated with new entries. Open "
                 "wrapper-data/config.json, and make sure your settings are "
@@ -72,7 +85,7 @@ class Wrapper:
         if self.debug:
             self.log_manager.level = logging.DEBUG
 
-        self.log.info("Wrapper starting")
+        self.log.info("Wrapper starting (%s)" % __version__)
         self.log.debug("Debug mode is on.")
 
         # Start console input thread
@@ -81,23 +94,19 @@ class Wrapper:
         t.start()
 
         # Start dashboard thread
-        t = threading.Thread(target=self.dashboard.run)
-        t.daemon = True
-        t.start()
+        if self.config["dashboard"]["enable"]:
+            t = threading.Thread(target=self.dashboard.run)
+            t.daemon = True
+            t.start()
 
         # Load plugins
         self.plugins.load_plugins()
 
-        try:
-            self.run()
-        except KeyboardInterrupt:
-            self.log.info("Wrapper caught KeyboardInterrupt, shutting down")
-        except:
-            self.log.traceback("Fatal error, shutting down")
-            self.server.kill()
-            # This won't properly wait for the server to stop. This needs to be fixed.
+        self.run()
 
         self.cleanup()
+
+        self.log.info("Wrapper has stopped")
 
     def shutdown(self):
         self.initiate_shutdown = True
@@ -109,14 +118,30 @@ class Wrapper:
 
     def run(self):
         while not self.abort:
-            if self.initiate_shutdown and self.server.state != SERVER_STOPPING:
-                self.server.stop(save=False)
+            try:
+                self.tick()
+            except KeyboardInterrupt:
+                self.log.info("Wrapper caught KeyboardInterrupt, shutting down")
+                self.shutdown()
+            except:
+                self.shutdown()
+                self.log.traceback("Fatal error, shutting down")
+                self.server.kill()
 
-            if self.initiate_shutdown and self.server.state == SERVER_STOPPED:
-                self.abort = True
                 break
 
-            self.server.tick()
-            self.backups.tick()
-            self.storify.tick()
-            time.sleep(1 / 20.0) # 20 ticks per second
+    def tick(self):
+        if self.initiate_shutdown and self.server.state != SERVER_STOPPING:
+            self.server.stop(save=False)
+
+        if self.initiate_shutdown and self.server.state == SERVER_STOPPED:
+            self.abort = True
+            return
+
+        self.server.tick()
+        self.backups.tick()
+        self.storify.tick()
+
+        self.events.call("wrapper.tick")
+
+        time.sleep(1 / 20.0) # 20 ticks per second

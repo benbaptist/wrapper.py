@@ -11,12 +11,21 @@ import os
 from wrapper.plugins.api import API
 
 class Plugin:
-    def __init__(self, wrapper, path):
+    def __init__(self, wrapper, path, name=None):
         self.wrapper = wrapper
 
-        self.path = path
-        self.name = os.path.basename(self.path)
+        if os.path.isdir(path):
+            self.path = os.path.join(path, "__init__.py")
+        else:
+            self.path = path
+
+        if name:
+            self.name = name
+        else:
+            self.name = os.path.basename(self.path)
+
         self.success = None
+        self._main = None
 
         self.log = self.wrapper.log_manager.get_logger("plugin/%s" % self.name)
 
@@ -26,9 +35,12 @@ class Plugin:
         module_name = "wrapper.plugin.%s" % self.name
 
         if imp:
+            # Python 2.x
             module = imp.load_source(module_name, self.path)
+
             return module
         else:
+            # Python 3.x
             spec = importlib.util.spec_from_file_location(
                 module_name, self.path
             )
@@ -62,5 +74,7 @@ class Plugin:
                 self._main = None
 
                 self._api.__disable__()
+            except AttributeError:
+                return
             except:
                 self.log.traceback("Failed to unload plugin")

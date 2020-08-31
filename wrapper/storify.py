@@ -28,10 +28,22 @@ class Storify:
 
 		if not os.path.exists(os.path.join(self.root, ".backups")):
 			os.mkdir(os.path.join(self.root, ".backups"))
+
 	def getDB(self, name):
 		db = Database(name, self.root, self.log)
 		self.databases.append(db)
 		return db
+
+	def get_mini_db(self, path):
+		for database in self.databases:
+			if database.name == path and database.root == None:
+				return database
+
+		db = Database(path, None, self.log)
+		self.databases.append(db)
+		
+		return db
+
 	def tick(self, force=False):
 		a = len(self.databases)
 		i = 0
@@ -46,6 +58,7 @@ class Storify:
 					db.flush()
 
 			i += 1
+
 	def flush(self):
 		self.tick(force=True)
 
@@ -53,16 +66,24 @@ class Database:
 	def __init__(self, name, root, log):
 		self.name = name
 		self.root = root
+		self.log = log
+
 		self.lastFlush = time.time()
 		self.data = {}
 		self.backupsAttentedTo = None # Unused
 		self.backups = None
-		self.log = log
 
-		path = os.path.join(self.root, "%s.mpack" % self.name)
-		if os.path.exists(path):
+		if self.root:
+			self.path = os.path.join(self.root, "%s.mpack" % self.name)
+		else:
+			self.path = self.name
+
+		path_to, filename = os.path.split(self.path)
+		self.backup_path = os.path.join(path_to, ".backups", self.name)
+
+		if os.path.exists(self.path):
 			try:
-				self.data = self.unpack(path)
+				self.data = self.unpack(self.path)
 			except:
 				self.log.traceback("Database '%s' corrupted, reading from backup..." % self.name)
 
@@ -91,13 +112,11 @@ class Database:
 				return msgpack.unpackb(blob)
 
 	def grabLatestBackup(self):
-		backupPath = os.path.join(self.root, ".backups", self.name)
-
-		if not os.path.exists(backupPath):
-			os.mkdir(backupPath)
+		if not os.path.exists(self.backup_path):
+			os.makedirs(self.backup_path)
 			return 0
 
-		self.backups = os.listdir(backupPath)
+		self.backups = os.listdir(self.backup_path)
 		self.backups = [int(i) for i in self.backups]
 		self.backups.sort()
 		self.backups.reverse()
@@ -108,13 +127,11 @@ class Database:
 			return 0
 
 	def grabLastBackup(self):
-		backupPath = os.path.join(self.root, ".backups", self.name)
-
 		if self.backups == None:
-			if not os.path.exists(backupPath):
+			if not os.path.exists(self.backup_path):
 				return
 
-			self.backups = os.listdir(backupPath)
+			self.backups = os.listdir(self.backup_path)
 			self.backups = [int(i) for i in self.backups]
 			self.backups.sort()
 			self.backups.reverse()
@@ -124,46 +141,55 @@ class Database:
 
 		backup = str(self.backups[0])
 		del self.backups[0]
-		return os.path.join(backupPath, backup)
+
+		return os.path.join(self.backup_path, backup)
 
 	def flush(self):
-		# Save code here
-		path = os.path.join(self.root, "%s.mpack" % self.name)
-
 		# Backup before flushing
-		if os.path.exists(path):
+		if os.path.exists(self.path):
 			self.log.debug("Backing up %s" % self.name)
 			backupID = str(self.grabLatestBackup() + 1)
 
 			try:
-				shutil.copy(path, os.path.join(self.root, ".backups", self.name, backupID))
+				shutil.copy(self.path, os.path.join(self.backup_path, backupID))
 			except IOError:
 				self.log.traceback("Possibly out of space, aggressively deleting overly-redundant backups...")
+
 				while len(self.backups) > 7:
 					self.log.debug("Deleting backup %s/%s..." % (self.name, self.backups[0]))
-					os.remove(os.path.join(self.root, ".backups", self.name, str(self.backups[0])))
+					os.remove(os.path.join(self.backup_path, str(self.backups[0])))
 					del self.backups[0]
+
 				return
 
-			self.backups = os.listdir(os.path.join(self.root, ".backups", self.name))
+			self.backups = os.listdir(self.backup_path)
 			self.backups = [int(i) for i in self.backups]
 			self.backups.sort()
 
 			while len(self.backups) > 30:
 				self.log.debug("Deleting backup %s/%s..." % (self.name, self.backups[0]))
-				os.remove(os.path.join(self.root, ".backups", self.name, str(self.backups[0])))
+				os.remove(
+					os.path.join(self.backup_path, str(self.backups[0]))
+				)
 				del self.backups[0]
 
 		try:
-			with open(path, "wb") as f:
-				self.log.warning("Syncing '%s' to disk" % self.name)
+			with open(self.path + ".tmp", "wb") as f:
+				self.log.debug("Syncing '%s' to disk" % self.name)
 				f.write(msgpack.packb(self.data))
+
+			shutil.move(self.path + ".tmp", self.path)
+
 			self.lastFlush = time.time()
 		except IOError:
 			self.log.error(
 				"IOError thrown... not sure how to handle this one. "
 				"Hopefully some space is made before the program goes down "
 				"to ensure this data gets written.")
+
+			if os.path.exists(self.path + ".tmp"):
+				self.log.debug("Cleaning up temporary file")
+				os.remove(self.path + ".tmp")
 
 	def __getitem__(self, index):
 		if not (type(index) in (str, bytes)):
