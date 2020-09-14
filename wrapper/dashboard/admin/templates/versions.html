@@ -1,0 +1,54 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = False %}
+{% block pagename %}Versions{% endblock %}}
+
+{% block subhead %}
+    <style>
+
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+
+        })
+    </script>
+{% endblock %}
+
+{% block subbody %}
+    <table>
+        <thead>
+          <tr>
+              <th>Version</th>
+              <th>Release Date</th>
+              <th>Type</th>
+              <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+            {% for version in g.wrapper.mojang.servers.versions %}
+                <tr{% if g.wrapper.mojang.servers.latest_version.release == version.id %} class="light-green lighten-4"{% endif %}>
+                    <td>{{ version.id }}
+                        {% if g.wrapper.mojang.servers.latest_version.release == version.id %}
+                            <i>(latest version)</i>
+                        {% endif %}
+                    </td>
+                    <td>{{ version.releaseTime }}</td>
+                    <td>{{ version.type }}</td>
+                    <td>
+                        {% if version.path %}
+                            <a href="?delete={{ version.id }}" class="btn btn-small">Delete</a>
+                        {% else %}
+                            <a href="?download={{ version.id }}" class="btn btn-small">Download</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+{% endblock %}

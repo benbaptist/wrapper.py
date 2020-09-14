@@ -27,3 +27,11 @@ def chat():
 @blueprint_admin.route("/players", methods=["GET"])
 def players():
     return render_template("players.html")
+
+@blueprint_admin.route("/versions", methods=["GET"])
+def versions():
+    if "download" in request.args:
+        version = request.args["download"]
+        g.wrapper.mojang.servers.get_jar(version)
+
+    return render_template("versions.html")

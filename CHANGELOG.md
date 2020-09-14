@@ -1,3 +1,10 @@
+## 2020-09-14
+- Features:
+    - Implemented server jar downloader
+
+- API Changes:
+    - Added Minecraft versions API to Mojang class
+
 ## 2020-06-06
 - Fixed:
     - Crash on start when 'cmd' configuration setting is set to null
