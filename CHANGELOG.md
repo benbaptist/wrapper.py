@@ -1,3 +1,11 @@
+## 2020-09-15
+- Features:
+    - RAM configuration settings
+
+- Fixed:
+    - Changing "Override Command" in web interface changed Custom Jar Name instead
+    - Loop when server jar doesn't exist
+
 ## 2020-09-14
 - Features:
     - Implemented server jar downloader

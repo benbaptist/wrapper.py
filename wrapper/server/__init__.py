@@ -1,5 +1,6 @@
 import json
 import time
+import os
 
 from uuid import UUID
 
@@ -194,6 +195,14 @@ class Server(object):
                 self.db["server"]["state"] = SERVER_STARTED
 
             if self.db["server"]["state"] not in (SERVER_RESTART, SERVER_STARTED):
+                return
+
+            server_jar = self.wrapper.config["server"]["jar"]
+
+            if not os.path.exists(server_jar):
+                self.log.error("Server jar '%s' does not exist" % server_jar)
+
+                self.db["server"]["state"] = SERVER_STOPPED
                 return
 
             self.mcserver = MCServer(self.wrapper, self)

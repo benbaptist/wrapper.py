@@ -54,6 +54,7 @@
     - [ ] "400 Bad request" thru nginx proxy
     - [ ] Occasional deadlock condition shortly after starting
     - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy. Bah!
+    - [ ] Server jar downloader only works for versions 1.2 and over
 - [ ] Plugins / API
     - [ ] Permissions handling for commands
 - [ ] Player object

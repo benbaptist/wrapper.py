@@ -158,11 +158,20 @@ class Events(Namespace):
             jar_path = self.wrapper.mojang.servers.get_jar_path(value)
             self.wrapper.config["server"]["jar"] = jar_path
 
+        if name == "server/java-arguments":
+            self.wrapper.config["server"]["arguments"] = value
+
+        if name == "server/java-xms":
+            self.wrapper.config["server"]["xms"] = int(value)
+
+        if name == "server/java-xmx":
+            self.wrapper.config["server"]["xmx"] = int(value)
+
         if name == "server/cmd":
             if len(value.strip()) == 0:
                 self.wrapper.config["server"]["cmd"] = None
             else:
-                self.wrapper.config["server"]["jar"] = value
+                self.wrapper.config["server"]["cmd"] = value
 
         if name == "server/auto-restart":
             self.wrapper.config["server"]["auto-restart"] = bool(value)

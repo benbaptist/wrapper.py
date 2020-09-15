@@ -15,13 +15,16 @@ class Process:
         self.threads = {}
         self.console_output = []
 
-    def start(self, jar_name, java_args=[], java_bin="java", jar_args=["nogui"], command=None):
+    def start(self, jar_name, java_args=[], java_bin="java",
+            jar_args=["nogui"], command=None, java_xms=1024, java_xmx=2048):
         if self.process:
             raise StartingException("Cannot start java process, because it is already running.")
 
         if not command:
-            command = [java_bin] + java_args + ["-jar", jar_name] + jar_args
-        # command = ["python3", "-u", "/home/benbaptist/Documents/Programming/minecraft-wrapper/tools/fake_minecraft_server.py"]
+            command = [java_bin] + java_args + ["-Xms%sM" % java_xms,
+                "-Xmx%sM" % java_xmx] + ["-jar", jar_name] + jar_args
+
+        print(command)
 
         self.process = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
         self.process_status = psutil.Process(self.process.pid)

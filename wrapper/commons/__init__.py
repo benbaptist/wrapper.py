@@ -111,7 +111,9 @@ CONFIG_TEMPLATE = {
         "auto-restart": True,
         "custom-java-bin": None,
         "command-prefix": ".",
-        "cmd": None
+        "cmd": None,
+        "xms": 1024,
+        "xmx": 2048
     },
     "dashboard": {
         "enable": False,
