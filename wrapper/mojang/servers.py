@@ -34,7 +34,7 @@ class Servers(object):
 
         for version in self._versions["versions"]:
             server_jar_name = "server.%s.jar" % version["id"]
-            server_jar_path = self.get_jar_path(server_jar_name)
+            server_jar_path = self.get_jar_path(version["id"])
 
             if os.path.exists(server_jar_path):
                 path = server_jar_path
@@ -58,13 +58,13 @@ class Servers(object):
         return self._versions["latest"]
 
     def get_jar_path(self, version):
-        return "wrapper-data/jars/%s" % version
+        return "wrapper-data/jars/server.%s.jar" % version
 
     def get_jar(self, version):
         for ver in self.versions:
             if ver["id"] == version:
                 server_jar_name = "server.%s.jar" % ver["id"]
-                server_jar_path = self.get_jar_path(server_jar_name)
+                server_jar_path = self.get_jar_path(ver["id"])
 
                 if os.path.exists(server_jar_path):
                     return os.path.realpath(server_jar_path)

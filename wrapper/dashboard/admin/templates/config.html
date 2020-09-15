@@ -1,0 +1,72 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = False %}
+{% block pagename %}Config{% endblock %}}
+
+{% block subhead %}
+    <style>
+
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+            $("[name=server_version]").on("change", function(){
+                socket.emit("set", "server/jar", this.value)
+            })
+
+            $("[name=custom_jar_name]").on("change", function(){
+                socket.emit("set", "server/custom-jar-name", this.value)
+            })
+
+            $("[name=cmd]").on("change", function(){
+                socket.emit("set", "server/cmd", this.value)
+            })
+
+            $("[name=auto-restart]").on("change", function(){
+                socket.emit("set", "server/auto-restart", this.checked)
+            })
+        })
+    </script>
+{% endblock %}
+
+{% block subbody %}
+    <div class="container">
+        <div class="input-field col s12">
+            <select name="server_version">
+                {% for version in g.wrapper.mojang.servers.versions %}
+                    {% if version.path %}
+                        <option value="{{ version.id }}">{{ version.id }}</option>
+                    {% endif %}
+                {% endfor %}
+
+                <option value="custom">Custom...</option>
+            </select>
+            <label>Server Jar</label>
+        </div>
+
+        <div class="row" id="custom_jar_name">
+            <div class="input-field col s12">
+                <input name="custom_jar_name" type="text" value="{{ g.wrapper.config.server.jar }}">
+                <label for="custom_jar_name">Custom Jar Name</label>
+            </div>
+        </div>
+
+        <div class="row" id="custom_jar_name">
+            <div class="input-field col s12">
+                <input name="cmd" type="text" value="{% if g.wrapper.config.server.cmd %}{{ g.wrapper.config.server.cmd }}{% endif %}">
+                <label for="custom_jar_name">Override Command Line (leave blank to auto-gen command)</label>
+            </div>
+        </div>
+
+        <p>
+            <label>
+                <input type="checkbox" name="auto-restart" class="filled-in" {% if not g.wrapper.config.server["auto-restart"] %}checked="checked" {% endif %}/>
+                <span>Auto-restart when server stops or crashes</span>
+            </label>
+        </p>
+    </div>
+{% endblock %}

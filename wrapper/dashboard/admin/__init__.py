@@ -28,6 +28,10 @@ def chat():
 def players():
     return render_template("players.html")
 
+@blueprint_admin.route("/config", methods=["GET"])
+def config():
+    return render_template("config.html")
+
 @blueprint_admin.route("/versions", methods=["GET"])
 def versions():
     if "download" in request.args:

@@ -1,6 +1,7 @@
 ## 2020-09-14
 - Features:
     - Implemented server jar downloader
+    - Server configurations
 
 - API Changes:
     - Added Minecraft versions API to Mojang class

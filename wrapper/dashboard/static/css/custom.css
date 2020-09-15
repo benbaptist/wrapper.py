@@ -8,7 +8,7 @@ body{
 }
 
 .subbody{
-    padding: 16px;
+    padding: 24px;
     height: calc(100% - 64px - 16px);
     position: fixed;
     width: calc(100% - 210px);
@@ -24,6 +24,10 @@ body{
     -moz-transform-origin: 50%;
     transform-origin: 50%;
     -webkit-transform: translate(-50%, -50%);
+}
+
+.hidden{
+    display: none;
 }
 
 /* canvases */

@@ -150,3 +150,21 @@ class Events(Namespace):
         self.verify_token()
 
         self.wrapper.server.stop()
+
+    def on_set(self, name, value):
+        print("%s: %s" % (name, value))
+
+        if name == "server/jar":
+            jar_path = self.wrapper.mojang.servers.get_jar_path(value)
+            self.wrapper.config["server"]["jar"] = jar_path
+
+        if name == "server/cmd":
+            if len(value.strip()) == 0:
+                self.wrapper.config["server"]["cmd"] = None
+            else:
+                self.wrapper.config["server"]["jar"] = value
+
+        if name == "server/auto-restart":
+            self.wrapper.config["server"]["auto-restart"] = bool(value)
+
+        self.wrapper.config.save()
