@@ -2,6 +2,7 @@ from uuid import UUID
 
 import hashlib
 import json
+import os
 
 class UUID_Cache:
     def __init__(self, online_mode=True):
@@ -19,11 +20,13 @@ class UUID_Cache:
         if username in self.uuid_cache:
             return self.uuid_cache[username]
 
-        with open("usercache.json", "r") as f:
-            data = json.loads(f.read())
-            for player in data:
-                if player["name"] == username:
-                    return UUID(hex=player["uuid"])
+        if os.path.exists("usercache.json"):
+
+            with open("usercache.json", "r") as f:
+                data = json.loads(f.read())
+                for player in data:
+                    if player["name"] == username:
+                        return UUID(hex=player["uuid"])
 
         raise EOFError("No UUID could be found for the username %s" % username)
 

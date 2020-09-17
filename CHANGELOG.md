@@ -1,3 +1,9 @@
+## 2020-09-16
+- Features:
+    - Pre-1.7 server support (very experimental and unstable)
+
+- Various bug fixes
+
 ## 2020-09-15
 - Features:
     - RAM configuration settings

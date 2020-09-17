@@ -149,7 +149,7 @@ class MCServer:
 
 		for player in self.players:
 
-			if not everything:
+			if not everyone:
 				# Future criteria filters should go here
 				if online and not player.online:
 					print("cont online")
@@ -163,6 +163,9 @@ class MCServer:
 		return players
 
 	def get_player(self, username=None, mcuuid=None, ip_address=None):
+		if username == "$Console$":
+			return self.server._console_player
+
 		for player in self.players:
 			if username:
 				if username == player.username:
