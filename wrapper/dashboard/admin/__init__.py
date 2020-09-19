@@ -39,3 +39,7 @@ def versions():
         g.wrapper.mojang.servers.get_jar(version)
 
     return render_template("versions.html")
+
+@blueprint_admin.route("/backups", methods=["GET"])
+def backups():
+    return render_template("backups.html")

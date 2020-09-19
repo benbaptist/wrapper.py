@@ -1,3 +1,7 @@
+## 2020-09-18
+- Features:
+    - Backups page partially implemented
+
 ## 2020-09-16
 - Features:
     - Pre-1.7 server support (very experimental and unstable)
