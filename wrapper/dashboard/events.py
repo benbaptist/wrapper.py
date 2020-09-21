@@ -1,6 +1,8 @@
 from flask import g
 from flask_socketio import Namespace, send, emit, join_room, leave_room
 
+from wrapper.commons import *
+
 import time
 
 class Events(Namespace):
@@ -106,14 +108,19 @@ class Events(Namespace):
                     player.__serialize__()
                 )
 
+        if server.state == SERVER_STARTED:
+            world = {
+                "name": str(server.world),
+                "size": server.world.size
+            }
+        else:
+            world = None
+
         emit("server", {
             "state": server.state,
             "players": players,
-            "world": {
-                "name": None,
-                "size": None
-            },
-            "mcversion": None,
+            "world": world,
+            "mcversion": server.version,
             "free_disk_space": None,
             "log": self._log_scrollback
         })

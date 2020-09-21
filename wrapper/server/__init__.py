@@ -101,6 +101,11 @@ class Server(object):
             return self.mcserver.features
 
     @property
+    def version(self):
+        if self.mcserver:
+            return self.mcserver.server_version
+
+    @property
     def online_mode(self):
         if self.mcserver:
             return self.mcserver.online_mode

@@ -41,5 +41,14 @@ def versions():
     return render_template("versions.html")
 
 @blueprint_admin.route("/backups", methods=["GET"])
-def backups():
-    return render_template("backups.html")
+def backups_list():
+    if "delete" in request.args:
+        backup_id = request.args["delete"]
+
+        g.wrapper.backups.delete(backup_id)
+
+    return render_template("backups_list.html")
+
+@blueprint_admin.route("/backups/settings", methods=["GET"])
+def backups_settings():
+    return render_template("backups_settings.html")

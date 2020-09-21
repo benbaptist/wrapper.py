@@ -46,6 +46,14 @@ class Backups:
 
     def list(self):
         """ Returns a list of backups. """
+        
+        # Check for orphaned backups
+        for backup in self.backup_db["backups"]:
+            backup["orphan"] = False
+
+            if not os.path.exists(backup["path"]):
+                backup["orphan"] = True
+
         return self.backup_db["backups"]
 
     def get(self, id):

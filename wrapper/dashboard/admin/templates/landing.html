@@ -64,6 +64,31 @@
 
                 // Populate existing players in players table
                 ui.on_player_join(server.players)
+
+                // World name and size
+                if(payload.world){
+                    $("#server-world-name").text(payload.world.name)
+                    $("#server-world-size").text(filesize(payload.world.size))
+                }
+
+                if(payload.state == 0){
+                    ui.on_starting()
+                }
+
+                if(payload.state == 1){
+                    ui.on_started()
+                }
+
+                if(payload.state == 2){
+                    ui.on_stopping()
+                }
+
+                if(payload.state == 3){
+                    ui.on_stopped()
+                }
+
+                // Server version
+                $("#server-version").text(payload.mcversion)
             })
 
             socket.on("chat", function(payload){

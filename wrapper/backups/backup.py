@@ -60,7 +60,8 @@ class Backup(object):
             "filesize": os.path.getsize(self.path),
             "compression": self.config["archive-format"]["compression"]["enable"],
             "include-paths": self.backups.get_included_paths(),
-            "id": str(UUID(bytes=os.urandom(16)))
+            "id": str(UUID(bytes=os.urandom(16))),
+            "orphan": False
         }
 
     def build_command(self):

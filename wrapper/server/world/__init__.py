@@ -39,6 +39,10 @@ class World:
     def seed(self):
         return
 
+    @property
+    def size(self):
+        return 0
+
 if __name__ == "__main__":
     print("Called directly for debugging purposes")
     # world = AnvilWorldFolder("world")

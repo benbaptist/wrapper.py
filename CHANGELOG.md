@@ -1,3 +1,10 @@
+## 2020-09-21
+- Features:
+    - Slightly improved Backups page design, added "Delete" button
+    - Improved Overview tab
+
+- Attempted to fix list_players() issues
+
 ## 2020-09-18
 - Features:
     - Backups page partially implemented

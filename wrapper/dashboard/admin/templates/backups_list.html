@@ -1,0 +1,78 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = True %}
+{% block pagename %}Backups{% endblock %}}
+
+{% block subnav %}
+    <li class="tab">
+        <a target="_self" href="/backups"
+            {% if request.endpoint == "admin.backups_list"%} class="active"{% endif %}>
+            List
+        </a>
+    </li>
+    <li class="tab">
+        <a target="_self" href="/backups/settings"
+            {% if request.endpoint == "admin.backups_settings"%} class="active"{% endif %}>
+            Settings
+        </a>
+    </li>
+{% endblock %}
+
+{% block subhead %}
+    <style>
+
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+
+        })
+    </script>
+{% endblock %}
+
+{% block subbody %}
+
+    {% if "delete" in request.args %}
+        <div class="card green darken-1">
+            <div class="card-content white-text">
+                <b>Deleted backup.</b>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if g.wrapper.backups.list()|length == 0 %}
+        <div class="vertical-center" style="text-align:center;">
+            <h2>No backups - yet!</h2>
+            <h5>Check back later!</h5>
+        </div>
+    {% else %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Filesize</th>
+                    <th>Path</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for backup in g.wrapper.backups.list() %}
+                    <tr{% if backup.orphan %} class="red lighten-4 disabled-text"{% endif %}>
+                        <td>{{ backup.name }}</td>
+                        <td>{{ backup.filesize|human_bytes }}</td>
+                        <td>{{ backup.path }}</td>
+                        <td>
+                            <a href="?delete={{ backup.id }}" class="btn btn-small">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}
