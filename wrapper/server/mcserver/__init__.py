@@ -120,8 +120,6 @@ class MCServer:
         Defaults to online-only. """
         players = []
 
-        print("list_players called")
-
         # Load offline players before we begin
         for player_data_path in os.listdir("wrapper-data/players"):
             try:
@@ -134,8 +132,6 @@ class MCServer:
 
             mcuuid = uuid.UUID(name)
 
-            print("mcuuid", mcuuid)
-
             try:
                 self.get_player(mcuuid=mcuuid)
             except TypeError:
@@ -146,23 +142,15 @@ class MCServer:
 
                 self.players.append(player)
 
-        print("Player list", self.players)
-
         # Filter players
         for player in self.players:
-
-            print("Before", player)
 
             if not everyone:
                 # Future criteria filters should go here
                 if online and not player.online:
-                    print("cont online")
                     continue
                 elif online == False and player.online:
-                    print("cont False")
                     continue
-
-            print("Appending %s" % player)
 
             players.append(player)
 
@@ -178,7 +166,7 @@ class MCServer:
                     return player
 
             if mcuuid:
-                if player.uuid == mcuuid:
+                if player.mcuuid == mcuuid:
                     return player
 
             if ip_address:

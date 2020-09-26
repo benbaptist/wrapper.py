@@ -204,6 +204,24 @@ class Player:
     def first_login(self, ts):
         self.db["first_login"] = int(ts)
 
+    @property
+    def stats(self):
+        total_playtime_seconds = 0
+        last_time_seen = 0
+        for login in self.db["login_history"]:
+            logged_in = login["logged_in"]
+            logged_out = login["logged_out"]
+
+            total_playtime_seconds += logged_out - logged_in
+            last_time_seen = logged_out
+
+        # total_playtime_seconds += time.time() - self.db["current_login"]["logged_in"]
+
+        return {
+            "total_playtime_seconds": total_playtime_seconds,
+            "last_time_seen": last_time_seen
+        }
+
     def __serialize__(self):
         return {
             "username": self.username,

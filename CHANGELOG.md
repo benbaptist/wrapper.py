@@ -1,3 +1,10 @@
+## 2020-09-26
+- Features:
+    - Implemented "Players" tab
+    
+- Fixed:
+    - `wrapper.server.all_players` throwing AttributeErrror
+
 ## 2020-09-21
 - Features:
     - Slightly improved Backups page design, added "Delete" button

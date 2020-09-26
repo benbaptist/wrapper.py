@@ -20,7 +20,40 @@
 {% endblock %}
 
 {% block subbody %}
-    {% for player in g.wrapper.server.all_players %}
-        {{ player }} | {{ player.mcuuid }} <br/>
-    {% endfor %}
+<table>
+    <thead>
+      <tr>
+          <th>Face</th>
+          <th>Name</th>
+          <th>UUID</th>
+          <th>Play Time</th>
+          <th>Last Seen</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for player in g.wrapper.server.all_players %}
+          <tr{% if player.online %} class="light-green lighten-4"{% endif %}>
+            <td id="{{ player.mcuuid }}-skin"></td>
+            <td>
+                {{ player.username }}
+                {% if player.online %}
+                    <br/><i>(online)</i>
+                {% endif %}
+            </td>
+            <td>{{ player.mcuuid }}</td>
+            <td>{{ player.stats.total_playtime_seconds|naturaldelta }}</td>
+            <td>{{ player.stats.last_time_seen|naturaltime }}</td>
+          </tr>
+
+          {% if player.skin %}
+
+                <script>
+                    $("#{{ player.mcuuid }}-skin")
+                        .append(ui.generate_face("{{ player.skin.url }}"))
+                </script>
+            {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
