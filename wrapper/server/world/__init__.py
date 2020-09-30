@@ -10,6 +10,13 @@ class World:
     def __init__(self, level_name):
         self.level_name = level_name
 
+        # Temporary fix for issue #6 until I have a better solution
+        if not os.path.exists(level_name):
+            return
+
+        if not os.path.exists("%s/region" % level_name):
+            return
+
         self.world = WorldFolder(level_name)
 
     def __str__(self):

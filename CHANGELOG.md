@@ -1,7 +1,12 @@
+## 2020-09-30
+- Fixed:
+    - [Issue #6] Wrapper crash when starting fresh server/world
+    - [Issue #7] Running newer, or unsupported Minecraft servers caused weird issues
+
 ## 2020-09-26
 - Features:
     - Implemented "Players" tab
-    
+
 - Fixed:
     - `wrapper.server.all_players` throwing AttributeErrror
 

@@ -16,8 +16,6 @@ class Player:
         if not os.path.exists("wrapper-data/players"):
             os.makedirs("wrapper-data/players")
 
-            print("wrapper-data/players/%s.mpack" % str(self.mcuuid))
-
         self.db = self.server.wrapper.storify.get_mini_db(
             "wrapper-data/players/%s.mpack" % str(self.mcuuid)
         )
