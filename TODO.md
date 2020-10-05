@@ -42,7 +42,7 @@
     - [x] Custom java executable
     - [x] Auto-accept EULA
     - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
-    - [ ] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
+    - [x] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
 - [ ] log_manager
     - [PARTIAL] Rotate logs
     - [x] Compress old logs using gzip
@@ -63,9 +63,9 @@
         - [x] Persistent storage
         - [ ] Delete persistent player objects if too many are used
 - [ ] Misc. stuff
-    - [ ] Make {"text": ""} objects universally encoded [what?]
+    - [ ] Make {"text": ""} objects universally encoded [what? no idea what I meant here]
     - [ ] Use curses to make console input a little nicer
 
 # Plugin Ideas #
-- [ ] Essentials Clone
+- [x] Essentials Clone
 - [ ] IRC bridge plugin
