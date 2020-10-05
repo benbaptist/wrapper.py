@@ -133,7 +133,7 @@ class MCServer:
             mcuuid = uuid.UUID(name)
 
             try:
-                self.get_player(mcuuid=mcuuid)
+                self.server.get_player(mcuuid=mcuuid)
             except TypeError:
                 player = Player(
                     server=self.server,
@@ -155,25 +155,6 @@ class MCServer:
             players.append(player)
 
         return players
-
-    def get_player(self, username=None, mcuuid=None, ip_address=None):
-        if username == "$Console$":
-            return self.server._console_player
-
-        for player in self.players:
-            if username:
-                if username == player.username:
-                    return player
-
-            if mcuuid:
-                if player.mcuuid == mcuuid:
-                    return player
-
-            if ip_address:
-                if player.ip_address == ip_address:
-                    return player
-
-        raise TypeError("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
 
     # Tick
     def tick(self):

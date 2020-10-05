@@ -85,6 +85,31 @@ class Server(object):
 
             return online_players
 
+    def get_player(self, username=None, mcuuid=None, ip_address=None):
+        if username == "$Console$":
+            return self._console_player
+
+        for player in self.players:
+            print(player)
+            if username:
+                if username == player.username:
+                    return player
+
+            if mcuuid:
+                if player.mcuuid == mcuuid:
+                    return player
+
+            if ip_address:
+                if player.ip_address == ip_address:
+                    return player
+
+        raise TypeError("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
+
+    def get_player_(self, mcuuid):
+        for player in self.all_players:
+            if str(player.mcuuid) == mcuuid:
+                return player
+
     @property
     def gamerules(self):
         if self.mcserver:

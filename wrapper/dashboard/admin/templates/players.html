@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block subbody %}
-<table>
+<table id="player-list">
     <thead>
       <tr>
           <th>Face</th>
@@ -28,6 +28,7 @@
           <th>UUID</th>
           <th>Play Time</th>
           <th>Last Seen</th>
+          <th>Action</th>
       </tr>
     </thead>
 
@@ -44,16 +45,23 @@
             <td>{{ player.mcuuid }}</td>
             <td>{{ player.stats.total_playtime_seconds|naturaldelta }}</td>
             <td>{{ player.stats.last_time_seen|naturaltime }}</td>
+            <td>
+                <a href="/players/{{ player.mcuuid }}" class="btn btn-small">Open</a>
+            </td>
           </tr>
 
           {% if player.skin %}
-
                 <script>
-                    $("#{{ player.mcuuid }}-skin")
-                        .append(ui.generate_face("{{ player.skin.url }}"))
+                    $("#{{ player.mcuuid }}-skin").append(ui.generate_face("{{ player.skin.url }}"))
                 </script>
             {% endif %}
       {% endfor %}
     </tbody>
   </table>
+
+  <script>
+        $(document).ready( function () {
+            // $('#player-list').DataTable();
+        } );
+  </script>
 {% endblock %}

@@ -3,6 +3,7 @@ import random
 import os
 import sys
 import threading
+import hashlib
 
 from uuid import UUID
 
@@ -35,10 +36,22 @@ messages = [
 
 ONLINE_MODE = True
 
+def get_offline_uuid(username):
+    playername = "OfflinePlayer:%s" % username
+    m = hashlib.md5()
+    m.update(playername.encode("utf-8"))
+    d = bytearray(m.digest())
+    d[6] &= 0x0f
+    d[6] |= 0x30
+    d[8] &= 0x3f
+    d[8] |= 0x80
+
+    return UUID(bytes=bytes(d))
+
 class Player:
     def __init__(self):
         self.username = random.choice(names) + str(random.randrange(0, 99))
-        self.uuid = UUID(bytes=os.urandom(16))
+        self.uuid = get_offline_uuid(self.username)
 
 def fancy_print(msg, thread="Server thread", level="INFO", ts="11:12:13"):
     print("[%s] [%s/%s]: %s" % (ts, thread, level, msg))

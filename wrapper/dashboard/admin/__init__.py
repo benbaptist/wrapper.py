@@ -28,6 +28,13 @@ def chat():
 def players():
     return render_template("players.html")
 
+@blueprint_admin.route("/players/<path:mcuuid>", methods=["GET"])
+def players_player(mcuuid):
+    player = g.wrapper.server.get_player_(mcuuid=mcuuid)
+
+    print(player)
+    return render_template("players.player.html", player=player)
+
 @blueprint_admin.route("/config", methods=["GET"])
 def config():
     return render_template("config.html")

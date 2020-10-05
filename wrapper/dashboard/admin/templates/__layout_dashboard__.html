@@ -147,6 +147,12 @@
                             <i class="material-icons black-text">menu</i>
                         </a>
 
+                        {% if enable_back %}
+                            <a href="{{ back_location }}">
+                                <i class="material-icons black-text">arrow_back</i>
+                            </a>
+                        {% endif %}
+
                         <a href="#" class="brand-logo">{% block pagename %}{% endblock %}</a>
                     </div>
 

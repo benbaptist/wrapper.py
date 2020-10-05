@@ -1,4 +1,10 @@
-## 2020-09-30
+## 2020-10-04 / 0.0.7
+- Added interactive table to Players page (DataTables)
+- Did some stuff with server.get_player - super messy though. ugh.
+- Fixed:
+    - Wrapper attempting to retrieve skins for offline mode players
+
+## 2020-09-30 / 0.0.6
 - Fixed:
     - [Issue #6] Wrapper crash when starting fresh server/world
     - [Issue #7] Running newer, or unsupported Minecraft servers caused weird issues

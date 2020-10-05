@@ -39,4 +39,5 @@ class UUID_Cache:
         d[6] |= 0x30
         d[8] &= 0x3f
         d[8] |= 0x80
+        
         return UUID(bytes=bytes(d))

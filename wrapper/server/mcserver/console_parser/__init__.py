@@ -11,6 +11,7 @@ from wrapper.exceptions import *
 class ConsoleParser:
     def __init__(self, mcserver):
         self.mcserver = mcserver
+        self.server = mcserver.server
 
     def parse(self, line):
         # Compatible with most recent versions of Minecraft server
@@ -117,7 +118,7 @@ class ConsoleParser:
             if r1 or r2 or r3:
                 if r1:
                     username = r1.group(1)
-                    player = self.mcserver.get_player(username=username)
+                    player = self.server.get_player(username=username)
                 else:
                     player = None
 
@@ -137,7 +138,7 @@ class ConsoleParser:
                 username = r.group(1)
                 command_response = r.group(2)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
 
                 self.mcserver.events.call(
                     "server.player.command_response",
@@ -160,7 +161,7 @@ class ConsoleParser:
                 x, y, z = r.group(2), r.group(3), r.group(4)
                 x, y, z = float(x), float(y), float(z)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
                 player.position = [x, y, z]
                 player.db["position_last_updated"] = time.time()
 
@@ -187,7 +188,7 @@ class ConsoleParser:
                 ]
 
                 try:
-                    player = self.mcserver.get_player(username=username)
+                    player = self.server.get_player(username=username)
                 except TypeError:
                     mcuuid = self.mcserver.uuid_cache.get(username)
 
@@ -206,7 +207,7 @@ class ConsoleParser:
                 username = r.group(1)
                 server_disconnect_reason = r.group(2)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
 
                 if player:
                     player.online = False
@@ -217,7 +218,7 @@ class ConsoleParser:
             if r:
                 username, message = r.group(1), r.group(2)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
                 self.mcserver.events.call(
                     "server.player.message",
                     player=player,
@@ -279,7 +280,7 @@ class ConsoleParser:
                 username = r.group(1)
                 command_response = r.group(2)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
 
                 self.mcserver.events.call(
                     "server.player.command_response",
@@ -302,7 +303,7 @@ class ConsoleParser:
                 x, y, z = r.group(2), r.group(3), r.group(4)
                 x, y, z = float(x), float(y), float(z)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
                 player.position = [x, y, z]
                 player.db["position_last_updated"] = time.time()
 
@@ -329,7 +330,7 @@ class ConsoleParser:
                 ]
 
                 try:
-                    player = self.mcserver.get_player(username=username)
+                    player = self.server.get_player(username=username)
                 except TypeError:
                     try:
                         mcuuid = self.mcserver.uuid_cache.get(username)
@@ -353,7 +354,7 @@ class ConsoleParser:
                 username = r.group(1)
                 server_disconnect_reason = r.group(2)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
 
                 if player:
                     player.online = False
@@ -364,7 +365,7 @@ class ConsoleParser:
             if r:
                 username, message = r.group(1), r.group(2)
 
-                player = self.mcserver.get_player(username=username)
+                player = self.server.get_player(username=username)
                 self.mcserver.events.call(
                     "server.player.message",
                     player=player,

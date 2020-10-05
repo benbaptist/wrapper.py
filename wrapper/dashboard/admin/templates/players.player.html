@@ -1,0 +1,27 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = False %}
+{% set enable_back = True %}
+{% set back_location = "/players" %}
+
+{% block pagename %}Players / {{ player.username }}{% endblock %}}
+
+{% block subhead %}
+    <style>
+
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+
+        })
+    </script>
+{% endblock %}
+
+{% block subbody %}
+
+{% endblock %}

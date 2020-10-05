@@ -4,6 +4,8 @@ import time
 import pickle
 import shutil
 
+from wrapper.server.uuid_cache import UUID_Cache
+
 class Player:
     def __init__(self, server, username=None, mcuuid=None, online_mode=None):
         self.server = server
@@ -80,6 +82,17 @@ class Player:
         else:
             self.online_mode = self.server.online_mode
 
+        if "is_online_accounat" not in self.db:
+            self.db["is_online_account"] = True
+
+            uuid_cache = UUID_Cache()
+
+            if uuid_cache.get_offline_uuid(self.username) == mcuuid:
+                self.db["is_online_account"] = False
+
+        if not self.db["is_online_account"]:
+            self.online_mode = False
+
         # Grab skin if applicable
         if self.online_mode:
             self.skin = self.mojang.get_skin_from_uuid(self.mcuuid)
@@ -111,6 +124,20 @@ class Player:
 
         @self.events.hook("server.player.part")
         def on_logout(player):
+            if player != self:
+                return
+
+            self.db["login_history"].append({
+                "logged_in": self.db["last_login"],
+                "logged_out": time.time(),
+                "ip_address": self.ip_address
+            })
+
+            self.db["current_login"] = None
+            self.online = False
+
+        @self.events.hook("server.player.chat")
+        def on_chat(player, message):
             if player != self:
                 return
 
@@ -206,6 +233,7 @@ class Player:
     def stats(self):
         total_playtime_seconds = 0
         last_time_seen = 0
+
         for login in self.db["login_history"]:
             logged_in = login["logged_in"]
             logged_out = login["logged_out"]
