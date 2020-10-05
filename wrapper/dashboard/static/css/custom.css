@@ -16,6 +16,10 @@ body{
     overflow-y: auto;
 }
 
+.subbody-padding{
+    padding: 48px 128px 0px 128px;
+}
+
 .vertical-center{
     position: absolute;
     top: 50%;
@@ -179,5 +183,9 @@ nav ul a{
     .subnav{
         height: 56px;
         line-height: 56px;
+    }
+
+    .subbody-padding{
+        padding: 24px !important;
     }
 }

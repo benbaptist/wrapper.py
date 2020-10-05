@@ -141,6 +141,7 @@ class MCServer:
                 )
 
                 self.players.append(player)
+                print("Adding player %s" % player)
 
         # Filter players
         for player in self.players:

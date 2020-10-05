@@ -3,6 +3,7 @@ import time
 import threading
 import logging
 import argparse
+import sys
 
 from wrapper.__version__ import __version__
 from wrapper.config import Config
@@ -18,13 +19,17 @@ from wrapper.plugins import Plugins
 from wrapper.mojang import Mojang
 from wrapper.commons import *
 
+from builtins import input
+
 class Wrapper:
     def __init__(self):
         self.log_manager = LogManager()
         self.log = self.log_manager.get_logger("main")
 
         # Check if wrapper-data folder exists before continuing
+        self._is_fresh_start = False
         if not os.path.exists("wrapper-data"):
+            self._is_fresh_start = True
             os.mkdir("wrapper-data")
 
         # Configuration manager
@@ -72,14 +77,103 @@ class Wrapper:
 
         args = parser.parse_args()
 
+        # First-time wizard
+        if self._is_fresh_start:
+            def ask_bool(msg):
+                while True:
+                    answer = input("%s (y/n): " % msg).lower()
+
+                    if answer == "y":
+                        return True
+                    elif answer == "n":
+                        return False
+                    else:
+                        print("Please type 'y' or 'n', and then hit enter.")
+
+            def ask_int(msg, safe_range=None):
+                if safe_range:
+                    safe_min = safe_range[0]
+                    safe_max = safe_range[1]
+
+                while True:
+                    if safe_range:
+                        answer = input("%s (%s-%s): " % (msg, safe_min, safe_max))
+                    else:
+                        answer = input("%s (number): " % msg)
+
+                    try:
+                        answer = int(answer)
+
+                        if safe_range:
+                            if answer < safe_min or answer > safe_max:
+                                print("Please enter a number between %s and %s,"
+                                    "and then hit enter."
+                                    % (safe_min, safe_max))
+                                continue
+
+                        return answer
+                    except:
+                        print("Please enter a number, and then hit enter.")
+
+            def ask_str(msg, default=None, min_len=None):
+                while True:
+                    if default:
+                        answer = input("%s (default: %s): " % (msg, default))
+                    else:
+                        answer = input("%s: " % msg)
+
+                    if min_len != None:
+                        if len(answer) < min_len:
+                            print("Your answer must be at least %s characters." % min_len)
+
+                    if len(answer) < 1:
+                        if default:
+                            return default
+                        else:
+                            print("Please enter your answer, and then hit enter.")
+                            continue
+
+                    return answer
+
+            print("* Welcome to Wrapper.py!")
+            print("* Before we begin, let's get a few things set up.")
+            print("-" * 16)
+            use_dash = ask_bool("Would you like to use the web-based dashboard?")
+
+            if use_dash:
+                port = ask_int("What port would you like the dashboard to be on?",
+                    safe_range=(1, 65535))
+                bind = ask_str("What IP would you like the dashboard to bind to?"
+                    , default="0.0.0.0")
+
+                password = ask_str("Please enter a strong password to use", min_len=8)
+
+                self.config["dashboard"]["enable"] = True
+                self.config["dashboard"]["bind"]["ip"] = bind
+                self.config["dashboard"]["bind"]["port"] = port
+                self.config["dashboard"]["root-password"] = password
+
+                print("You're all set to use the dashboard.")
+                print("You'll access it using this URL: http://%s:%s" % (bind, port))
+                print("When prompted, the username is 'root', and the password is the one you provided.")
+
+                print("-" * 16)
+                print("Wrapper.py will now save changes and exit. You may "
+                "continue setting up Wrapper through the dashboard.")
+
+                self.config.save()
+
+                sys.exit(0)
+
         # Alert user if config was changed from an update, and shutdown
-        if self.config.updated_from_template and not args.ignore_config_updates:
-            self.log.info(
-                "Configuration file has been updated with new entries. Open "
-                "wrapper-data/config.json, and make sure your settings are "
-                "good before running."
-            )
-            return
+        if not self._is_fresh_start:
+            if self.config.updated_from_template and not args.ignore_config_updates:
+                self.log.info(
+                    "Configuration file has been updated with new entries. Open "
+                    "wrapper-data/config.json, and make sure your settings are "
+                    "good before running."
+                )
+                return
 
         # Set logging level if debug mode is enabled
         if self.debug:

@@ -89,8 +89,7 @@ class Server(object):
         if username == "$Console$":
             return self._console_player
 
-        for player in self.players:
-            print(player)
+        for player in self.mcserver.players:
             if username:
                 if username == player.username:
                     return player

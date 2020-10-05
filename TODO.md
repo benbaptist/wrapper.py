@@ -12,7 +12,7 @@
 # Major To-Do #
 
 - [x] Wrapper shuts down on first start, to allow user to edit generated config file
-    - Eventually, interactive first-time setup
+    - [x] Interactive first-time setup wizard
 
 - [PARTIAL] Implement backup system
     - [x] Support various containers (zip, tar, 7z, etc.) and compression methods (gzip, etc.)

@@ -39,7 +39,17 @@
                         {% endif %}
                     </td>
                     <td>{{ version.releaseTime }}</td>
-                    <td>{{ version.type }}</td>
+                    <td>
+                        {% if version.type == "release" %}
+                            Release
+                        {% elif version.type == "snapshot" %}
+                            Snapshot
+                        {% elif version.type == "old_beta" %}
+                            Old Beta
+                        {% elif version.type == "old_alpha" %}
+                            Old Alpha
+                        {% endif %}
+                    </td>
                     <td>
                         {% if version.path %}
                             <a href="?delete={{ version.id }}" class="btn btn-small">Delete</a>

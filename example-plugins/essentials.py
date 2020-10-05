@@ -1,6 +1,11 @@
 NAME = "Essentials Clone"
-VERSION = (0.1)
+VERSION = (0, 1, 1)
 ID = "com.benbaptist.wrapper.essentials_clone"
+SUMMARY = "Essential commands for the essential people."
+DESCRIPTION = """This is a poor replica of the popular Bukkit plugin
+of the same name. All the basic commands and utilities you'll need forever
+and ever. Yay."""
+WEBSITE = "https://github.com/benbaptist/wrapper.py"
 
 class Main:
     def __init__(self, api, log):

@@ -1,7 +1,22 @@
 {% extends "__layout_dashboard__.html" %}
 
-{% set enable_navbar = False %}
+{% set enable_navbar = True %}
 {% block pagename %}Config{% endblock %}}
+
+{% block subnav %}
+    <li class="tab">
+        <a target="_self" href="/config"
+            {% if request.endpoint == "admin.config"%} class="active"{% endif %}>
+            Basic
+        </a>
+    </li>
+    <li class="tab">
+        <a target="_self" href="/config/server"
+            {% if request.endpoint == "admin.config_server"%} class="active"{% endif %}>
+            Server
+        </a>
+    </li>
+{% endblock %}
 
 {% block subhead %}
     <style>
@@ -50,57 +65,55 @@
 {% endblock %}
 
 {% block subbody %}
-    <div class="container">
-        <div class="input-field col s12">
-            <select name="server_version">
-                {% for version in g.wrapper.mojang.servers.versions %}
-                    {% if version.path %}
-                        <option value="{{ version.id }}">{{ version.id }}</option>
-                    {% endif %}
-                {% endfor %}
+    <div class="input-field col s12">
+        <select name="server_version">
+            {% for version in g.wrapper.mojang.servers.versions %}
+                {% if version.path %}
+                    <option value="{{ version.id }}">{{ version.id }}</option>
+                {% endif %}
+            {% endfor %}
 
-                <option value="custom">Custom...</option>
-                <option value="download_server_jars">Download Server Jars...</option>
-            </select>
-            <label>Server Jar</label>
-        </div>
-
-        <div class="row" id="custom_jar_name">
-            <div class="input-field col s12">
-                <input name="custom_jar_name" type="text" value="{{ g.wrapper.config.server.jar }}">
-                <label for="custom_jar_name">Custom Jar Name</label>
-            </div>
-        </div>
-
-        <p class="range-field">
-            <input type="range" name="xms" min="32" max="32768" value="{{ g.wrapper.config.server.xms }}"/>
-            <label>Java XMS</label>
-        </p>
-
-        <p class="range-field">
-            <input type="range" name="xmx" min="32" max="32768" value="{{ g.wrapper.config.server.xmx }}"/>
-            <label>Java XMX</label>
-        </p>
-
-        <div class="row" id="java-arguments">
-            <div class="input-field col s12">
-                <input name="java-arguments" type="text" value="{% if g.wrapper.config.server.arguments %}{{ g.wrapper.config.server.arguments }}{% endif %}">
-                <label for="java-arguments">Custom Java Arguments</label>
-            </div>
-        </div>
-
-        <div class="row" id="cmd">
-            <div class="input-field col s12">
-                <input name="cmd" type="text" value="{% if g.wrapper.config.server.cmd %}{{ g.wrapper.config.server.cmd }}{% endif %}">
-                <label for="cmd">Override Command Line (leave blank, unless you know what you're doing!)</label>
-            </div>
-        </div>
-
-        <p>
-            <label>
-                <input type="checkbox" name="auto-restart" class="filled-in" {% if not g.wrapper.config.server["auto-restart"] %}checked="checked" {% endif %}/>
-                <span>Auto-restart when server unexpectedly stops or crashes</span>
-            </label>
-        </p>
+            <option value="custom">Custom...</option>
+            <option value="download_server_jars">Download Server Jars...</option>
+        </select>
+        <label>Server Jar</label>
     </div>
+
+    <div class="row" id="custom_jar_name">
+        <div class="input-field col s12">
+            <input name="custom_jar_name" type="text" value="{{ g.wrapper.config.server.jar }}">
+            <label for="custom_jar_name">Custom Jar Name</label>
+        </div>
+    </div>
+
+    <p class="range-field">
+        <input type="range" name="xms" min="32" max="32768" value="{{ g.wrapper.config.server.xms }}"/>
+        <label>Java XMS</label>
+    </p>
+
+    <p class="range-field">
+        <input type="range" name="xmx" min="32" max="32768" value="{{ g.wrapper.config.server.xmx }}"/>
+        <label>Java XMX</label>
+    </p>
+
+    <div class="row" id="java-arguments">
+        <div class="input-field col s12">
+            <input name="java-arguments" type="text" value="{% if g.wrapper.config.server.arguments %}{{ g.wrapper.config.server.arguments }}{% endif %}">
+            <label for="java-arguments">Custom Java Arguments</label>
+        </div>
+    </div>
+
+    <div class="row" id="cmd">
+        <div class="input-field col s12">
+            <input name="cmd" type="text" value="{% if g.wrapper.config.server.cmd %}{{ g.wrapper.config.server.cmd }}{% endif %}">
+            <label for="cmd">Override Command Line (leave blank, unless you know what you're doing!)</label>
+        </div>
+    </div>
+
+    <p>
+        <label>
+            <input type="checkbox" name="auto-restart" class="filled-in" {% if not g.wrapper.config.server["auto-restart"] %}checked="checked" {% endif %}/>
+            <span>Auto-restart when server unexpectedly stops or crashes</span>
+        </label>
+    </p>
 {% endblock %}

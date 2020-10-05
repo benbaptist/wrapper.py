@@ -59,3 +59,10 @@ def backups_list():
 @blueprint_admin.route("/backups/settings", methods=["GET"])
 def backups_settings():
     return render_template("backups_settings.html")
+
+@blueprint_admin.route("/plugins", methods=["GET"])
+def plugins():
+    if "reload" in request.args:
+        g.wrapper.plugins.reload_plugins()
+        
+    return render_template("plugins.html")

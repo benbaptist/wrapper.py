@@ -115,6 +115,9 @@ CONFIG_TEMPLATE = {
         "xms": 1024,
         "xmx": 2048
     },
+    "plugins":{
+        "disabled-plugins": []
+    },
     "dashboard": {
         "enable": False,
         "bind": {

@@ -154,6 +154,11 @@
                         {% endif %}
 
                         <a href="#" class="brand-logo">{% block pagename %}{% endblock %}</a>
+
+
+                        <ul id="nav-mobile" class="right">
+                            {% block navbar_right %}{% endblock %}
+                        </ul>
                     </div>
 
                     {% if enable_navbar %}
@@ -167,7 +172,7 @@
             </nav>
 
             <!-- subbody -->
-            <div class="subbody">
+            <div class="subbody{% if not disable_padding %} subbody-padding{% endif %}">
                 {% block subbody %}{% endblock %}
             </div>
         </div>

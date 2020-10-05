@@ -63,9 +63,10 @@ class Plugin:
 
             self.success = True
         except:
-            self.log.traceback("Failed to load plugin")
+            tb = self.log.traceback("Failed to load plugin")
             self.success = False
             self._main = None
+            self._traceback = tb
 
     def unload(self):
         if self._main:

@@ -110,5 +110,10 @@ class Logger:
 	def traceback(self, msg):
 		self._check_rotate()
 		self.error(msg)
-		for line in traceback.format_exc().split("\n"):
+
+		tb = traceback.format_exc()
+
+		for line in tb.split("\n"):
 			self.error(line.replace("\r", ""))
+
+		return tb

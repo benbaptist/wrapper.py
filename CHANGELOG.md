@@ -1,3 +1,12 @@
+## 2020-10-05 / 0.1 alpha
+- First-time setup wizard
+- Pretty little plugin list added to Dashboard
+- Minor, cosmetic changes to Dashboard
+- Fixed:
+    - Players duplicating every time `/players` page was loaded
+    - `Internal Server Error` when `/players` page loaded with server off
+    - Green card when server was offline on Overview page
+
 ## 2020-10-04 / 0.0.7
 - Added interactive table to Players page (DataTables)
 - Did some stuff with server.get_player - super messy though. ugh.
