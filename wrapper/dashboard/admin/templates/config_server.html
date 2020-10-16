@@ -1,0 +1,131 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = True %}
+{% block pagename %}Config{% endblock %}}
+
+{% block subnav %}
+    <li class="tab">
+        <a target="_self" href="/config"
+            {% if request.endpoint == "admin.config"%} class="active"{% endif %}>
+            Basic
+        </a>
+    </li>
+    <li class="tab">
+        <a target="_self" href="/config/server"
+            {% if request.endpoint == "admin.config_server"%} class="active"{% endif %}>
+            Server
+        </a>
+    </li>
+{% endblock %}
+
+{% block subhead %}
+    <style>
+
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+            // $("[name=server_version]").on("change", function(){
+            //     if(this.value == "download_server_jars"){
+            //         window.location = "/versions"
+            //         return
+            //     }
+            //     socket.emit("set", "server/jar", this.value)
+            // })
+            //
+            // $("[name=custom_jar_name]").on("keyup", function(){
+            //     socket.emit("set", "server/custom-jar-name", this.value)
+            // })
+            //
+            // $("[name=java-arguments]").on("keyup", function(){
+            //     socket.emit("set", "server/java-arguments", this.value)
+            // })
+            //
+            // $("[name=xms]").on("change", function(){
+            //     socket.emit("set", "server/java-xms", this.value)
+            // })
+            //
+            // $("[name=xmx]").on("change", function(){
+            //     socket.emit("set", "server/java-xmx", this.value)
+            // })
+            //
+            // $("[name=cmd]").on("keyup", function(){
+            //     socket.emit("set", "server/cmd", this.value)
+            // })
+            //
+            // $("[name=auto-restart]").on("change", function(){
+            //     socket.emit("set", "server/auto-restart", this.checked)
+            // })
+        })
+    </script>
+{% endblock %}
+
+{% block subbody %}
+    <h5>General Settings</h5><br/>
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="server-port" type="number" value="25565" min="1" max="65535">
+            <label for="server-port">Server Port</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="max-players" type="number" value="20" min="1">
+            <label for="max-players">Max Players</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="motd" type="text" value="A Minecraft Server">
+            <label for="motd">MOTD</label>
+        </div>
+    </div>
+
+    <p>
+        <label>
+            <input type="checkbox" name="online-mode" class="filled-in"  />
+            <span>Online Mode</span>
+        </label>
+    </p>
+
+    <h5>World Settings</h5><br/>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="level-name" type="text" value="world">
+            <label for="level-name">Level Name</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="resource-pack" type="text" value="">
+            <label for="resource-pack">Resource Pack</label>
+        </div>
+    </div>
+
+    <h5>Gameplay</h5><br/>
+
+    <div class="input-field col s12">
+        <select name="difficulty">
+            <option value="peaceful">Peaceful</option>
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+        <label>Difficulty</label>
+    </div>
+
+    <p>
+        <label>
+            <input type="checkbox" name="command-blocks" class="filled-in"  />
+            <span>Enable Command Blocks</span>
+        </label>
+    </p>
+{% endblock %}

@@ -29,11 +29,89 @@
         }
 
         $(document).ready(function(){
+            $("[name=enable-backups]").on("change", function(){
+                socket.emit("set", "backups/enable-backups", this.checked)
+            })
 
+            $("[name=backup-mode]").on("change", function(){
+                socket.emit("set", "backups/backup-mode", this.value)
+            })
+
+            $("[name=include]").on("change", function(){
+                socket.emit("set", "backups/incldue", $("[name=include]").val().join(","))
+            })
+
+            $("[name=destination]").on("keyup", function(){
+                socket.emit("set", "backups/destination", this.value)
+            })
+
+            $("[name=interval-seconds]").on("keyup", function(){
+                socket.emit("set", "backups/interval-seconds", this.value)
+            })
+
+            $("[name=history]").on("keyup", function(){
+                socket.emit("set", "backups/history", this.value)
+            })
+
+            $("[name=only-backup-if-player-joins]").on("change", function(){
+                socket.emit("set", "backups/only-backup-if-player-joins", this.checked)
+            })
         })
     </script>
 {% endblock %}
 
 {% block subbody %}
+    <p>
+        <label>
+            <input type="checkbox" name="enable-backups" class="filled-in" {% if g.wrapper.config.backups["enable"] %}checked="checked" {% endif %}/>
+            <span>Enable backups</span>
+        </label>
+    </p>
 
+    <div class="input-field col s12">
+        <select name="backup-mode">
+            <option value="auto">Automatically determine files to be backed up</option>
+            <option value="manual">Manually specify which files to be backed up</option>
+        </select>
+        <label>Backup Mode</label>
+    </div>
+
+    <div class="input-field col s12">
+        <select multiple name="include">
+            <option value="world"{% if g.wrapper.config.backups.include.world %} selected{% endif %}>World</option>
+            <option value="wrapper-data"{% if g.wrapper.config.backups.include["wrapper-data"] %} selected{% endif %}>Wrapper Data</option>
+            <option value="logs"{% if g.wrapper.config.backups.include["logs"] %} selected{% endif %}>Logs</option>
+            <option value="server-properties"{% if g.wrapper.config.backups.include["server-properties"] %} selected{% endif %}>Server Properties</option>
+            <option value="whitelist-ops-banned"{% if g.wrapper.config.backups.include["whitelist-ops-banned"] %} selected{% endif %}>Whitelist / Ops / Banned</option>
+        </select>
+        <label>Include</label>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="destination" type="text" value="{{ g.wrapper.config.backups.destination }}">
+            <label for="destination">Destination</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="interval-seconds" type="number" value="{{ g.wrapper.config.backups["interval-seconds"] }}">
+            <label for="interval-seconds">Backup Interval (in seconds)</label>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-field col s12">
+            <input name="history" type="number" value="{{ g.wrapper.config.backups.history }}">
+            <label for="history">Backups to Keep</label>
+        </div>
+    </div>
+
+    <p>
+        <label>
+            <input type="checkbox" name="only-backup-if-player-joins" class="filled-in" {% if g.wrapper.config.backups["only-backup-if-player-joins"] %}checked="checked" {% endif %}/>
+            <span>Only Backup If There's Been Player Activity</span>
+        </label>
+    </p>
 {% endblock %}

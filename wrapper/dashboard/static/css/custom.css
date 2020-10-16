@@ -48,6 +48,10 @@ body{
     color: grey;
 }
 
+hr{
+    margin-bottom: 32px;
+}
+
 /* canvases */
 canvas.face{
     width: 32px;
@@ -178,6 +182,7 @@ nav ul a{
 
     .subbody{
         width: 100%;
+        padding-bottom: 64px !important;
     }
 
     .subnav{

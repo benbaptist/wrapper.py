@@ -1,7 +1,7 @@
 {% extends "__layout_dashboard__.html" %}
 
 {% set enable_navbar = False %}
-{% block pagename %}Players{% endblock %}}
+{% block pagename %}Players ({{ g.wrapper.server.all_players|length }}) {% endblock %}
 
 {% block subhead %}
     <style>

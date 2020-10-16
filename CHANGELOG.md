@@ -1,3 +1,8 @@
+## 2020-10-15 / 0.1.1 alpha
+- Started to implement Configuration page on server page
+- Implemented Backup Settings page
+- "Start Backup" button functionality added
+
 ## 2020-10-05 / 0.1 alpha
 - First-time setup wizard
 - Pretty little plugin list added to Dashboard

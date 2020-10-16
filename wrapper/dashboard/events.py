@@ -183,4 +183,26 @@ class Events(Namespace):
         if name == "server/auto-restart":
             self.wrapper.config["server"]["auto-restart"] = bool(value)
 
+        # Backups
+        if name == "backups/enable-backups":
+            self.wrapper.config["backups"]["enable-backups"] = bool(value)
+
+        if name == "backups/backup-mode":
+            self.wrapper.config["backups"]["backup-mode"] = value
+
+        if name == "backups/include":
+            self.wrapper.config["backups"]["enable-backups"] = bool(value)
+
+        if name == "backups/destination":
+            self.wrapper.config["backups"]["destination"] = value
+
+        if name == "backups/interval-seconds":
+            self.wrapper.config["backups"]["interval-seconds"] = int(value)
+
+        if name == "backups/history":
+            self.wrapper.config["backups"]["history"] = int(value)
+
+        if name == "backups/only-backup-if-player-joins":
+            self.wrapper.config["backups"]["only-backup-if-player-joins"] = bool(value)
+
         self.wrapper.config.save()

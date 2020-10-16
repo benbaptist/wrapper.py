@@ -39,6 +39,10 @@ def players_player(mcuuid):
 def config():
     return render_template("config.html")
 
+@blueprint_admin.route("/config/server", methods=["GET"])
+def config_server():
+    return render_template("config_server.html")
+
 @blueprint_admin.route("/versions", methods=["GET"])
 def versions():
     if "download" in request.args:
@@ -54,6 +58,9 @@ def backups_list():
 
         g.wrapper.backups.delete(backup_id)
 
+    if "start_backup" in request.args:
+        g.wrapper.backups.start()
+
     return render_template("backups_list.html")
 
 @blueprint_admin.route("/backups/settings", methods=["GET"])
@@ -64,5 +71,5 @@ def backups_settings():
 def plugins():
     if "reload" in request.args:
         g.wrapper.plugins.reload_plugins()
-        
+
     return render_template("plugins.html")
