@@ -78,3 +78,5 @@ class Servers(object):
 
                 with open(server_jar_path, "wb") as f:
                     f.write(r.content)
+
+                return server_jar_path

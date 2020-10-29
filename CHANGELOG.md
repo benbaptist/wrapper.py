@@ -1,3 +1,6 @@
+## 2020-10-29 / 0.1.2 alpha
+- Added server jar configuration to first-time setup wizard
+
 ## 2020-10-15 / 0.1.1 alpha
 - Started to implement Configuration page on server page
 - Implemented Backup Settings page
