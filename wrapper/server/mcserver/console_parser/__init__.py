@@ -20,9 +20,9 @@ class ConsoleParser:
 
         # If regex did not match, continue to prevent issues
         if new_style:
-            self.new_style(new_style)
+            return self.new_style(new_style)
         elif old_style:
-            self.old_style(old_style)
+            return self.old_style(old_style)
 
     def new_style(self, r):
         log_time = r.group(1)
@@ -340,8 +340,6 @@ class ConsoleParser:
                     player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
 
                     self.mcserver.players.append(player)
-
-                    print(mcuuid, player)
 
                 player.online = True
                 player.ip_address = ip_address

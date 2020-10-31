@@ -4,7 +4,8 @@
 - Small UI changes
 - Fixed:
     - "Backup Mode" on Backup settings page
-    - Wrapper doesn't start setup wizard if wrapper-data exists, even if config does not 
+    - Wrapper doesn't start setup wizard if wrapper-data exists, even if config does not
+    - Console suppressing not working 
 
 ## 2020-10-29 / 0.1.2 alpha
 - Added server jar configuration to first-time setup wizard
