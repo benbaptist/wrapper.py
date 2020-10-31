@@ -29,9 +29,11 @@ class Wrapper:
 
         # Check if wrapper-data folder exists before continuing
         self._is_fresh_start = False
+        if not os.path.exists("wrapper-data"):
+            os.mkdir("wrapper-data")
+
         if not os.path.exists("wrapper-data/config.json"):
             self._is_fresh_start = True
-            os.mkdir("wrapper-data")
 
         # Configuration manager
         self.config = Config(path="wrapper-data/config.json",
