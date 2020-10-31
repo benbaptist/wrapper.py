@@ -33,7 +33,10 @@
                 if(this.value == "download_server_jars"){
                     window.location = "/versions"
                     return
+                }else if(this.value == "custom"){
+                    return
                 }
+
                 socket.emit("set", "server/jar", this.value)
             })
 
@@ -73,7 +76,7 @@
                 {% endif %}
             {% endfor %}
 
-            <option value="custom">Custom...</option>
+            <option value="custom" selected>Custom...</option>
             <option value="download_server_jars">Download Server Jars...</option>
         </select>
         <label>Server Jar</label>

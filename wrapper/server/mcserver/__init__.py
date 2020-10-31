@@ -44,6 +44,8 @@ class MCServer:
 
         self._resource_analytics = []
 
+        self._start_time = time.time()
+
         self._start()
 
     def _start(self):

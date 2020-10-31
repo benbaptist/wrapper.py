@@ -113,7 +113,12 @@ CONFIG_TEMPLATE = {
         "command-prefix": ".",
         "cmd": None,
         "xms": 1024,
-        "xmx": 2048
+        "xmx": 2048,
+        "timed-reboot": {
+            "enable": False,
+            "interval-seconds": 86400,
+            "warning-seconds": 300
+        }
     },
     "plugins":{
         "disabled-plugins": []

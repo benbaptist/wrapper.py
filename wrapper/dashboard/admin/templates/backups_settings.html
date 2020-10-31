@@ -70,8 +70,8 @@
 
     <div class="input-field col s12">
         <select name="backup-mode">
-            <option value="auto">Automatically determine files to be backed up</option>
-            <option value="manual">Manually specify which files to be backed up</option>
+            <option value="auto"{% if g.wrapper.config.backups["backup-mode"] == "auto" %} selected{% endif %}>Automatically determine files to be backed up</option>
+            <option value="manual"{% if g.wrapper.config.backups["backup-mode"] == "manual" %} selected{% endif %}>Manually specify which files to be backed up</option>
         </select>
         <label>Backup Mode</label>
     </div>

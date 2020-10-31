@@ -24,8 +24,6 @@ class Process:
             command = [java_bin] + java_args + ["-Xms%sM" % java_xms,
                 "-Xmx%sM" % java_xmx] + ["-jar", jar_name] + jar_args
 
-        print(command)
-
         self.process = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
         self.process_status = psutil.Process(self.process.pid)
 

@@ -1,3 +1,10 @@
+## 2020-10-31 / 0.1.3 Alpha
+- Automatic timed server reboots implemented
+- Migrates old Wrapper configuration files during first-time wizard
+- Small UI changes
+- Fixed:
+    - "Backup Mode" on Backup settings page
+
 ## 2020-10-29 / 0.1.2 alpha
 - Added server jar configuration to first-time setup wizard
 

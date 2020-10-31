@@ -259,6 +259,19 @@ class Server(object):
 
                 return
 
+            # If timed reboot is enabled, check server uptime and reboot
+            if self.wrapper.config["server"]["timed-reboot"]["enable"]:
+                uptime_seconds = time.time() - self.mcserver._start_time
+                warning_seconds = self.wrapper.config["server"]\
+                    ["timed-reboot"]["warning-seconds"]
+                interval_seconds = self.wrapper.config["server"]\
+                    ["timed-reboot"]["interval-seconds"]
+
+                if self.state == SERVER_STARTED:
+                    if uptime_seconds >= interval_seconds:
+                        self.log.info("Timed reboot initiated")
+                        self.restart()
+
             # Poll every 200ms
             if time.time() - self._timeout > .2:
                 for player in self.players:
