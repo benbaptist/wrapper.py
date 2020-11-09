@@ -64,6 +64,8 @@
 
                 if(server.players.length == 0){
                     $("#players-list").hide()
+                }else{
+                    $("#players-none").hide()
                 }
 
                 // Populate existing players in players table
@@ -156,6 +158,7 @@
             $("#table-players").append(_)
 
             $("#players-list").show()
+            $("#players-none").hide()
         }
 
         ui.on_player_part = function(player){

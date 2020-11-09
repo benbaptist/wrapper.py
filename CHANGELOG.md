@@ -1,3 +1,9 @@
+## 2020-10-31 / 0.1.4 Alpha
+- Now serving filesize.js locally
+- Fixed:
+    - "It's a ghost town in here" message not disappearing when players on server
+    - Backup causes fatal crash when out of disk space
+
 ## 2020-10-31 / 0.1.3 Alpha
 - Automatic timed server reboots implemented
 - Migrates old Wrapper configuration files during first-time wizard
@@ -5,7 +11,7 @@
 - Fixed:
     - "Backup Mode" on Backup settings page
     - Wrapper doesn't start setup wizard if wrapper-data exists, even if config does not
-    - Console suppressing not working 
+    - Console suppressing not working
 
 ## 2020-10-29 / 0.1.2 alpha
 - Added server jar configuration to first-time setup wizard

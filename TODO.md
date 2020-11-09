@@ -49,6 +49,8 @@
     - [x] Respect debug-mode settings
 - [ ] Backups
     - [ ] Respect ingame-notification settings
+    - [ ] Ability to mark a backup as "important", so it does not auto-delete during rotation
+    - [ ] Backups page should be dynamically loaded, show progress bar if during a B/U
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
     - [ ] "400 Bad request" thru nginx proxy
