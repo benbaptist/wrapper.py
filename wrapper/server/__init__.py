@@ -1,5 +1,6 @@
 import json
 import time
+import os
 
 from uuid import UUID
 
@@ -84,6 +85,30 @@ class Server(object):
 
             return online_players
 
+    def get_player(self, username=None, mcuuid=None, ip_address=None):
+        if username == "$Console$":
+            return self._console_player
+
+        for player in self.mcserver.players:
+            if username:
+                if username == player.username:
+                    return player
+
+            if mcuuid:
+                if player.mcuuid == mcuuid:
+                    return player
+
+            if ip_address:
+                if player.ip_address == ip_address:
+                    return player
+
+        raise TypeError("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
+
+    def get_player_(self, mcuuid):
+        for player in self.all_players:
+            if str(player.mcuuid) == mcuuid:
+                return player
+
     @property
     def gamerules(self):
         if self.mcserver:
@@ -98,6 +123,11 @@ class Server(object):
     def features(self):
         if self.mcserver:
             return self.mcserver.features
+
+    @property
+    def version(self):
+        if self.mcserver:
+            return self.mcserver.server_version
 
     @property
     def online_mode(self):
@@ -196,6 +226,14 @@ class Server(object):
             if self.db["server"]["state"] not in (SERVER_RESTART, SERVER_STARTED):
                 return
 
+            server_jar = self.wrapper.config["server"]["jar"]
+
+            if not os.path.exists(server_jar):
+                self.log.error("Server jar '%s' does not exist" % server_jar)
+
+                self.db["server"]["state"] = SERVER_STOPPED
+                return
+
             self.mcserver = MCServer(self.wrapper, self)
             return
 
@@ -220,6 +258,19 @@ class Server(object):
                         self.db["server"]["state"] = SERVER_STOPPED
 
                 return
+
+            # If timed reboot is enabled, check server uptime and reboot
+            if self.wrapper.config["server"]["timed-reboot"]["enable"]:
+                uptime_seconds = time.time() - self.mcserver._start_time
+                warning_seconds = self.wrapper.config["server"]\
+                    ["timed-reboot"]["warning-seconds"]
+                interval_seconds = self.wrapper.config["server"]\
+                    ["timed-reboot"]["interval-seconds"]
+
+                if self.state == SERVER_STARTED:
+                    if uptime_seconds >= interval_seconds:
+                        self.log.info("Timed reboot initiated")
+                        self.restart()
 
             # Poll every 200ms
             if time.time() - self._timeout > .2:

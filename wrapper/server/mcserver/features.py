@@ -9,7 +9,11 @@ class Features:
 
     @property
     def version(self):
-        return self.mcserver.server_version_protocol
+        if self.mcserver.server_version_protocol:
+            return self.mcserver.server_version_protocol
+        else:
+            # Unknown server version; treat as "newest"
+            return 77
 
     def __run__(self, cmd):
         self.mcserver.command(cmd)

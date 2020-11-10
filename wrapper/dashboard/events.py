@@ -1,6 +1,8 @@
 from flask import g
 from flask_socketio import Namespace, send, emit, join_room, leave_room
 
+from wrapper.commons import *
+
 import time
 
 class Events(Namespace):
@@ -106,14 +108,19 @@ class Events(Namespace):
                     player.__serialize__()
                 )
 
+        if server.state == SERVER_STARTED:
+            world = {
+                "name": str(server.world),
+                "size": server.world.size
+            }
+        else:
+            world = None
+
         emit("server", {
             "state": server.state,
             "players": players,
-            "world": {
-                "name": None,
-                "size": None
-            },
-            "mcversion": None,
+            "world": world,
+            "mcversion": server.version,
             "free_disk_space": None,
             "log": self._log_scrollback
         })
@@ -150,3 +157,52 @@ class Events(Namespace):
         self.verify_token()
 
         self.wrapper.server.stop()
+
+    def on_set(self, name, value):
+        print("%s: %s" % (name, value))
+
+        if name == "server/jar":
+            jar_path = self.wrapper.mojang.servers.get_jar_path(value)
+            self.wrapper.config["server"]["jar"] = jar_path
+
+        if name == "server/java-arguments":
+            self.wrapper.config["server"]["arguments"] = value
+
+        if name == "server/java-xms":
+            self.wrapper.config["server"]["xms"] = int(value)
+
+        if name == "server/java-xmx":
+            self.wrapper.config["server"]["xmx"] = int(value)
+
+        if name == "server/cmd":
+            if len(value.strip()) == 0:
+                self.wrapper.config["server"]["cmd"] = None
+            else:
+                self.wrapper.config["server"]["cmd"] = value
+
+        if name == "server/auto-restart":
+            self.wrapper.config["server"]["auto-restart"] = bool(value)
+
+        # Backups
+        if name == "backups/enable-backups":
+            self.wrapper.config["backups"]["enable-backups"] = bool(value)
+
+        if name == "backups/backup-mode":
+            self.wrapper.config["backups"]["backup-mode"] = value
+
+        if name == "backups/include":
+            self.wrapper.config["backups"]["enable-backups"] = bool(value)
+
+        if name == "backups/destination":
+            self.wrapper.config["backups"]["destination"] = value
+
+        if name == "backups/interval-seconds":
+            self.wrapper.config["backups"]["interval-seconds"] = int(value)
+
+        if name == "backups/history":
+            self.wrapper.config["backups"]["history"] = int(value)
+
+        if name == "backups/only-backup-if-player-joins":
+            self.wrapper.config["backups"]["only-backup-if-player-joins"] = bool(value)
+
+        self.wrapper.config.save()

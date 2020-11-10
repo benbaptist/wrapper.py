@@ -8,12 +8,16 @@ body{
 }
 
 .subbody{
-    padding: 16px;
+    padding: 24px;
     height: calc(100% - 64px - 16px);
     position: fixed;
     width: calc(100% - 210px);
     display: block;
     overflow-y: auto;
+}
+
+.subbody-padding{
+    padding: 48px 128px 0px 128px;
 }
 
 .vertical-center{
@@ -24,6 +28,28 @@ body{
     -moz-transform-origin: 50%;
     transform-origin: 50%;
     -webkit-transform: translate(-50%, -50%);
+}
+
+.hidden{
+    display: none;
+}
+
+.strike{
+    text-decoration: line-through;
+}
+
+.italic{
+    font-style: italic;
+}
+
+.disabled-text{
+    text-decoration: line-through;
+    font-style: italic;
+    color: grey;
+}
+
+hr{
+    margin-bottom: 32px;
 }
 
 /* canvases */
@@ -139,6 +165,15 @@ nav.navbar .brand-logo {
     float: right;
 }
 
+/* grey tabs */
+nav ul a{
+    color: #333 !important;
+}
+
+.tabs .indicator {
+    background-color: #212121;
+}
+
 /* responsive */
 @media only screen and (max-width : 992px) {
     .desktop-padding{
@@ -147,10 +182,15 @@ nav.navbar .brand-logo {
 
     .subbody{
         width: 100%;
+        padding-bottom: 64px !important;
     }
 
     .subnav{
         height: 56px;
         line-height: 56px;
+    }
+
+    .subbody-padding{
+        padding: 24px !important;
     }
 }

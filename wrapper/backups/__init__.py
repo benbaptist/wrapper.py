@@ -46,6 +46,14 @@ class Backups:
 
     def list(self):
         """ Returns a list of backups. """
+
+        # Check for orphaned backups
+        for backup in self.backup_db["backups"]:
+            backup["orphan"] = False
+
+            if not os.path.exists(backup["path"]):
+                backup["orphan"] = True
+
         return self.backup_db["backups"]
 
     def get(self, id):
@@ -152,19 +160,29 @@ class Backups:
             if self.current_backup.status == BACKUP_COMPLETE:
                 details = self.current_backup.details
 
+                if not details["filesize"]:
+                    filesize = 0
+                else:
+                    filesize = details["filesize"]
+
                 self.log.info(
                     "Backup complete. Took %s seconds, and uses %s of storage."
                     % (details["backup-complete"] - details["backup-start"],
-                    bytes_to_human(details["filesize"]))
+                    bytes_to_human(filesize))
                 )
 
             if self.current_backup.status == BACKUP_FAILED:
                 details = self.current_backup.details
 
+                if not details["filesize"]:
+                    filesize = 0
+                else:
+                    filesize = details["filesize"]
+
                 self.log.info(
                     "Backup complete, potentially with errors. Took %s seconds, and uses %s of storage."
                     % (details["backup-complete"] - details["backup-start"],
-                    bytes_to_human(details["filesize"]))
+                    bytes_to_human(filesize))
                 )
 
             if self.current_backup.status in (BACKUP_COMPLETE, BACKUP_FAILED):

@@ -2,6 +2,9 @@ import requests
 import base64
 import json
 import time
+import copy
+
+from wrapper.mojang.servers import Servers
 
 class Mojang:
     def __init__(self, wrapper):
@@ -12,12 +15,14 @@ class Mojang:
         if "cache" not in self.db:
             self.db["cache"] = []
 
-    def _get_cache(self, action, value):
+        self.servers = Servers(self)
+
+    def _get_cache(self, action, value, expire=60 * 60 * 24):
         for obj in self.db["cache"]:
             if obj["action"] == action and obj["value"] == value:
 
-                # If cache object is older than 24 hours, discard
-                if time.time() - obj["time"] > 60 * 60 * 24:
+                # If cache object is older than expire is set to, discard
+                if time.time() - obj["time"] > expire:
                     self.log.debug("Discarding cache %s/%s" % (action, value))
                     self.db["cache"].remove(obj)
                     return

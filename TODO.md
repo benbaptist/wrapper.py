@@ -12,7 +12,7 @@
 # Major To-Do #
 
 - [x] Wrapper shuts down on first start, to allow user to edit generated config file
-    - Eventually, interactive first-time setup
+    - [x] Interactive first-time setup wizard
 
 - [PARTIAL] Implement backup system
     - [x] Support various containers (zip, tar, 7z, etc.) and compression methods (gzip, etc.)
@@ -42,18 +42,21 @@
     - [x] Custom java executable
     - [x] Auto-accept EULA
     - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
-    - [ ] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
+    - [x] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
 - [ ] log_manager
     - [PARTIAL] Rotate logs
     - [x] Compress old logs using gzip
     - [x] Respect debug-mode settings
 - [ ] Backups
     - [ ] Respect ingame-notification settings
+    - [ ] Ability to mark a backup as "important", so it does not auto-delete during rotation
+    - [ ] Backups page should be dynamically loaded, show progress bar if during a B/U
 - [ ] Dashboard
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
     - [ ] "400 Bad request" thru nginx proxy
     - [ ] Occasional deadlock condition shortly after starting
     - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy. Bah!
+    - [ ] Server jar downloader only works for versions 1.2 and over
 - [ ] Plugins / API
     - [ ] Permissions handling for commands
 - [ ] Player object
@@ -62,9 +65,9 @@
         - [x] Persistent storage
         - [ ] Delete persistent player objects if too many are used
 - [ ] Misc. stuff
-    - [ ] Make {"text": ""} objects universally encoded [what?]
+    - [ ] Make {"text": ""} objects universally encoded [what? no idea what I meant here]
     - [ ] Use curses to make console input a little nicer
 
 # Plugin Ideas #
-- [ ] Essentials Clone
+- [x] Essentials Clone
 - [ ] IRC bridge plugin

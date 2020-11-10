@@ -9,6 +9,8 @@ except ImportError:
 
 import os
 import logging
+import datetime as dt
+import humanize
 
 from wrapper.dashboard.login import blueprint_login
 from wrapper.dashboard.admin import blueprint_admin
@@ -42,7 +44,31 @@ class Dashboard:
         self.register_blueprints()
 
     def do_decorators(self):
-        return
+        # https://stackoverflow.com/questions/1094841/reusable-library-to-get-human-readable-version-of-file-size
+        def human_bytes(num, suffix="B"):
+            if not num:
+                return "null"
+
+            for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+                if abs(num) < 1024.0:
+                    return "%3.1f%s%s" % (num, unit, suffix)
+                num /= 1024.0
+            return "%.1f%s%s" % (num, "Yi", suffix)
+        self.app.jinja_env.filters["human_bytes"] = human_bytes
+
+        def naturaldelta(seconds):
+            delta = dt.timedelta(seconds=seconds)
+
+            return humanize.naturaldelta(delta)
+
+        self.app.jinja_env.filters["naturaldelta"] = naturaldelta
+
+        def naturaltime(seconds):
+            delta = dt.datetime.fromtimestamp(seconds)
+
+            return humanize.naturaltime(delta)
+
+        self.app.jinja_env.filters["naturaltime"] = naturaltime
 
     def register_blueprints(self):
         self.app.register_blueprint(blueprint_login)

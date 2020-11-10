@@ -62,8 +62,39 @@
 
                 server.players = payload.players
 
+                if(server.players.length == 0){
+                    $("#players-list").hide()
+                }else{
+                    $("#players-none").hide()
+                }
+
                 // Populate existing players in players table
                 ui.on_player_join(server.players)
+
+                // World name and size
+                if(payload.world){
+                    $("#server-world-name").text(payload.world.name)
+                    $("#server-world-size").text(filesize(payload.world.size))
+                }
+
+                if(payload.state == 0){
+                    ui.on_starting()
+                }
+
+                if(payload.state == 1){
+                    ui.on_started()
+                }
+
+                if(payload.state == 2){
+                    ui.on_stopping()
+                }
+
+                if(payload.state == 3){
+                    ui.on_offline()
+                }
+
+                // Server version
+                $("#server-version").text(payload.mcversion)
             })
 
             socket.on("chat", function(payload){
@@ -125,10 +156,17 @@
                 .attr("id", "table-players-" + player.uuid)
 
             $("#table-players").append(_)
+
+            $("#players-list").show()
+            $("#players-none").hide()
         }
 
         ui.on_player_part = function(player){
             $("#table-players-" + player.uuid).remove()
+
+            if(server.players.length == 0){
+                $("#players-list").hide()
+            }
         }
     </script>
 {% endblock %}
@@ -196,16 +234,22 @@
         <div class="col s12 m6">
             <div class="card grey lighten-3">
                 <div class="card-content black-text">
-                    <span class="card-title">Players</span>
+                    <div id="players-none">
+                        <h3>It's a ghost town here.</h3>
+                        <h5>No players are logged in.</h5>
+                    </div>
+                    <div id="players-list">
+                        <span class="card-title">Players</span>
 
-                    <table>
-                        <thead>
-                            <th>Face</th>
-                            <th>Username</th>
-                            <th>Actions</th>
-                        </thead>
-                        <tbody id="table-players"></tbody>
-                    </table>
+                        <table>
+                            <thead>
+                                <th>Face</th>
+                                <th>Username</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody id="table-players"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

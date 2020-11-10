@@ -59,3 +59,6 @@ class Plugins:
     def reload_plugins(self):
         self.unload_plugins()
         self.load_plugins()
+
+    def disable_plugin(self, plugin_id):
+        return

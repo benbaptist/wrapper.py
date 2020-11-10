@@ -27,3 +27,49 @@ def chat():
 @blueprint_admin.route("/players", methods=["GET"])
 def players():
     return render_template("players.html")
+
+@blueprint_admin.route("/players/<path:mcuuid>", methods=["GET"])
+def players_player(mcuuid):
+    player = g.wrapper.server.get_player_(mcuuid=mcuuid)
+
+    print(player)
+    return render_template("players.player.html", player=player)
+
+@blueprint_admin.route("/config", methods=["GET"])
+def config():
+    return render_template("config.html")
+
+@blueprint_admin.route("/config/server", methods=["GET"])
+def config_server():
+    return render_template("config_server.html")
+
+@blueprint_admin.route("/versions", methods=["GET"])
+def versions():
+    if "download" in request.args:
+        version = request.args["download"]
+        g.wrapper.mojang.servers.get_jar(version)
+
+    return render_template("versions.html")
+
+@blueprint_admin.route("/backups", methods=["GET"])
+def backups_list():
+    if "delete" in request.args:
+        backup_id = request.args["delete"]
+
+        g.wrapper.backups.delete(backup_id)
+
+    if "start_backup" in request.args:
+        g.wrapper.backups.start()
+
+    return render_template("backups_list.html")
+
+@blueprint_admin.route("/backups/settings", methods=["GET"])
+def backups_settings():
+    return render_template("backups_settings.html")
+
+@blueprint_admin.route("/plugins", methods=["GET"])
+def plugins():
+    if "reload" in request.args:
+        g.wrapper.plugins.reload_plugins()
+
+    return render_template("plugins.html")

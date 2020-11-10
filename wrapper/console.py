@@ -114,6 +114,9 @@ class Console:
 
                     continue
 
+                if command == "all_players":
+                    print(self.wrapper.server.all_players)
+
                 if command == "stop":
                     self.wrapper.server.stop()
                     continue

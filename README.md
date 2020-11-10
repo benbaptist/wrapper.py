@@ -27,9 +27,10 @@ pip3 install https://github.com/benbaptist/wrapper.py/archive/development.zip
 ```
 
 Just run `mcwrapper` in the working directory of your Minecraft server to start.
-On first start, it'll write a configuration file to `wrapper-data/config.json`. Edit to your needs, and then run `mcwrapper` again.
+On first start, it'll present you with a setup wizard. After you complete, re-run `mcwrapper` again,
+and enjoy.
 
-You may need to adjust your shell's $PATH to incorporate your local bin folder, depending on your system or how you installed it. For some systems, adding this to your .bashrc may work:
+You may need to adjust your shell's $PATH to incorporate your local bin folder, depending on your system or how you installed Wrapper. For some systems, adding this to your .bashrc may work:
 
 ```
 export PATH=$PATH:~/.local/bin

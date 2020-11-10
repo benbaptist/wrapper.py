@@ -30,6 +30,13 @@ class Backup(object):
             if not self.backup_complete:
                 self.backup_complete = time.time()
 
+            if not os.path.exists(self.path):
+                if not self.backup_complete:
+                    self.backup_complete = time.time()
+
+                self.log.debug("BACKUP_FAILED / File does not exist")
+                return BACKUP_FAILED
+
             self.log.debug("BACKUP_COMPLETE")
 
             return BACKUP_COMPLETE
@@ -51,16 +58,22 @@ class Backup(object):
         if not self.status in (BACKUP_COMPLETE, BACKUP_FAILED):
             raise EOFError("Backup is not complete")
 
+        if os.path.exists(self.path):
+            filesize = os.path.getsize(self.path)
+        else:
+            filesize = None
+
         return {
             "backup-start": self.backup_start,
             "backup-complete": self.backup_complete,
             "name": self.name,
             "path": self.path,
             "archive-method": self.archive_method,
-            "filesize": os.path.getsize(self.path),
+            "filesize": filesize,
             "compression": self.config["archive-format"]["compression"]["enable"],
             "include-paths": self.backups.get_included_paths(),
-            "id": str(UUID(bytes=os.urandom(16)))
+            "id": str(UUID(bytes=os.urandom(16))),
+            "orphan": False
         }
 
     def build_command(self):

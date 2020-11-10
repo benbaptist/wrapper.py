@@ -111,7 +111,17 @@ CONFIG_TEMPLATE = {
         "auto-restart": True,
         "custom-java-bin": None,
         "command-prefix": ".",
-        "cmd": None
+        "cmd": None,
+        "xms": 1024,
+        "xmx": 2048,
+        "timed-reboot": {
+            "enable": False,
+            "interval-seconds": 86400,
+            "warning-seconds": 300
+        }
+    },
+    "plugins":{
+        "disabled-plugins": []
     },
     "dashboard": {
         "enable": False,

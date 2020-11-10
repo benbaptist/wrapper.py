@@ -1,3 +1,86 @@
+## 2020-10-31 / 0.1.4 Alpha
+- Now serving filesize.js locally
+- Fixed:
+    - "It's a ghost town in here" message not disappearing when players on server
+    - Backup causes fatal crash when out of disk space
+
+## 2020-10-31 / 0.1.3 Alpha
+- Automatic timed server reboots implemented
+- Migrates old Wrapper configuration files during first-time wizard
+- Small UI changes
+- Fixed:
+    - "Backup Mode" on Backup settings page
+    - Wrapper doesn't start setup wizard if wrapper-data exists, even if config does not
+    - Console suppressing not working
+
+## 2020-10-29 / 0.1.2 alpha
+- Added server jar configuration to first-time setup wizard
+
+## 2020-10-15 / 0.1.1 alpha
+- Started to implement Configuration page on server page
+- Implemented Backup Settings page
+- "Start Backup" button functionality added
+
+## 2020-10-05 / 0.1 alpha
+- First-time setup wizard
+- Pretty little plugin list added to Dashboard
+- Minor, cosmetic changes to Dashboard
+- Fixed:
+    - Players duplicating every time `/players` page was loaded
+    - `Internal Server Error` when `/players` page loaded with server off
+    - Green card when server was offline on Overview page
+
+## 2020-10-04 / 0.0.7
+- Added interactive table to Players page (DataTables)
+- Did some stuff with server.get_player - super messy though. ugh.
+- Fixed:
+    - Wrapper attempting to retrieve skins for offline mode players
+
+## 2020-09-30 / 0.0.6
+- Fixed:
+    - [Issue #6] Wrapper crash when starting fresh server/world
+    - [Issue #7] Running newer, or unsupported Minecraft servers caused weird issues
+
+## 2020-09-26
+- Features:
+    - Implemented "Players" tab
+
+- Fixed:
+    - `wrapper.server.all_players` throwing AttributeErrror
+
+## 2020-09-21
+- Features:
+    - Slightly improved Backups page design, added "Delete" button
+    - Improved Overview tab
+
+- Attempted to fix list_players() issues
+
+## 2020-09-18
+- Features:
+    - Backups page partially implemented
+
+## 2020-09-16
+- Features:
+    - Pre-1.7 server support (very experimental and unstable)
+
+- Various bug fixes
+
+## 2020-09-15
+- Features:
+    - RAM configuration settings
+
+- Fixed:
+    - Changing "Override Command" in web interface changed Custom Jar Name instead
+    - Loop when server jar doesn't exist
+
+## 2020-09-14
+- Features:
+    - Implemented server jar downloader
+    - Server configurations
+
+- API Changes:
+    - Added Minecraft versions API to Mojang class
+
 ## 2020-06-06
 - Fixed:
     - Crash on start when 'cmd' configuration setting is set to null

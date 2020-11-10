@@ -3,7 +3,7 @@
 {% block head %}
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
-<script src="https://cdn.filesizejs.com/filesize.min.js"></script>
+<script src="/static/js/filesize.min.js"></script>
 
 <script>
     $(document).ready(function(){
@@ -118,6 +118,7 @@
                         <li><a href="/logs">Logs</a></li>
                         <li><a href="/config">Config</a></li>
                         <li><a href="/players">Players</a></li>
+                        <li><a href="/versions">Versions</a></li>
                     </ul>
                 </li>
 
@@ -146,7 +147,18 @@
                             <i class="material-icons black-text">menu</i>
                         </a>
 
+                        {% if enable_back %}
+                            <a href="{{ back_location }}">
+                                <i class="material-icons black-text">arrow_back</i>
+                            </a>
+                        {% endif %}
+
                         <a href="#" class="brand-logo">{% block pagename %}{% endblock %}</a>
+
+
+                        <ul id="nav-mobile" class="right">
+                            {% block navbar_right %}{% endblock %}
+                        </ul>
                     </div>
 
                     {% if enable_navbar %}
@@ -160,7 +172,7 @@
             </nav>
 
             <!-- subbody -->
-            <div class="subbody">
+            <div class="subbody{% if not disable_padding %} subbody-padding{% endif %}">
                 {% block subbody %}{% endblock %}
             </div>
         </div>
