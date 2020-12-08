@@ -20,7 +20,6 @@ class Commands:
                 t.daemon = True
                 t.start()
 
-
         BuiltinCommands(self.wrapper, self.server, self)
 
     def _parse_command(self, player, raw_message):
@@ -29,10 +28,16 @@ class Commands:
         command_name = args(0, raw_message).lower()
         command_args = args_after(1, raw_message).split(" ")
 
+        if len(command_args) == 1:
+            if len(command_args[0]) == 0:
+                command_args = []
+
         commands = [] + self.commands
 
+        print(command_name, command_args)
+
         # Find commands registered to plugins here
-        for plugin in  self.wrapper.plugins.plugins:
+        for plugin in self.wrapper.plugins.plugins:
             for command in plugin.commands:
                 commands.append(command)
 
@@ -73,4 +78,4 @@ class Command:
 
     def run(self, player, *command_args):
         # insert permissions handling code here
-        self.callback(player)
+        self.callback(player, *command_args)

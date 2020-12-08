@@ -1,3 +1,11 @@
+## 2020-12-07 / 0.1.5 Alpha
+- Now serving socket.io.js locally
+- Added "storage" chunk to API
+- Fixed:
+    - Command arguments not passed to plugins
+    - Database contexts being duplicated, causing memory leak or conflicting databases
+- Added 'coords' command to Essentials plugin
+
 ## 2020-10-31 / 0.1.4 Alpha
 - Now serving filesize.js locally
 - Fixed:

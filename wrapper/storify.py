@@ -30,8 +30,13 @@ class Storify:
 			os.mkdir(os.path.join(self.root, ".backups"))
 
 	def getDB(self, name):
+		for database in self.databases:
+			if database.name == name:
+				return database
+
 		db = Database(name, self.root, self.log)
 		self.databases.append(db)
+
 		return db
 
 	def get_mini_db(self, path):
@@ -41,7 +46,7 @@ class Storify:
 
 		db = Database(path, None, self.log)
 		self.databases.append(db)
-		
+
 		return db
 
 	def tick(self, force=False):
