@@ -55,7 +55,7 @@ class Events(Namespace):
         def server_status_cpu(usage):
             self.socketio.emit("server.status.cpu", {"usage": usage}, room="server")
 
-        # Players #
+        # Players
         @self.events.hook("server.player.join")
         def server_player_join(player):
             self.socketio.emit(
@@ -92,12 +92,31 @@ class Events(Namespace):
                 room="chat"
             )
 
+        # Backups
+        @self.events.hook("backups.start")
+        def backups_start():
+            self.socketio.emit("backups.start", True)
+
+        @self.events.hook("backups.complete")
+        def backups_complete(details=None):
+            self.socketio.emit("backups.complete", True)
+
+            emit("backups.list", self.wrapper.backups.list())
+
         super(Events, self).__init__()
+
+    def on_connect(self):
+        join_room("server")
+
+        if self.wrapper.backups.current_backup:
+            emit("backups.start", True)
+        else:
+            emit("backups.complete", True)
+
+        emit("backups.list", self.wrapper.backups.list())
 
     def on_server(self):
         self.verify_token()
-
-        join_room("server")
 
         server = self.wrapper.server
         players = []
@@ -185,7 +204,7 @@ class Events(Namespace):
 
         # Backups
         if name == "backups/enable-backups":
-            self.wrapper.config["backups"]["enable-backups"] = bool(value)
+            self.wrapper.config["backups"]["enable"] = bool(value)
 
         if name == "backups/backup-mode":
             self.wrapper.config["backups"]["backup-mode"] = value
@@ -206,3 +225,14 @@ class Events(Namespace):
             self.wrapper.config["backups"]["only-backup-if-player-joins"] = bool(value)
 
         self.wrapper.config.save()
+
+    # Backups
+    def on_start_backup(self):
+        try:
+            self.wrapper.backups.start()
+        except:
+            return
+    def on_delete_backup(self, id):
+        self.wrapper.backups.delete(id)
+        
+        emit("backups.list", self.wrapper.backups.list())

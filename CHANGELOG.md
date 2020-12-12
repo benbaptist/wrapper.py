@@ -1,3 +1,9 @@
+## 2020-12-12 / 0.1.6 Alpha
+- More Socket.IO stuff added to Backups list page
+- Fixed:
+    - Can't enable/disable backups from Dashboard
+    - Small UI bugs
+
 ## 2020-12-07 / 0.1.5 Alpha
 - Now serving socket.io.js locally
 - Added "storage" chunk to API
