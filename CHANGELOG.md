@@ -1,3 +1,11 @@
+## 2020-12-12 / 0.1.7 Alpha
+- Implemented Logs page
+- Testing some weird new layout for the Overview page
+- UI changes
+- Fixed:
+    - "backkup" typo
+    - Crash on backup complete
+
 ## 2020-12-12 / 0.1.6 Alpha
 - More Socket.IO stuff added to Backups list page
 - Fixed:

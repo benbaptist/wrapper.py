@@ -24,6 +24,18 @@ def landing():
 def chat():
     return render_template("chat.html")
 
+@blueprint_admin.route("/logs", methods=["GET"])
+def logs():
+    return render_template("logs.html", log=None)
+
+@blueprint_admin.route("/logs/<path:logname>", methods=["GET"])
+def logs_log(logname):
+    for log in g.wrapper.server.logs:
+        if log.fn == logname:
+            break
+
+    return render_template("logs.html", logname=logname, log=log)
+
 @blueprint_admin.route("/players", methods=["GET"])
 def players():
     return render_template("players.html")

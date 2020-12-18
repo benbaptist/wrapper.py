@@ -88,7 +88,7 @@
         })
 
         start_backup = function(){
-            if(confirm("Start backkup?"))
+            if(confirm("Start backup?"))
                 socket.emit("start_backup")
         }
     </script>
@@ -104,10 +104,22 @@
         </div>
     {% endif %}
 
-    <div class="card cyan darken-1 hide" id="backup-ongoing">
-        <div class="card-content white-text">
-            <i class="material-icons medium" style="vertical-align:middle; padding-right: 12px;">backup</i>
-            Wrapper is backing up right now...
+    <div class="card grey lighten-4 hide" id="backup-ongoing">
+        <div class="card-content">
+            <!-- <i class="material-icons medium" style="vertical-align:middle; padding-right: 12px;">backup</i> -->
+            <div class="preloader-wrapper big active" style="vertical-align:middle">
+                <div class="spinner-layer spinner-blue-only">
+                  <div class="circle-clipper left">
+                    <div class="circle"></div>
+                  </div><div class="gap-patch">
+                    <div class="circle"></div>
+                  </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+            </div>
+
+            <div style="padding-left:16px; display:inline-block; font-size:17px;">Wrapper is backing up right now...</div>
         </div>
     </div>
 

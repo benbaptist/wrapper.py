@@ -45,10 +45,12 @@
             // Players
             socket.on("server.player.join", function(payload){
                 console.log("server.player.join", payload)
+                join(payload.player)
             })
 
             socket.on("server.player.part", function(payload){
                 console.log("server.player.part", payload)
+                part(payload.player)
             })
 
             socket.on("server.player.message", function(payload){
@@ -73,6 +75,18 @@
         chat_message = function(player, message){
             var username = player.username
             $("#chat").append("&lt;" + username + "&gt; " + message+"\n")
+            $("#card-chat").scrollTop( $("#card-chat")[0].scrollHeight )
+        }
+
+        join = function(player, message){
+            var username = player.username
+            $("#chat").append("" + username + " joined the server\n")
+            $("#card-chat").scrollTop( $("#card-chat")[0].scrollHeight )
+        }
+
+        part = function(player, message){
+            var username = player.username
+            $("#chat").append("" + username + " left the server\n")
             $("#card-chat").scrollTop( $("#card-chat")[0].scrollHeight )
         }
 

@@ -7,6 +7,7 @@ from uuid import UUID
 from wrapper.server.mcserver import MCServer
 from wrapper.server.player import Player
 from wrapper.server.commands import Commands
+from wrapper.server.log import Log
 from wrapper.exceptions import *
 from wrapper.commons import *
 
@@ -133,6 +134,26 @@ class Server(object):
     def online_mode(self):
         if self.mcserver:
             return self.mcserver.online_mode
+
+    @property
+    def logs(self):
+        files = os.listdir("logs")
+        files.sort()
+        
+        log_files = []
+
+        for fn in files:
+            try:
+                name, ext = fn.rsplit(".", 1)
+            except:
+                name,  ext = fn, None
+
+            log = Log(fn)
+
+            if ext in ("gz", "log"):
+                log_files.append(log)
+
+        return log_files
 
     def tellraw(self, target, message):
         raise Exception("Use self.mcserver.features.message ")

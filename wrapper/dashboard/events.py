@@ -101,7 +101,7 @@ class Events(Namespace):
         def backups_complete(details=None):
             self.socketio.emit("backups.complete", True)
 
-            emit("backups.list", self.wrapper.backups.list())
+            self.socketio.emit("backups.list", self.wrapper.backups.list())
 
         super(Events, self).__init__()
 
@@ -232,7 +232,8 @@ class Events(Namespace):
             self.wrapper.backups.start()
         except:
             return
+
     def on_delete_backup(self, id):
         self.wrapper.backups.delete(id)
-        
+
         emit("backups.list", self.wrapper.backups.list())
