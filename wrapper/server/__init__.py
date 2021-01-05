@@ -75,6 +75,8 @@ class Server(object):
         if self.mcserver:
             return self.mcserver.list_players(everyone=True)
 
+        return []
+
     @property
     def players(self):
         if self.mcserver:
@@ -139,7 +141,7 @@ class Server(object):
     def logs(self):
         files = os.listdir("logs")
         files.sort()
-        
+
         log_files = []
 
         for fn in files:

@@ -2,6 +2,7 @@ from flask import g
 from flask_socketio import Namespace, send, emit, join_room, leave_room
 
 from wrapper.commons import *
+from wrapper.__version__ import __version__
 
 import time
 
@@ -141,7 +142,8 @@ class Events(Namespace):
             "world": world,
             "mcversion": server.version,
             "free_disk_space": None,
-            "log": self._log_scrollback
+            "log": self._log_scrollback,
+            "wrapperversion": __version__
         })
 
     def on_chat(self):

@@ -104,6 +104,9 @@
 
                 // Server version
                 $("#server-version").text(payload.mcversion)
+
+                // Wrapper version
+                $("#wrapper-version").text(payload.wrapperversion)
             })
 
             socket.on("chat", function(payload){
@@ -231,6 +234,9 @@
                 </li>
                 <li>
                     <b>Server Port</b>: <span id="server-port"></span>
+                </li>
+                <li>
+                    <b>Wrapper.py Version</b>: <span id="wrapper-version"></span>
                 </li>
             </ul>
         </div>

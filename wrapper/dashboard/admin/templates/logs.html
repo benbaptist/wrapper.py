@@ -65,7 +65,7 @@
     {% if logname %}
         <div class="card teal darken-5 chat" id="card-chat">
             <div class="card-content white-text">
-                <pre id="chat" style="margin: 0px; white-space: pre-wrap; word-wrap: break-word;">{% for line in log.readline(-1) %}{{ line }}
+                <pre id="chat" style="margin: 0px; white-space: pre-wrap; word-wrap: break-word;">{% for line in log.readline(-1) %}{{ line.decode("utf8") }}
 {% endfor %}</pre>
             </div>
         </div>

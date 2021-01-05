@@ -1,6 +1,14 @@
+## 2021-01-04 / 0.1.8 Alpha
+- Fixed:
+    - `b"..."` surrounding every log line on Logs page
+    - Skinless players showing no face on Players page
+    - Small UI fixes & improvements
+- Technical:
+    - Decreased `player.position` timeout from 2 sec to 1 sec
+
 ## 2020-12-12 / 0.1.7 Alpha
 - Implemented Logs page
-- Testing some weird new layout for the Overview page
+- Testing some weird new layout for the Overview page (it's ugly!)
 - UI changes
 - Fixed:
     - "backkup" typo

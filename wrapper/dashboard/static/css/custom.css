@@ -122,6 +122,7 @@ nav.navbar .brand-logo {
 
 .nav-extended .nav-wrapper {
     padding-left: 24px;
+    height: 64px !important;
 }
 
 .subnav{

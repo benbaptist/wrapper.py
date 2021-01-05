@@ -161,7 +161,7 @@ class Player:
 
                 poll_start = time.time()
                 while time.time() - self.db["position_last_updated"] > 1:
-                    if time.time() - poll_start > 2:
+                    if time.time() - poll_start > 1:
                         print("Timeout: player.position")
                         break
 

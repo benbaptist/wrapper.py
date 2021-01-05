@@ -70,6 +70,13 @@ class Dashboard:
 
         self.app.jinja_env.filters["naturaltime"] = naturaltime
 
+        def pretty_timestamp(seconds):
+            d = dt.datetime.fromtimestamp(seconds)
+
+            return d.strftime("%Y/%m/%d %I:%M:%S%p")
+
+        self.app.jinja_env.filters["pretty_timestamp"] = pretty_timestamp
+
     def register_blueprints(self):
         self.app.register_blueprint(blueprint_login)
         self.app.register_blueprint(blueprint_admin)
