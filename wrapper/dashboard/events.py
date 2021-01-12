@@ -25,6 +25,11 @@ class Events(Namespace):
         def server_started():
             self.socketio.emit("server.started", room="server")
 
+            self._chat_scrollback.append({
+                "type": "server_started",
+                "time": time.time()
+            })
+
         @self.events.hook("server.stopping")
         def server_stopping():
             self.socketio.emit("server.stopping", room="server")
@@ -32,6 +37,11 @@ class Events(Namespace):
         @self.events.hook("server.stopped")
         def server_stopped():
             self.socketio.emit("server.stopped", room="server")
+
+            self._chat_scrollback.append({
+                "type": "server_stopped",
+                "time": time.time()
+            })
 
         # Server console output
         @self.events.hook("server.console.output")
@@ -67,11 +77,19 @@ class Events(Namespace):
                 room="chat"
             )
 
+            self._chat_scrollback.append({
+                "player": player.__serialize__(),
+                "type": "join",
+                "time": time.time()
+            })
+
         @self.events.hook("server.player.message")
         def server_player_message(player, message):
             self._chat_scrollback.append({
                 "player": player.__serialize__(),
-                "message": message
+                "type": "message",
+                "message": message,
+                "time": time.time()
             })
 
             self.socketio.emit(
@@ -92,6 +110,12 @@ class Events(Namespace):
                 },
                 room="chat"
             )
+
+            self._chat_scrollback.append({
+                "player": player.__serialize__(),
+                "type": "part",
+                "time": time.time()
+            })
 
         # Backups
         @self.events.hook("backups.start")

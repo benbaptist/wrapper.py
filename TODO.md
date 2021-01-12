@@ -43,8 +43,8 @@
     - [x] Auto-accept EULA
     - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
     - [x] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
-- [ ] log_manager
-    - [PARTIAL] Rotate logs
+- [ ] Log Management
+    - [x] Rotate logs
     - [x] Compress old logs using gzip
     - [x] Respect debug-mode settings
 - [ ] Backups
@@ -55,7 +55,7 @@
     - [ ] Localize MaterializeCSS dependencies (don't use CDN)
     - [ ] "400 Bad request" thru nginx proxy
     - [ ] Occasional deadlock condition shortly after starting
-    - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy. Bah!
+    - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy. Bah! (No idea what I meant when I wrote this)
     - [ ] Server jar downloader only works for versions 1.2 and over
 - [ ] Plugins / API
     - [ ] Permissions handling for commands
@@ -65,7 +65,7 @@
         - [x] Persistent storage
         - [ ] Delete persistent player objects if too many are used
 - [ ] Misc. stuff
-    - [ ] Make {"text": ""} objects universally encoded [what? no idea what I meant here]
+    - [ ] Make {"text": ""} objects universally encoded [what? no idea what I meant here. Sometimes I drink while programming...]
     - [ ] Use curses to make console input a little nicer
 
 # Plugin Ideas #

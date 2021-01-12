@@ -34,10 +34,17 @@ class Log:
                 if len(line) == 0:
                     break
 
+                if type(line) == bytes:
+                    line = line.decode("utf8")
+
                 lines.append(line)
         else:
             for i in range(count):
                 line = self.fh.readline(1024).strip()
+
+                if type(line) == bytes:
+                    line = line.decode("utf8")
+
                 lines.append(line)
 
         return lines

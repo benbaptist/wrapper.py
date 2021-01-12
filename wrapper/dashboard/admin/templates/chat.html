@@ -57,7 +57,7 @@
                 console.log("server.player.message", payload)
                 var player = payload.player
                 var message = payload.message
-                chat_message(player, message)
+                chat_message(player, message, payload.time)
             })
 
             socket.on("chat", function(payload){
@@ -65,15 +65,34 @@
                 $("#chat").text("")
                 for(i in payload){
                     var chat = payload[i]
-                    var player = chat.player; var message = chat.message
+                    var player = chat.player
+                    var type = chat.type
+                    var time = chat.time
 
-                    chat_message(player, message)
+                    if(type == "message"){
+                        var message = chat.message
+                        chat_message(player, message, time)
+                    }
+
+                    if(type == "join"){
+                        join(player)
+                    }
+
+                    if(type == "part"){
+                        part(player)
+                    }
                 }
             })
         }
 
-        chat_message = function(player, message){
+        ts = function(seconds){
+            var d = new Date(seconds)
+            str = "[" + d.getDate() + "/" + d.getMonth() + 1 + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes() + "]"
+        }
+
+        chat_message = function(player, message, timestamp){
             var username = player.username
+            var timestamp = ts(timestamp)
             $("#chat").append("&lt;" + username + "&gt; " + message+"\n")
             $("#card-chat").scrollTop( $("#card-chat")[0].scrollHeight )
         }

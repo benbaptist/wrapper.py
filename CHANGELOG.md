@@ -1,3 +1,10 @@
+## 2021-01-12 / 0.1.9 Alpha
+- Fixed:
+    - Error when loading certain log files
+    - Updated Socket.IO dependency to 4.3.2
+- Technical:
+    - Moved wizard code to wizard.py
+
 ## 2021-01-04 / 0.1.8 Alpha
 - Fixed:
     - `b"..."` surrounding every log line on Logs page
