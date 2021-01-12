@@ -22,6 +22,30 @@
     </script>
 {% endblock %}
 
-{% block subbody %}
+{% block navbar_right %}
+    <a href="#" class="btn white-text {% if player.online %}green darken-2{% else %}grey darken-3{% endif %}">
+        {% if player.online %}
+            Online
+        {% else %}
+            Offline
+        {% endif %}
+    </a>
 
+    <a href="#" data-target="player-dropdown" class="dropdown-trigger lighten-3 black-text waves-effect waves-dark">
+        <i class="material-icons">more_vert</i>
+    </a>
+{% endblock %}
+
+{% block subbody %}
+    Position: {{ player.position }}<br/>
+    Last IP: {{ player.ip_address }}<br/>
+    First Logged In: {{ player.first_login|pretty_timestamp }}<br/>
+
+    <h5>Skin</h5>
+        <img src="{{ player.skin.url }}"/>
+        <div id="face"></div>
+
+    <script>
+        $("#face").append(ui.generate_face("{{ player.skin.url }}", 64))
+    </script>
 {% endblock %}

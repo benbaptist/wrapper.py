@@ -38,5 +38,8 @@ export PATH=$PATH:~/.local/bin
 
 Wrapper.py will automatically accept the Minecraft server EULA on your behalf, if you have not already done so.
 
+# Plugins #
+[Here's a repository filled with of plugins](https://github.com/benbaptist/wrapper-plugins) to get you started.
+
 # Wrapper.py 2.0 #
 This is a complete re-write of Wrapper.py, and is focused on being extremely lightweight and clean. For the original 1.x repository, [click here](http://github.com/benbaptist/minecraft-wrapper).

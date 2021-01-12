@@ -2,7 +2,7 @@
 
 {% block head %}
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+<script src="/static/js/socket.io.js"></script>
 <script src="/static/js/filesize.min.js"></script>
 
 <script>
@@ -68,7 +68,7 @@
 
     // often-used ui functions
     ui = new Object()
-    ui.generate_face = function(url, size){
+    ui.generate_face = function(url){
         canvas = $("<canvas>")
         var ctx = canvas[0].getContext("2d")
 
@@ -149,12 +149,11 @@
 
                         {% if enable_back %}
                             <a href="{{ back_location }}">
-                                <i class="material-icons black-text">arrow_back</i>
+                                <i class="material-icons black-text" style="display: inline-block">arrow_back</i>
                             </a>
                         {% endif %}
 
                         <a href="#" class="brand-logo">{% block pagename %}{% endblock %}</a>
-
 
                         <ul id="nav-mobile" class="right">
                             {% block navbar_right %}{% endblock %}

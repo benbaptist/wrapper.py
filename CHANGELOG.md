@@ -1,3 +1,40 @@
+## 2021-01-12 / 0.1.9 Alpha
+- Fixed:
+    - Error when loading certain log files
+    - Updated Socket.IO dependency to 4.3.2
+- Technical:
+    - Moved wizard code to wizard.py
+
+## 2021-01-04 / 0.1.8 Alpha
+- Fixed:
+    - `b"..."` surrounding every log line on Logs page
+    - Skinless players showing no face on Players page
+    - Small UI fixes & improvements
+- Technical:
+    - Decreased `player.position` timeout from 2 sec to 1 sec
+
+## 2020-12-12 / 0.1.7 Alpha
+- Implemented Logs page
+- Testing some weird new layout for the Overview page (it's ugly!)
+- UI changes
+- Fixed:
+    - "backkup" typo
+    - Crash on backup complete
+
+## 2020-12-12 / 0.1.6 Alpha
+- More Socket.IO stuff added to Backups list page
+- Fixed:
+    - Can't enable/disable backups from Dashboard
+    - Small UI bugs
+
+## 2020-12-07 / 0.1.5 Alpha
+- Now serving socket.io.js locally
+- Added "storage" chunk to API
+- Fixed:
+    - Command arguments not passed to plugins
+    - Database contexts being duplicated, causing memory leak or conflicting databases
+- Added 'coords' command to Essentials plugin
+
 ## 2020-10-31 / 0.1.4 Alpha
 - Now serving filesize.js locally
 - Fixed:

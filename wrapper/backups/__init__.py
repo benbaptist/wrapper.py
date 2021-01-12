@@ -41,6 +41,8 @@ class Backups:
 
         self.log.info("Starting backup")
 
+        self.events.call("backups.start")
+
         self.current_backup = Backup(self)
         self.current_backup.start()
 
@@ -180,7 +182,8 @@ class Backups:
                     filesize = details["filesize"]
 
                 self.log.info(
-                    "Backup complete, potentially with errors. Took %s seconds, and uses %s of storage."
+                    "Backup complete, potentially with errors. Took %s seconds,"
+                    " and uses %s of storage."
                     % (details["backup-complete"] - details["backup-start"],
                     bytes_to_human(filesize))
                 )
@@ -193,12 +196,12 @@ class Backups:
                     "color": "green"
                 }, title_type="actionbar")
 
-                self.events.call("backups.complete", details=self.current_backup.details)
-
                 self.dirty = False
                 self.backup_db["backups"].append(self.current_backup.details)
                 self.current_backup = None
                 self.last_backup = time.time()
+
+                self.events.call("backups.complete", details=details)
 
             return
 

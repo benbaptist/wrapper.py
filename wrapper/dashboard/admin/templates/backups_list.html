@@ -25,12 +25,72 @@
 
     <script>
         __socketio_ready = function(){
+            socket.on("backups.start", function(payload){
+                console.log("backup running")
 
+                $("#backup-ongoing").removeClass("hide")
+            })
+
+            socket.on("backups.complete", function(payload){
+                console.log("backup complete")
+
+                $("#backup-ongoing").addClass("hide")
+            })
+
+            socket.on("backups.list", function(payload){
+                console.log("backup list", payload)
+                $("#backups-list").html("")
+
+                $(".progress").addClass("hide")
+                $("#backups-list-table").removeClass("hide")
+
+                for(i in payload){
+                    var backup = payload[i]
+                    console.log(backup)
+
+                    var el = $("<tr>")
+                        .append(
+                            $("<td>")
+                                .text(backup.name)
+                        )
+                        .append(
+                            $("<td>")
+                                .text(backup.filesize)
+                        )
+                        .append(
+                            $("<td>")
+                                .text(backup.path)
+                        )
+                        .append(
+                            $("<td>")
+                                .append(
+                                    $("<button>")
+                                        .addClass("btn")
+                                        .addClass("btn-small")
+                                        .on("click", function(){
+                                            if(confirm("Are you sure you want to delete the backup '" + backup.name + "'?")){
+                                                alert("Successfully deleted.")
+                                                socket.emit("delete_backup", this.id)
+                                            }
+                                        })
+                                        .text("Delete")
+                                        .attr("id", backup.id)
+                                )
+                        )
+
+                    $("#backups-list").append(el)
+                }
+            })
         }
 
         $(document).ready(function(){
 
         })
+
+        start_backup = function(){
+            if(confirm("Start backup?"))
+                socket.emit("start_backup")
+        }
     </script>
 {% endblock %}
 
@@ -44,7 +104,28 @@
         </div>
     {% endif %}
 
-    <a class="btn-floating btn-large waves-effect waves-light blue" href="?start_backup"><i class="material-icons">add</i></a>
+    <div class="card grey lighten-4 hide" id="backup-ongoing">
+        <div class="card-content">
+            <!-- <i class="material-icons medium" style="vertical-align:middle; padding-right: 12px;">backup</i> -->
+            <div class="preloader-wrapper big active" style="vertical-align:middle">
+                <div class="spinner-layer spinner-blue-only">
+                  <div class="circle-clipper left">
+                    <div class="circle"></div>
+                  </div><div class="gap-patch">
+                    <div class="circle"></div>
+                  </div><div class="circle-clipper right">
+                    <div class="circle"></div>
+                  </div>
+                </div>
+            </div>
+
+            <div style="padding-left:16px; display:inline-block; font-size:17px;">Wrapper is backing up right now...</div>
+        </div>
+    </div>
+
+    <a class="btn-floating btn-large waves-effect waves-light blue" href="#" onclick="start_backup()">
+        <i class="material-icons">add</i>
+    </a>
 
     {% if g.wrapper.backups.list()|length == 0 %}
         <div class="vertical-center" style="text-align:center;">
@@ -53,7 +134,11 @@
         </div>
     {% else %}
 
-        <table>
+        <div class="progress" style="width: 60%; margin: auto;">
+            <div class="indeterminate"></div>
+        </div>
+
+        <table id="backups-list-table" class="hide">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -63,8 +148,8 @@
                 </tr>
             </thead>
 
-            <tbody>
-                {% for backup in g.wrapper.backups.list() %}
+            <tbody id="backups-list">
+                <!-- {% for backup in g.wrapper.backups.list() %}
                     <tr{% if backup.orphan %} class="red lighten-4 disabled-text"{% endif %}>
                         <td>{{ backup.name }}</td>
                         <td>{{ backup.filesize|human_bytes }}</td>
@@ -73,7 +158,7 @@
                             <a href="?delete={{ backup.id }}" class="btn btn-small">Delete</a>
                         </td>
                     </tr>
-                {% endfor %}
+                {% endfor %} -->
             </tbody>
         </table>
     {% endif %}

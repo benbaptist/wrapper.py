@@ -36,7 +36,11 @@
         <tbody>
           {% for player in g.wrapper.server.all_players %}
               <tr{% if player.online %} class="light-green lighten-4"{% endif %}>
-                <td id="{{ player.mcuuid }}-skin"></td>
+                <td id="{{ player.mcuuid }}-skin">
+                    {% if not player.skin %}
+                        <!-- <img src="/static/images/steve_skin_face.png"/> -->
+                    {% endif %}
+                </td>
                 <td>
                     {{ player.username }}
                     {% if player.online %}
@@ -51,9 +55,13 @@
                 </td>
               </tr>
 
-              {% if player.skin %}
+                {% if player.skin %}
                     <script>
                         $("#{{ player.mcuuid }}-skin").append(ui.generate_face("{{ player.skin.url }}"))
+                    </script>
+                {% else %}
+                    <script>
+                        $("#{{ player.mcuuid }}-skin").append(ui.generate_face("/static/images/skin-steve.png"))
                     </script>
                 {% endif %}
           {% endfor %}

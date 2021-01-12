@@ -121,6 +121,11 @@ class Console:
                     self.wrapper.server.stop()
                     continue
 
+                if command == "log":
+                    logs = self.wrapper.server.logs
+                    print(logs[0].readline(5))
+                    continue
+
                 if command == "wrapper":
                     subcommand = args(1)
 
