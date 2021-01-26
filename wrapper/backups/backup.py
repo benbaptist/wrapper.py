@@ -73,7 +73,8 @@ class Backup(object):
             "compression": self.config["archive-format"]["compression"]["enable"],
             "include-paths": self.backups.get_included_paths(),
             "id": str(UUID(bytes=os.urandom(16))),
-            "orphan": False
+            "orphan": False,
+            "important": False
         }
 
     def build_command(self):

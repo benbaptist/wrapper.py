@@ -17,12 +17,15 @@ class ConsoleParser:
         # Compatible with most recent versions of Minecraft server
         new_style = re.search("(\[[0-9:]*\]) \[([A-z #0-9]*)\/([A-z #]*)\](.*)", line)
         old_style = re.search("([0-9-: ]*) \[([A-Z]*)\] (.*)", line)
+        paper_style = re.search("\[([0-9:]*) ([A-z]*)\]()(.*)", line)
 
         # If regex did not match, continue to prevent issues
         if new_style:
             return self.new_style(new_style)
         elif old_style:
             return self.old_style(old_style)
+        elif paper_style:
+            return self.new_style(paper_style)
 
     def new_style(self, r):
         log_time = r.group(1)
@@ -115,7 +118,13 @@ class ConsoleParser:
                 output
             )
 
-            if r1 or r2 or r3:
+            # Paper & Bukkit
+            r4 = re.search(
+                ": Reloading ResourceManager: Default, bukkit",
+                output
+            )
+
+            if r1 or r2 or r3 or r4:
                 if r1:
                     username = r1.group(1)
                     player = self.server.get_player(username=username)
@@ -181,11 +190,15 @@ class ConsoleParser:
                 username = r.group(1)
                 ip_address = r.group(2)
                 entity_id = r.group(4)
-                position = [
-                    float(r.group(5)),
-                    float(r.group(6)),
-                    float(r.group(7))
-                ]
+
+                try:
+                    position = [
+                        float(r.group(5)),
+                        float(r.group(6)),
+                        float(r.group(7))
+                    ]
+                except:
+                    position = None
 
                 try:
                     player = self.server.get_player(username=username)
@@ -198,6 +211,9 @@ class ConsoleParser:
 
                 player.online = True
                 player.ip_address = ip_address
+
+                if position:
+                    player.position = position
 
                 self.mcserver.events.call("server.player.join", player=player)
 

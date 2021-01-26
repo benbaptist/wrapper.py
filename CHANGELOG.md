@@ -1,3 +1,9 @@
+## 2021-01-26 / 0.1.10 Alpha
+- Fixed:  
+    - [#13] Paper-based servers not working with Wrapper.py
+- Technical:
+    - Player coordinates are now properly grabbed upon login
+
 ## 2021-01-12 / 0.1.9 Alpha
 - Fixed:
     - Error when loading certain log files
