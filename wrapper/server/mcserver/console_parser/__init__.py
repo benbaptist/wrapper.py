@@ -17,7 +17,11 @@ class ConsoleParser:
         # Compatible with most recent versions of Minecraft server
         new_style = re.search("(\[[0-9:]*\]) \[([A-z #0-9]*)\/([A-z #]*)\](.*)", line)
         old_style = re.search("([0-9-: ]*) \[([A-Z]*)\] (.*)", line)
-        paper_style = re.search("\[([0-9:]*) ([A-z]*)\]()(.*)", line)
+        ansi_escape_8bit = re.compile(
+            '(?:\x1B[@-Z\\-_]|[\x80-\x9A\x9C-\x9F]|(?:\x1B\[|\x9B)[0-?]*[ -/]*[@-~])'
+        )
+        clean_line = ansi_escape_8bit.sub('', line)
+        paper_style = re.search("\[([0-9:]*) ([A-z]*)\]()(.*)", clean_line)
 
         # If regex did not match, continue to prevent issues
         if new_style:
