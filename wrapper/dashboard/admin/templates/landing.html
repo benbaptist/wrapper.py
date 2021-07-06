@@ -107,6 +107,9 @@
 
                 // Wrapper version
                 $("#wrapper-version").text(payload.wrapperversion)
+
+                // Java version
+                $("#java-version").text(payload.javaversion)
             })
 
             socket.on("chat", function(payload){
@@ -237,6 +240,9 @@
                 </li>
                 <li>
                     <b>Wrapper.py Version</b>: <span id="wrapper-version"></span>
+                </li>
+                <li>
+                    <b>Java Version</b>: <span id="java-version"></span>
                 </li>
             </ul>
         </div>

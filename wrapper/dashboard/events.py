@@ -146,6 +146,11 @@ class Events(Namespace):
         server = self.wrapper.server
         players = []
 
+        if server.java_version:
+            java_version = server.java_version
+        else:
+            java_version = "n/a"
+
         if self.wrapper.server.mcserver:
             for player in server.players:
                 players.append(
@@ -167,7 +172,8 @@ class Events(Namespace):
             "mcversion": server.version,
             "free_disk_space": None,
             "log": self._log_scrollback,
-            "wrapperversion": __version__
+            "wrapperversion": __version__,
+            "javaversion": java_version
         })
 
     def on_chat(self):

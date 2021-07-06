@@ -25,6 +25,7 @@ class Server(object):
             }
 
         self.mcserver = None
+        self.java_version = None
         self._timeout = 0
 
         # Dummy player used for console user
@@ -261,6 +262,9 @@ class Server(object):
             return
 
         if self.mcserver:
+            if self.mcserver.java_version:
+                self.java_version = self.mcserver.java_version
+
             try:
                 self.mcserver.tick()
             except ServerStopped:

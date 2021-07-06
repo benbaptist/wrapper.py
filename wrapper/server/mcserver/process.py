@@ -3,8 +3,9 @@ import time
 import traceback
 import resource
 import psutil
+import re
 
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, check_output, STDOUT
 
 from wrapper.exceptions import *
 
@@ -12,6 +13,7 @@ class Process:
     def __init__(self):
         self.process = None
         self.process_status = None
+        self.java_version = None
         self.threads = {}
         self.console_output = []
 
@@ -34,6 +36,17 @@ class Process:
         self.threads["__stderr__"] = threading.Thread(target=self.__stread__, args=("stderr", ))
         self.threads["__stderr__"].daemon = True
         self.threads["__stderr__"].start()
+
+        # Grab Java version
+        output = check_output(["java", "-version"],
+                                stderr=STDOUT)
+        output = output.decode("utf8")
+
+        for line in output.split("\n"):
+            r = re.search("java version \"(.*)\"", line)
+
+            if r:
+                self.java_version = r.group(1)
 
     def get_ram_usage(self):
         with open("/proc/%d/statm" % self.process.pid) as f:
@@ -92,7 +105,7 @@ class Process:
                     # Strip line of \r
                     line = line.replace("\r", "")
 
-                    self.console_output.append([read, line])
+                    self.console_output.append((read, line))
 
             # After loop is killed, ensure process is cleaned up
             self.kill()

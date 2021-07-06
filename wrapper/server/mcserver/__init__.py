@@ -92,6 +92,10 @@ class MCServer:
             command=command
         )
 
+        self.java_version = self.process.java_version
+
+        self.log.info("Java Version: %s" % self.java_version)
+
         self.state = SERVER_STARTING
 
     # Control server states
@@ -161,6 +165,24 @@ class MCServer:
 
     # Tick
     def tick(self):
+        # Process server output
+        # This is done first, to ensure the buffer is cleared before the
+        # in the event that the server process is dead
+        for std, line in self.process.read_console():
+            # Parse line
+            if self.console_parser.parse(line) != False:
+                # Print line to console
+                print(line)
+
+            # Call event for line
+            self.events.call("server.console.output", line=line)
+
+        # Check if server died during start; assume a problem, and
+        # stop auto-restarting, to prevent a CPU-hogging bootloop
+        if self.state == SERVER_STARTING and not self.process.process:
+            self.log.error("Server stopped unexpectedly while booting.")
+            self.server.stop()
+
         # Check if server process is stopped
         if self.process:
             if not self.process.process:
@@ -199,13 +221,3 @@ class MCServer:
             self.events.call("server.status.cpu", usage=self.cpu_usage)
 
             self._timeout = time.time()
-
-        # Process server output
-        for std, line in self.process.read_console():
-            # Parse line
-            if self.console_parser.parse(line) != False:
-                # Print line to console
-                print(line)
-
-            # Call event for line
-            self.events.call("server.console.output", line=line)

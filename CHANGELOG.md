@@ -1,3 +1,11 @@
+## 2021-07-06 / 0.1.11 Alpha
+- Dashboard:
+    - Java Version listed on Overview page
+- Fixed:
+    - Bootloops when server fails to start
+- Technical:
+    - Server output now fully read even when shutdown; no lines left behind
+
 ## 2021-01-26 / 0.1.10 Alpha
 - Fixed:  
     - [#13] Paper-based servers not working with Wrapper.py
