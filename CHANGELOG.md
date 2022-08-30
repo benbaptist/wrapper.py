@@ -1,3 +1,8 @@
+## 2022-08-30 / 0.1.12 Alpha
+- Fixed:
+    - Fatal crashes on modern versions of Minecraft server (or any?)
+    - Possible fixes for player list
+
 ## 2021-07-06 / 0.1.11 Alpha
 - Dashboard:
     - Java Version listed on Overview page

@@ -37,12 +37,12 @@ class ConsoleParser:
         log_level = r.group(3)
         output = r.group(4)
 
-        print(r)
+        # print(r)
 
         # Parse output
         if self.mcserver.state == SERVER_STARTING:
             # Check for low-level Java errors
-            r = re.search("(Exception in thread \"main\" java.lang.UnsupportedClassVersionError: )(.*)", r)
+            r = re.search("(Exception in thread \"main\" java.lang.UnsupportedClassVersionError: )(.*)", r.string)
             if r:
                 self.log.error("Fatal Java error occured.")
 
