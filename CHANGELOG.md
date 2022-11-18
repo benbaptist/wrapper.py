@@ -1,3 +1,9 @@
+## 2022-11-17 / 0.1.13 Alpha
+- Fixed:
+    - Fatal crash when client doesn't completely connect (when server throws com.mojang crap)
+    - Other fatal crashes when parsing doesn't go right
+    - Attempts graceful shutdown of Java server now upon a fatal Wrapper crash
+
 ## 2022-08-30 / 0.1.12 Alpha
 - Fixed:
     - Fatal crashes on modern versions of Minecraft server (or any?)

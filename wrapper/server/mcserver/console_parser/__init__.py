@@ -24,18 +24,27 @@ class ConsoleParser:
         paper_style = re.search("\[([0-9:]*) ([A-z]*)\]()(.*)", clean_line)
 
         # If regex did not match, continue to prevent issues
-        if new_style:
-            return self.new_style(new_style)
-        elif old_style:
-            return self.old_style(old_style)
-        elif paper_style:
-            return self.new_style(paper_style)
+        try:
+            if new_style:
+                return self.new_style(new_style)
+            elif old_style:
+                return self.old_style(old_style)
+            elif paper_style:
+                return self.new_style(paper_style)
+        except Exception as e:
+            print(line)
+            self.server.log.traceback("Fatal error while parsing line from server: %s" % line)
+            raise e
 
     def new_style(self, r):
         log_time = r.group(1)
         server_thread = r.group(2)
         log_level = r.group(3)
         output = r.group(4)
+
+        print(output)
+        if "IMSOVERYSPECIALLOL" in output:
+            self.log.error("IMSOVERYSPECIALLOL")
 
         # print(r)
 
@@ -44,7 +53,7 @@ class ConsoleParser:
             # Check for low-level Java errors
             r = re.search("(Exception in thread \"main\" java.lang.UnsupportedClassVersionError: )(.*)", r.string)
             if r:
-                self.log.error("Fatal Java error occured.")
+                self.server.log.error("Fatal Java error occured.")
 
             # Grab server version
             r = re.search(": Starting minecraft server version (.*)", output)
@@ -229,7 +238,7 @@ class ConsoleParser:
                 self.mcserver.events.call("server.player.join", player=player)
 
             # Player Part
-            r = re.search(": (.*) lost connection: (.*)", output)
+            r = re.search(": ([A-z0-9_]) lost connection: (.*)", output)
             if r:
                 username = r.group(1)
                 server_disconnect_reason = r.group(2)

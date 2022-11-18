@@ -88,6 +88,15 @@ def read_console():
         if blob == "cmd2":
             fancy_print("<benbaptist> .wrapper")
 
+        if blob == "failconnect":
+            fancy_print("com.mojang.authlib.GameProfile@e9f2922[id=<null>,name=MilkDaddyMiner,properties={},legacy=false] (/127.0.0.1:43296) lost connection: Disconnected")
+
+        if blob == "failjava":
+            fancy_print("Exception in thread \"main\" java.lang.UnsupportedClassVersionError: )WOWOWOWOWOWOWOW")
+
+        if blob == "special":
+            fancy_print("IMSOVERYSPECIALLOL")
+
 t = threading.Thread(target=read_console, args=())
 t.daemon = True
 t.start()

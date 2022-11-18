@@ -20,13 +20,21 @@ class Process:
     def start(self, jar_name, java_args=[], java_bin="java",
             jar_args=["nogui"], command=None, java_xms=1024, java_xmx=2048):
         if self.process:
-            raise StartingException("Cannot start java process, because it is already running.")
+            raise StartingException("Cannot start java process, because it is \
+                                    already running.")
 
         if not command:
             command = [java_bin] + java_args + ["-Xms%sM" % java_xms,
                 "-Xmx%sM" % java_xmx] + ["-jar", jar_name] + jar_args
 
-        self.process = Popen(command, stdout=PIPE, stderr=PIPE, stdin=PIPE, universal_newlines=True, bufsize=1)
+        self.process = Popen(
+            command,
+            stdout=PIPE,
+            stderr=PIPE,
+            stdin=PIPE,
+            universal_newlines=True,
+            bufsize=1)
+
         self.process_status = psutil.Process(self.process.pid)
 
         self.threads["__stdout__"] = threading.Thread(target=self.__stread__, args=("stdout", ))
