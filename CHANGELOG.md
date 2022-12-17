@@ -1,3 +1,7 @@
+## 2022-12-16 / 0.1.14 Alpha
+- Updated Socket.IO client
+- Fixed requirements.txt
+
 ## 2022-11-17 / 0.1.13 Alpha
 - Fixed:
     - Fatal crash when client doesn't completely connect (when server throws com.mojang crap)

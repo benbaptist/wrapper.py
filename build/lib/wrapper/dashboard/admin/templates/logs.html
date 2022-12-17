@@ -1,0 +1,73 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = False %}
+{% block pagename %}Logs{% endblock %}}
+
+{% block subhead %}
+    <style>
+        .chat{
+            height: calc(100% - 46px);
+            overflow-y: scroll;
+        }
+
+        .subbody{
+            padding: 0px;
+            height: calc(100% - 64px);
+        }
+
+        #chat-send-message{
+            margin: 0px;
+            width: calc(100% - 24px);
+            padding-left: 24px;
+        }
+
+        .card{
+            margin: 0px;
+        }
+
+        /* responsive */
+        @media only screen and (max-width : 992px) {
+            .subbody{
+                padding: 0px;
+                height: calc(100% - 56px);
+            }
+
+            .chat{
+                height: calc(100% - 43px);
+            }
+        }
+
+        .select-dropdown, .dropdown-trigger{
+            margin: 0px !important;
+            padding-left: 32px !important;
+        }
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+
+        })
+    </script>
+{% endblock %}
+
+{% block subbody %}
+    <select onchange="window.location='/logs/' + this.value" style="margin: 0px !important;padding-left: 32px;">
+        <option disabled selected>Select a log...</option>
+        {% for log in g.wrapper.server.logs %}
+            <option value="{{ log.fn }}" {% if log.fn == logname %} selected{% endif %}>{{ log.fn }} ({{ log.filesize|human_bytes }})</option>
+        {% endfor %}
+    </select>
+
+    {% if logname %}
+        <div class="card teal darken-5 chat" id="card-chat">
+            <div class="card-content white-text">
+                <pre id="chat" style="margin: 0px; white-space: pre-wrap; word-wrap: break-word;">{% for line in log.readline(-1) %}{{ line }}
+{% endfor %}</pre>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

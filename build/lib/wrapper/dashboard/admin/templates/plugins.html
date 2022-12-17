@@ -1,0 +1,112 @@
+{% extends "__layout_dashboard__.html" %}
+
+{% set enable_navbar = False %}
+{% block pagename %}Plugins{% endblock %}}
+
+{% block subhead %}
+    <style>
+
+    </style>
+
+    <script>
+        __socketio_ready = function(){
+
+        }
+
+        $(document).ready(function(){
+
+        })
+    </script>
+{% endblock %}
+
+{% block navbar_right %}
+    <li>
+        <a href="?reload">
+            <i class="material-icons">refresh</i>
+        </a>
+    </li>
+{% endblock %}
+
+{% block subbody %}
+
+    {% if "reload" in request.args %}
+        <div class="card green darken-2">
+            <div class="card-content white-text">
+                <span class="card-title">Reloading plugins...</span>
+                Enjoy a cup of coffee while you wait.
+            </div>
+        </div>
+    {% endif %}
+
+    {% if g.wrapper.plugins.plugins|length > 0 %}
+
+        <ul class="collapsible">
+            {% for plugin in g.wrapper.plugins.plugins %}
+                <li>
+                    <div class="collapsible-header{% if not plugin.success %} red lighten-4{% endif %}">
+                        <i class="material-icons">add_circle</i> {{ plugin.name}}
+
+                        {% if plugin.success %}
+                            <font class="grey-text" style="padding-left: 5px;">{{ plugin.module.summary }}</font>
+                        {% endif %}
+                    </div>
+                    <div class="collapsible-body">
+                        <span>
+                            {% if not plugin.success %}
+                                <div class="card red lighten-4">
+                                    <div class="card-content">
+                                        <span class="card-title">Error while loading plugin</span>
+                                        <pre style="width: 100%; overflow-x:auto;">{{ plugin._traceback }}</pre>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <b>Version: </b> {{ plugin.module.VERSION }}<br/>
+                                <b>ID: </b> {{ plugin.id }}<br/>
+                                <a href="{{ plugin.module.WEBSITE }}">Plugin Website</a><br/>
+
+                                <p>
+                                    {{ plugin.module.DESCRIPTION }}
+                                </p>
+
+                            {% endif %}
+
+                            <a href="?disable_plugin={{ plugin.id }}" class="btn btn-small">Disable Plugin</a><br/>
+                        </span>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="vertical-center" style="text-align:center;">
+            <h2>No plugins were found.</h2>
+            <h5>
+                Plugins must be placed under
+                <i class="grey-text">wrapper-data/plugins</i> for Wrapper to
+                find them.
+            </h5>
+        </div>
+    {% endif %}
+
+    <!-- <table>
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for plugin in g.wrapper.plugins.plugins %}
+              <tr{% if not plugin.success %} class="red lighten-4"{% endif %}>
+                <td>
+                    {{ plugin.name }}
+                    <br/><small class="grey-text">{{ plugin.id }}</small>
+                </td>
+                <td>
+                    <a href="#" class="btn btn-small">Open...</a>
+                </td>
+              </tr>
+          {% endfor %}
+        </tbody> -->
+    </table>
+{% endblock %}
