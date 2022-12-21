@@ -1,3 +1,8 @@
+## 2022-12-20 / 0.1.15 Alpha
+- Fixed duplicate console lines
+- New backup mode "copy": copies path(s) directly to a new folder in the backup location, no archival method used (useful for shadow/de-duplication filesystems)
+- Actually implemented zip backups
+
 ## 2022-12-16 / 0.1.14 Alpha
 - Updated Socket.IO client
 - Fixed requirements.txt

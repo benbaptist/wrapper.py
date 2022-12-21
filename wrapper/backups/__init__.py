@@ -101,16 +101,13 @@ class Backups:
         elif self.check_bin_installed("zip"):
             return "zip"
         else:
-            raise UnsupportedFormat(
-                "No archival methods are installed. Please install either 7z, "
-                "zip, or tar to use backups."
-            )
+            return "copy"
 
     def get_archive_method(self):
         if self.config["archive-format"]["format"] == "auto":
             return self.get_best_archive_method()
         else:
-            assert self.config["archive-format"]["format"] in ("tar", "7z", "zip")
+            assert self.config["archive-format"]["format"] in ("tar", "7z", "zip", "copy")
             return self.config["archive-format"]["format"]
 
     def get_backup_destination(self):

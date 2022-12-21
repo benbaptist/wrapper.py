@@ -42,12 +42,6 @@ class ConsoleParser:
         log_level = r.group(3)
         output = r.group(4)
 
-        print(output)
-        if "IMSOVERYSPECIALLOL" in output:
-            self.log.error("IMSOVERYSPECIALLOL")
-
-        # print(r)
-
         # Parse output
         if self.mcserver.state == SERVER_STARTING:
             # Check for low-level Java errors
