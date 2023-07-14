@@ -1,3 +1,7 @@
+## 2023-07-14 / 0.1.16 Alpha
+- Bumped required NBT to 1.5.1 (fixes newer Python versions)
+- Added 'cmd' backup mode: Lets you run your own backup command
+
 ## 2022-12-20 / 0.1.15 Alpha
 - Fixed duplicate console lines
 - New backup mode "copy": copies path(s) directly to a new folder in the backup location, no archival method used (useful for shadow/de-duplication filesystems)

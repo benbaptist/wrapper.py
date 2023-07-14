@@ -31,12 +31,13 @@ class Backup(object):
             if not self.backup_complete:
                 self.backup_complete = time.time()
 
-            if not os.path.exists(self.path):
-                if not self.backup_complete:
-                    self.backup_complete = time.time()
+            if self.archive_method != "cmd":
+                if not os.path.exists(self.path):
+                    if not self.backup_complete:
+                        self.backup_complete = time.time()
 
-                self.log.debug("BACKUP_FAILED / File does not exist")
-                return BACKUP_FAILED
+                    self.log.debug("BACKUP_FAILED / File does not exist")
+                    return BACKUP_FAILED
 
             self.log.debug("BACKUP_COMPLETE")
 
@@ -55,7 +56,6 @@ class Backup(object):
 
     @property
     def details(self):
-        self.log.debug(".details called %s" % self.status)
         if not self.status in (BACKUP_COMPLETE, BACKUP_FAILED):
             raise EOFError("Backup is not complete")
 
@@ -88,7 +88,6 @@ class Backup(object):
         self.log.debug("Using archive method '%s'" % self.archive_method)
 
         path = os.path.join(destination, self.name)
-        print("joined", path)
 
         if self.archive_method == "tar":
             path = "%s.%s" % (path, "tar.gz" if compression else "tar")
@@ -111,15 +110,18 @@ class Backup(object):
                 path
             ] + include_paths
         elif self.archive_method == "copy":
-            print("mkdirs?")
             os.makedirs(path)
-            print("hmmm")
 
             command = [
                 "cp", "-rpv",
             ] + include_paths + [path, ]
+        elif self.archive_method == "cmd":
+            user_cmd = self.config["archive-format"]["cmd"]
+            command = [i.format(
+                include_paths=include_paths,
+                destination=destination,
 
-            print(path, command)
+                ) for i in user_cmd]
         else:
             raise UnsupportedFormat(self.archive_method)
 

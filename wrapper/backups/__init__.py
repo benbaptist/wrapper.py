@@ -107,7 +107,7 @@ class Backups:
         if self.config["archive-format"]["format"] == "auto":
             return self.get_best_archive_method()
         else:
-            assert self.config["archive-format"]["format"] in ("tar", "7z", "zip", "copy")
+            assert self.config["archive-format"]["format"] in ("tar", "7z", "zip", "copy", "cmd")
             return self.config["archive-format"]["format"]
 
     def get_backup_destination(self):

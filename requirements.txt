@@ -6,6 +6,6 @@ psutil
 future
 waitress
 importlib_resources
-nbt==1.5.0
+nbt==1.5.1
 humanize==2.6.0
 requests
