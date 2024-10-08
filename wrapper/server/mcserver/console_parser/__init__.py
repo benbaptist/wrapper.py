@@ -232,10 +232,11 @@ class ConsoleParser:
                 self.mcserver.events.call("server.player.join", player=player)
 
             # Player Part
-            r = re.search(": ([A-z0-9_]) lost connection: (.*)", output)
+            r = re.search(": ([A-Za-z0-9_]+) lost connection: (.*)", output)
+            print(output)
             if r:
                 username = r.group(1)
-                server_disconnect_reason = r.group(2)
+                server_disconnect_reason = r.group(2) # unused
 
                 player = self.server.get_player(username=username)
 

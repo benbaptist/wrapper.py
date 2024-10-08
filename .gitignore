@@ -38,7 +38,7 @@ build/version.json
 *.idea
 test.py
 
-#local test server environment
+# local test server environment
 # this list is old -update for your config, if applicable
 wrapper-plugins
 logs
@@ -56,3 +56,5 @@ wrapper.properties
 server.properties
 oops/
 build
+.venv/
+world/

@@ -1,3 +1,8 @@
+## 2024-10-08 / 0.1.17 Alpha
+- Updated dependencies
+- Fixed:
+    - Player disconnect events not firing
+
 ## 2023-07-14 / 0.1.16 Alpha
 - Bumped required NBT to 1.5.1 (fixes newer Python versions)
 - Added 'cmd' backup mode: Lets you run your own backup command

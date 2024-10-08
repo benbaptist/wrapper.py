@@ -1,5 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, \
-    request, make_response, Response, Markup, Blueprint, current_app, g
+from flask import redirect, render_template, request, Blueprint, current_app, g
 
 from wrapper.exceptions import *
 
