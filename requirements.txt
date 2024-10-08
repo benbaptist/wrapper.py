@@ -1,7 +1,7 @@
 passlib==1.7.1
-Flask_SocketIO
-Flask
-msgpack_python==0.5.6
+Flask_SocketIO>=5.4.1
+Flask>=3.0.3
+msgpack
 psutil
 future
 waitress
