@@ -17,12 +17,24 @@ class ConsoleParser:
         # Compatible with most recent versions of Minecraft server
         new_style = re.search("(\[[0-9:]*\]) \[([A-z #0-9]*)\/([A-z #]*)\](.*)", line)
         old_style = re.search("([0-9-: ]*) \[([A-Z]*)\] (.*)", line)
+        ansi_escape_8bit = re.compile(
+            '(?:\x1B[@-Z\\-_]|[\x80-\x9A\x9C-\x9F]|(?:\x1B\[|\x9B)[0-?]*[ -/]*[@-~])'
+        )
+        clean_line = ansi_escape_8bit.sub('', line)
+        paper_style = re.search("\[([0-9:]*) ([A-z]*)\]()(.*)", clean_line)
 
         # If regex did not match, continue to prevent issues
-        if new_style:
-            return self.new_style(new_style)
-        elif old_style:
-            return self.old_style(old_style)
+        try:
+            if new_style:
+                return self.new_style(new_style)
+            elif old_style:
+                return self.old_style(old_style)
+            elif paper_style:
+                return self.new_style(paper_style)
+        except Exception as e:
+            print(line)
+            self.server.log.traceback("Fatal error while parsing line from server: %s" % line)
+            raise e
 
     def new_style(self, r):
         log_time = r.group(1)
@@ -32,6 +44,11 @@ class ConsoleParser:
 
         # Parse output
         if self.mcserver.state == SERVER_STARTING:
+            # Check for low-level Java errors
+            r = re.search("(Exception in thread \"main\" java.lang.UnsupportedClassVersionError: )(.*)", r.string)
+            if r:
+                self.server.log.error("Fatal Java error occured.")
+
             # Grab server version
             r = re.search(": Starting minecraft server version (.*)", output)
             if r:
@@ -115,7 +132,13 @@ class ConsoleParser:
                 output
             )
 
-            if r1 or r2 or r3:
+            # Paper & Bukkit
+            r4 = re.search(
+                ": Reloading ResourceManager: Default, bukkit",
+                output
+            )
+
+            if r1 or r2 or r3 or r4:
                 if r1:
                     username = r1.group(1)
                     player = self.server.get_player(username=username)
@@ -181,11 +204,15 @@ class ConsoleParser:
                 username = r.group(1)
                 ip_address = r.group(2)
                 entity_id = r.group(4)
-                position = [
-                    float(r.group(5)),
-                    float(r.group(6)),
-                    float(r.group(7))
-                ]
+
+                try:
+                    position = [
+                        float(r.group(5)),
+                        float(r.group(6)),
+                        float(r.group(7))
+                    ]
+                except:
+                    position = None
 
                 try:
                     player = self.server.get_player(username=username)
@@ -199,13 +226,17 @@ class ConsoleParser:
                 player.online = True
                 player.ip_address = ip_address
 
+                if position:
+                    player.position = position
+
                 self.mcserver.events.call("server.player.join", player=player)
 
             # Player Part
-            r = re.search(": (.*) lost connection: (.*)", output)
+            r = re.search(": ([A-Za-z0-9_]+) lost connection: (.*)", output)
+            print(output)
             if r:
                 username = r.group(1)
-                server_disconnect_reason = r.group(2)
+                server_disconnect_reason = r.group(2) # unused
 
                 player = self.server.get_player(username=username)
 

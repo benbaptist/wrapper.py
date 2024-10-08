@@ -1,6 +1,5 @@
-from flask import Flask, redirect, url_for, render_template, \
-    request, make_response, Response, Markup, g
-from flask_socketio import SocketIO, send, emit, join_room, leave_room
+from flask import Flask
+from flask_socketio import SocketIO
 
 try:
     from waitress import serve

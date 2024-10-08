@@ -141,7 +141,17 @@ class Wrapper:
             except:
                 self.shutdown()
                 self.log.traceback("Fatal error, shutting down")
-                self.server.kill()
+                self.server.features.stop()
+
+                t = time.time()
+
+                while self.server.mcserver.process.process:
+                    if time.time() - t > 60:
+                        self.log.error("Taking too long for server to shutdown, killing")
+                        self.server.kill()
+                        break
+
+                    time.sleep(1)
 
                 break
 

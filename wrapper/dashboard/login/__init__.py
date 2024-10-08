@@ -1,5 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, \
-    request, make_response, Response, Markup, Blueprint, current_app, g
+from flask import redirect, render_template, request, make_response, Blueprint, current_app, g
 
 from wrapper.exceptions import *
 
@@ -12,11 +11,6 @@ def before_request():
     g.verify_token = current_app.wrapper.dashboard.auth.verify_token
     g.invalidate_token = current_app.wrapper.dashboard.auth.invalidate_token
     g.authenticate = current_app.wrapper.dashboard.auth.authenticate
-
-# @blueprint_login.route("/test", methods=["GET", "POST"])
-# def test():
-#     print(g.wrapper)
-#     return "Hello"
 
 @blueprint_login.route("/logout")
 def logout():

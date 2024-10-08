@@ -3,6 +3,7 @@ import os
 
 from subprocess import PIPE, Popen
 from uuid import UUID
+from threading import Thread
 
 from wrapper.commons import *
 from wrapper.exceptions import *
@@ -30,12 +31,13 @@ class Backup(object):
             if not self.backup_complete:
                 self.backup_complete = time.time()
 
-            if not os.path.exists(self.path):
-                if not self.backup_complete:
-                    self.backup_complete = time.time()
+            if self.archive_method != "cmd":
+                if not os.path.exists(self.path):
+                    if not self.backup_complete:
+                        self.backup_complete = time.time()
 
-                self.log.debug("BACKUP_FAILED / File does not exist")
-                return BACKUP_FAILED
+                    self.log.debug("BACKUP_FAILED / File does not exist")
+                    return BACKUP_FAILED
 
             self.log.debug("BACKUP_COMPLETE")
 
@@ -54,7 +56,6 @@ class Backup(object):
 
     @property
     def details(self):
-        self.log.debug(".details called %s" % self.status)
         if not self.status in (BACKUP_COMPLETE, BACKUP_FAILED):
             raise EOFError("Backup is not complete")
 
@@ -73,7 +74,8 @@ class Backup(object):
             "compression": self.config["archive-format"]["compression"]["enable"],
             "include-paths": self.backups.get_included_paths(),
             "id": str(UUID(bytes=os.urandom(16))),
-            "orphan": False
+            "orphan": False,
+            "important": False
         }
 
     def build_command(self):
@@ -102,9 +104,28 @@ class Backup(object):
             ] + include_paths
         elif self.archive_method == "zip":
             path = "%s.7z" % path
-            command = ["zip"]
+
+            command = [
+                "zip", "-9" if compression else "-1",
+                path
+            ] + include_paths
+        elif self.archive_method == "copy":
+            os.makedirs(path)
+
+            command = [
+                "cp", "-rpv",
+            ] + include_paths + [path, ]
+        elif self.archive_method == "cmd":
+            user_cmd = self.config["archive-format"]["cmd"]
+            command = [i.format(
+                include_paths=include_paths,
+                destination=destination,
+
+                ) for i in user_cmd]
         else:
             raise UnsupportedFormat(self.archive_method)
+
+        print("returning thing", command, path)
 
         return (command, path)
 
@@ -112,12 +133,34 @@ class Backup(object):
         self.log.debug("Command: %s" % " ".join(command))
         self.proc = Popen(command, stdout=PIPE, stderr=PIPE)
 
+        t = Thread(target=self.read_stdout, args=())
+        t.daemon = True
+        t.start()
+
+        t = Thread(target=self.read_stderr, args=())
+        t.daemon = True
+        t.start()
+
     def start(self):
         self.backup_start = time.time()
         self.name = "backup_%s" % time.strftime("%Y-%m-%d_%H-%M-%S")
 
         command, self.path = self.build_command()
         self.execute_command(command)
+
+    def read_stdout(self):
+        """ an ugly hack that shouldn't really exist.
+        I should be using shutil.copy anyways """
+
+        while self.proc.stdout.read(1):
+            continue
+
+    def read_stderr(self):
+        """ an ugly hack that shouldn't really exist.
+        I should be using shutil.copy anyways """
+
+        while self.proc.stdout.read(1):
+            continue
 
     def cancel(self):
         raise Exception("Unimplemented feature")

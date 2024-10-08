@@ -1,3 +1,46 @@
+## 2024-10-08 / 0.1.17 Alpha
+- Updated dependencies
+- Fixed:
+    - Player disconnect events not firing
+
+## 2023-07-14 / 0.1.16 Alpha
+- Bumped required NBT to 1.5.1 (fixes newer Python versions)
+- Added 'cmd' backup mode: Lets you run your own backup command
+
+## 2022-12-20 / 0.1.15 Alpha
+- Fixed duplicate console lines
+- New backup mode "copy": copies path(s) directly to a new folder in the backup location, no archival method used (useful for shadow/de-duplication filesystems)
+- Actually implemented zip backups
+
+## 2022-12-16 / 0.1.14 Alpha
+- Updated Socket.IO client
+- Fixed requirements.txt
+
+## 2022-11-17 / 0.1.13 Alpha
+- Fixed:
+    - Fatal crash when client doesn't completely connect (when server throws com.mojang crap)
+    - Other fatal crashes when parsing doesn't go right
+    - Attempts graceful shutdown of Java server now upon a fatal Wrapper crash
+
+## 2022-08-30 / 0.1.12 Alpha
+- Fixed:
+    - Fatal crashes on modern versions of Minecraft server (or any?)
+    - Possible fixes for player list
+
+## 2021-07-06 / 0.1.11 Alpha
+- Dashboard:
+    - Java Version listed on Overview page
+- Fixed:
+    - Bootloops when server fails to start
+- Technical:
+    - Server output now fully read even when shutdown; no lines left behind
+
+## 2021-01-26 / 0.1.10 Alpha
+- Fixed:  
+    - [#13] Paper-based servers not working with Wrapper.py
+- Technical:
+    - Player coordinates are now properly grabbed upon login
+
 ## 2021-01-12 / 0.1.9 Alpha
 - Fixed:
     - Error when loading certain log files

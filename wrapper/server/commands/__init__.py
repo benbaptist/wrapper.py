@@ -34,8 +34,6 @@ class Commands:
 
         commands = [] + self.commands
 
-        print(command_name, command_args)
-
         # Find commands registered to plugins here
         for plugin in self.wrapper.plugins.plugins:
             for command in plugin.commands:

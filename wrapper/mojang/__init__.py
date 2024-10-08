@@ -41,6 +41,8 @@ class Mojang:
         mcuuid = str(mcuuid)
         mcuuid = mcuuid.replace("-", "")
 
+        print("uuid_to_profile: %s" % mcuuid)
+
         cache = self._get_cache("uuid_to_profile", mcuuid)
         if cache:
             return cache
@@ -51,6 +53,7 @@ class Mojang:
         )
 
         try:
+            print(r.text, r.return_code)
             payload = r.json()
         except:
             return

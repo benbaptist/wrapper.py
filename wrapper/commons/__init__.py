@@ -148,7 +148,8 @@ CONFIG_TEMPLATE = {
             "format": "auto",
             "compression": {
                 "enable": True
-            }
+            },
+            "cmd": None
         },
         "history": 50,
         "interval-seconds": 600,
