@@ -11,6 +11,7 @@
     - Wrapper should always be able to start without user input (e.g. with a physical server boot)
     - Updates to Wrapper should never intrude or require user input to fix problems
     - Resilient to corruption, should repair itself
+- RESTful API & dashboard
 - No excess of functionality; only bare bone features will be implemented
 - As few dependencies needed to operate
 - Plugin API, to supplement any specific features or use cases not built into the wrapper
@@ -38,6 +39,7 @@
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
 - [ ] Implement Proxy mode
     - Utilize the [Quarry](https://github.com/barneygale/quarry) project to implement Minecraft's protocol
+- [ ] Make sure PaperMC is supported
 
 # Minor/Specific To-Do List #
 - [ ] Server

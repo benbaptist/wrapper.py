@@ -1,27 +1,23 @@
 # Overview #
 [![Join the chat at https://gitter.im/benbaptist/wrapper.py](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/benbaptist/wrapper.py?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Wrapper.py is an easy to use Minecraft server wrapper for adding extra functionality into the server without modifying
-the Minecraft server jar. It comes with a relatively simple and straight-forward - yet powerful - plugin API that can be used
-to create Bukkit-like plugins without any server modding.
+Wrapper.py is an easy to use Minecraft server wrapper, for adding extra functionality on a vanilla Minecraft server without modifying
+the server jar. It comes with a relatively simple and straight-forward - yet powerful - plugin API that can be used
+to create Bukkit-like plugins without any server modding. No Java knowledge required.
+
+In addition to plugins, it also comes with a dashboard, a backup system, and a RESTful API.
 
 Join us on Gitter!
 
 # Quick Start #
 ### Stable branch
 ```
-# Install dependencies
-pip3 install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/master/requirements.txt
-
 # Install stable Wrapper.py
 pip3 install https://github.com/benbaptist/wrapper.py/archive/master.zip
 ```
 
 ### Development branch
 ```
-# Install dependencies
-pip3 install -r https://raw.githubusercontent.com/benbaptist/wrapper.py/development/requirements.txt
-
 # Install development (unstable) Wrapper.py
 pip3 install https://github.com/benbaptist/wrapper.py/archive/development.zip
 ```
