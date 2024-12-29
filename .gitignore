@@ -58,3 +58,4 @@ oops/
 build
 .venv/
 world/
+.vscode/

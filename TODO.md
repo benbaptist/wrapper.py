@@ -1,8 +1,8 @@
 # Major Refactor for 0.2.0
+- [ ] Better conformity to PEP8
 - [ ] Reorganizing codebase
 - [ ] Complete rewrite of the server module
 - [ ] Complete rewrite of the dashboard (frontend and backend)
-- [ ] Better conformity to Python standards
 - [ ] IDEA: Move towards asynchronous operations (e.g. using eventlet, or asyncio)
 
 # Design Goals #
