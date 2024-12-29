@@ -140,7 +140,7 @@ class MCServer:
 
             try:
                 self.server.get_player(mcuuid=mcuuid)
-            except TypeError:
+            except PlayerNotFound:
                 player = Player(
                     server=self.server,
                     mcuuid=mcuuid

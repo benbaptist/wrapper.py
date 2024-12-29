@@ -219,7 +219,7 @@ class ConsoleParser:
 
                 try:
                     player = self.server.get_player(username=username)
-                except TypeError:
+                except PlayerNotFound:
                     mcuuid = self.mcserver.uuid_cache.get(username)
 
                     player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
@@ -365,7 +365,7 @@ class ConsoleParser:
 
                 try:
                     player = self.server.get_player(username=username)
-                except TypeError:
+                except PlayerNotFound:
                     try:
                         mcuuid = self.mcserver.uuid_cache.get(username)
                     except EOFError:
