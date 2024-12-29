@@ -1,3 +1,10 @@
+# Major Refactor for 0.2.0
+- [ ] Reorganizing codebase
+- [ ] Complete rewrite of the server module
+- [ ] Complete rewrite of the dashboard (frontend and backend)
+- [ ] Better conformity to Python standards
+- [ ] IDEA: Move towards asynchronous operations (e.g. using eventlet, or asyncio)
+
 # Design Goals #
 - Quick setup
 - Robust, stable, set-it-and-forget-it design
@@ -7,7 +14,7 @@
 - No excess of functionality; only bare bone features will be implemented
 - As few dependencies needed to operate
 - Plugin API, to supplement any specific features or use cases not built into the wrapper
-- Python 2.x and 3.x compatible
+- Python 3.x only
 
 # Major To-Do #
 

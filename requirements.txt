@@ -1,11 +1,12 @@
-passlib==1.7.1
-Flask_SocketIO>=5.4.1
-Flask>=3.0.3
+passlib
+Flask_SocketIO
+Flask
+storify
 msgpack
 psutil
 future
 waitress
 importlib_resources
-nbt==1.5.1
-humanize==2.6.0
+nbt
+humanize
 requests

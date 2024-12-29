@@ -1,7 +1,7 @@
 from builtins import input
 
-from wrapper.exceptions import *
-from wrapper.commons import *
+from .exceptions import *
+from .commons import *
 
 class Console:
     def __init__(self, wrapper):
