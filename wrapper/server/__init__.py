@@ -106,7 +106,7 @@ class Server(object):
                 if player.ip_address == ip_address:
                     return player
 
-        raise TypeError("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
+        raise PlayerNotFound("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
 
     def get_player_(self, mcuuid):
         for player in self.all_players:

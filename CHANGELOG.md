@@ -1,3 +1,7 @@
+## 2024-12-28 / 0.1.18 Alpha
+- Fixed:
+    - Player command parsing causing fatal crash
+
 ## 2024-10-08 / 0.1.17 Alpha
 - Updated dependencies
 - Fixed:

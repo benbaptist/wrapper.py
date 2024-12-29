@@ -31,6 +31,8 @@ class ConsoleParser:
                 return self.old_style(old_style)
             elif paper_style:
                 return self.new_style(paper_style)
+        except PlayerNotFound as e:
+            self.server.log.traceback("Could not match player in line: %s" % line)
         except Exception as e:
             print(line)
             self.server.log.traceback("Fatal error while parsing line from server: %s" % line)
@@ -154,9 +156,10 @@ class ConsoleParser:
 
             # Player Command
             r = re.search(
-                ": \[(.*): (.*)\]",
+                r": \[(.*?): (.*?)]",
                 output
             )
+            
             if r:
                 username = r.group(1)
                 command_response = r.group(2)
@@ -216,7 +219,7 @@ class ConsoleParser:
 
                 try:
                     player = self.server.get_player(username=username)
-                except TypeError:
+                except PlayerNotFound:
                     mcuuid = self.mcserver.uuid_cache.get(username)
 
                     player = Player(server=self.mcserver.server, username=username, mcuuid=mcuuid)
@@ -362,7 +365,7 @@ class ConsoleParser:
 
                 try:
                     player = self.server.get_player(username=username)
-                except TypeError:
+                except PlayerNotFound:
                     try:
                         mcuuid = self.mcserver.uuid_cache.get(username)
                     except EOFError:
