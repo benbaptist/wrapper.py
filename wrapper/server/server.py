@@ -2,8 +2,6 @@ import json
 import time
 import os
 
-from uuid import UUID
-
 from .instance import Instance
 from .player import Player
 from .commands import Commands
@@ -29,15 +27,6 @@ class Server(object):
 
         self.instance = None
         self._timeout = 0
-
-        # Dummy player used for console user
-        # TODO: Remove this nonsense
-        self._console_player = Player(
-            self,
-            username="$Console$",
-            mcuuid=UUID(bytes=bytes(bytearray(16))),
-            online_mode=False
-        )
 
         # Commands handler
         self.commands = Commands(self)
@@ -93,9 +82,6 @@ class Server(object):
             return online_players
 
     def get_player(self, username=None, mcuuid=None, ip_address=None):
-        if username == "$Console$":
-            return self._console_player
-
         for player in self.instance.players:
             if username:
                 if username == player.username:
@@ -117,36 +103,6 @@ class Server(object):
                 return player
 
     @property
-    def gamerules(self):
-        # TODO: Move to instance object
-        if self.instance:
-            return self.instance.gamerules
-
-    @property
-    def world(self):
-        # TODO: Move to instance object
-        if self.instance:
-            return self.instance.world
-
-    @property
-    def features(self):
-        # TODO: Move to instance object
-        if self.instance:
-            return self.instance.features
-
-    @property
-    def version(self):
-        # TODO: Move to instance object
-        if self.instance:
-            return self.instance.server_version
-
-    @property
-    def online_mode(self):
-        # TODO: Move to instance object
-        if self.instance:
-            return self.instance.online_mode
-
-    @property
     def logs(self):
         files = os.listdir("logs")
         files.sort()
@@ -165,10 +121,6 @@ class Server(object):
                 log_files.append(log)
 
         return log_files
-
-    def tellraw(self, target, message):
-        # TODO: Move to instance object
-        raise Exception("Use self.instance.features.message ")
 
     def broadcast(self, message):
         # TODO: Move to instance object
