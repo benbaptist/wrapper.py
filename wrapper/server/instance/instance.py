@@ -5,7 +5,7 @@ import os
 from ..player import Player
 from ..uuid_cache import UUID_Cache
 from .process import Process
-from .console_parser import ConsoleParser
+from .parser import Parser
 from .features import Features
 from ...commons import *
 from ...exceptions import *

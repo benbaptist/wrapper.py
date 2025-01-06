@@ -8,7 +8,7 @@ from wrapper.server.world import World
 from wrapper.commons import *
 from wrapper.exceptions import *
 
-class ConsoleParser:
+class Parser:
     def __init__(self, mcserver):
         self.mcserver = mcserver
         self.server = mcserver.server
