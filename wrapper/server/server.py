@@ -12,6 +12,9 @@ from ..exceptions import *
 from ..commons import *
 
 class Server(object):
+    """
+    Represents general server operations, such as starting, stopping, restarting, etc. and manages the currently running server instance
+    """
     def __init__(self, wrapper):
         self.wrapper = wrapper
         self.events = wrapper.events
@@ -115,6 +118,7 @@ class Server(object):
 
     @property
     def gamerules(self):
+        # TODO: Move to instance object
         if self.mcserver:
             return self.mcserver.gamerules
 
