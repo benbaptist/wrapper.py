@@ -4,7 +4,7 @@ import os
 
 from uuid import UUID
 
-from .mcserver import MCServer
+from .instance import Instance
 from .player import Player
 from .commands import Commands
 from .log import Log
@@ -27,7 +27,7 @@ class Server(object):
                 "state": SERVER_STARTED # SERVER_STARTED/SERVER_STOPPED
             }
 
-        self.mcserver = None
+        self.instance = None
         self._timeout = 0
 
         # Dummy player used for console user
@@ -69,24 +69,24 @@ class Server(object):
 
     @property
     def state(self):
-        if self.mcserver:
-            return self.mcserver.state
+        if self.instance:
+            return self.instance.state
         else:
             return SERVER_STOPPED
 
     @property
     def all_players(self):
-        if self.mcserver:
-            return self.mcserver.list_players(everyone=True)
+        if self.instance:
+            return self.instance.list_players(everyone=True)
 
         return []
 
     @property
     def players(self):
-        if self.mcserver:
+        if self.instance:
             online_players = []
 
-            for player in self.mcserver.players:
+            for player in self.instance.players:
                 if player.online:
                     online_players.append(player)
 
@@ -96,7 +96,7 @@ class Server(object):
         if username == "$Console$":
             return self._console_player
 
-        for player in self.mcserver.players:
+        for player in self.instance.players:
             if username:
                 if username == player.username:
                     return player
@@ -119,32 +119,32 @@ class Server(object):
     @property
     def gamerules(self):
         # TODO: Move to instance object
-        if self.mcserver:
-            return self.mcserver.gamerules
+        if self.instance:
+            return self.instance.gamerules
 
     @property
     def world(self):
         # TODO: Move to instance object
-        if self.mcserver:
-            return self.mcserver.world
+        if self.instance:
+            return self.instance.world
 
     @property
     def features(self):
         # TODO: Move to instance object
-        if self.mcserver:
-            return self.mcserver.features
+        if self.instance:
+            return self.instance.features
 
     @property
     def version(self):
         # TODO: Move to instance object
-        if self.mcserver:
-            return self.mcserver.server_version
+        if self.instance:
+            return self.instance.server_version
 
     @property
     def online_mode(self):
         # TODO: Move to instance object
-        if self.mcserver:
-            return self.mcserver.online_mode
+        if self.instance:
+            return self.instance.online_mode
 
     @property
     def logs(self):
@@ -168,14 +168,14 @@ class Server(object):
 
     def tellraw(self, target, message):
         # TODO: Move to instance object
-        raise Exception("Use self.mcserver.features.message ")
+        raise Exception("Use self.instance.features.message ")
 
     def broadcast(self, message):
         # TODO: Move to instance object
         if len(self.players) < 1:
             return
 
-        self.mcserver.features.message("@a", message)
+        self.instance.features.message("@a", message)
 
     def title(self, message, target="@a", title_type="title", fade_in=None, stay=None, fade_out=None):
         # TODO: Move to instance object
@@ -199,28 +199,28 @@ class Server(object):
         )
 
     def run(self, cmd, output=False):
-        if self.mcserver:
-            self.mcserver.command(cmd)
+        if self.instance:
+            self.instance.command(cmd)
 
     def start(self):
         self.db["server"]["state"] = SERVER_STARTED
 
     def restart(self, reason="Server restarting"):
-        if self.mcserver:
+        if self.instance:
             for player in self.players:
                 player.kick(reason)
 
             time.sleep(.1)
 
-            self.mcserver.stop()
+            self.instance.stop()
             self.db["server"]["state"] = SERVER_RESTART
 
     def stop(self, reason="Server closed", save=True):
-        if self.mcserver:
+        if self.instance:
             for player in self.players:
                 player.kick(reason)
 
-            self.mcserver.stop()
+            self.instance.stop()
 
         time.sleep(.1)
 
@@ -228,11 +228,11 @@ class Server(object):
             self.db["server"]["state"] = SERVER_STOPPED
 
     def kill(self):
-        if self.mcserver:
-            self.mcserver.kill()
+        if self.instance:
+            self.instance.kill()
 
     def tick(self):
-        if not self.mcserver:
+        if not self.instance:
             if self.db["server"]["state"] == SERVER_RESTART:
                 self.db["server"]["state"] = SERVER_STARTED
 
@@ -247,14 +247,14 @@ class Server(object):
                 self.db["server"]["state"] = SERVER_STOPPED
                 return
 
-            self.mcserver = MCServer(self.wrapper, self)
+            self.instance = Instance(self.wrapper, self)
             return
 
-        if self.mcserver:
+        if self.instance:
             try:
-                self.mcserver.tick()
+                self.instance.tick()
             except ServerStopped:
-                self.mcserver = None
+                self.instance = None
 
                 self.log.info("Server stopped")
                 self.events.call("server.stopped")
@@ -274,7 +274,7 @@ class Server(object):
 
             # If timed reboot is enabled, check server uptime and reboot
             if self.wrapper.config["server"]["timed-reboot"]["enable"]:
-                uptime_seconds = time.time() - self.mcserver._start_time
+                uptime_seconds = time.time() - self.instance._start_time
                 warning_seconds = self.wrapper.config["server"]\
                     ["timed-reboot"]["warning-seconds"]
                 interval_seconds = self.wrapper.config["server"]\
