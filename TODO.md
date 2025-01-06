@@ -4,6 +4,7 @@
 - [ ] Complete rewrite of the server module
 - [ ] Complete rewrite of the dashboard (frontend and backend)
 - [ ] IDEA: Move towards asynchronous operations (e.g. using eventlet, or asyncio)
+- [ ] IDEA: Switch to blitz for event handling, if it's better than the current system
 
 # Design Goals #
 - Quick setup
