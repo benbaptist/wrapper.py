@@ -1,4 +1,4 @@
-from ...commons import *
+from ....commons import *
 from .builtin import BuiltinCommands
 from .command import Command
 

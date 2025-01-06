@@ -3,8 +3,8 @@ import time
 import os
 
 from .instance import Instance
-from .player import Player
-from .commands import Commands
+from .instance.player import Player
+from .instance.commands import Commands
 from .log import Log
 from ..exceptions import *
 from ..commons import *
@@ -29,9 +29,11 @@ class Server(object):
         self._timeout = 0
 
         # Commands handler
+        # TODO: Move to instance object
         self.commands = Commands(self)
 
         # Event handlers
+        # TODO: Move to instance object
         @self.events.hook("server.reload")
         def reload(player):
             if player:
@@ -65,6 +67,7 @@ class Server(object):
 
     @property
     def all_players(self):
+        # TODO: Move to instance object
         if self.instance:
             return self.instance.list_players(everyone=True)
 
@@ -72,6 +75,7 @@ class Server(object):
 
     @property
     def players(self):
+        # TODO: Move to instance object
         if self.instance:
             online_players = []
 
@@ -82,6 +86,7 @@ class Server(object):
             return online_players
 
     def get_player(self, username=None, mcuuid=None, ip_address=None):
+        # TODO: Move to instance object
         for player in self.instance.players:
             if username:
                 if username == player.username:
@@ -98,6 +103,7 @@ class Server(object):
         raise PlayerNotFound("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
 
     def get_player_(self, mcuuid):
+        # TODO: Move to instance object
         for player in self.all_players:
             if str(player.mcuuid) == mcuuid:
                 return player

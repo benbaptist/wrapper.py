@@ -4,7 +4,7 @@ import time
 import pickle
 import shutil
 
-from wrapper.server.uuid_cache import UUID_Cache
+from ..uuid_cache import UUID_Cache
 
 class Player:
     def __init__(self, server, username=None, mcuuid=None, online_mode=None):
@@ -80,7 +80,7 @@ class Player:
         if online_mode in (False, True):
             self.online_mode = online_mode
         else:
-            self.online_mode = self.server.online_mode
+            self.online_mode = self.server.instance.online_mode
 
         if "is_online_accounat" not in self.db:
             self.db["is_online_account"] = True
@@ -241,8 +241,6 @@ class Player:
             total_playtime_seconds += logged_out - logged_in
             last_time_seen = logged_out
 
-        # total_playtime_seconds += time.time() - self.db["current_login"]["logged_in"]
-
         return {
             "total_playtime_seconds": total_playtime_seconds,
             "last_time_seen": last_time_seen
@@ -275,15 +273,15 @@ class Player:
 
     def message(self, message):
         """ Sends a /tellraw message to this player. """
-        self.server.features.message(self.username, message)
+        self.server.instance.features.message(self.username, message)
 
     def message_as_player(self, message):
         """ Simulates sending a message as this player. """
-        self.server.log.info("<%s> %s" % (self.username, message))
-        self.server.broadcast("<%s> %s" % (self.username, message))
+        self.server.instance.log.info("<%s> %s" % (self.username, message))
+        self.server.instance.broadcast("<%s> %s" % (self.username, message))
 
     def kick(self, reason="Kicked from server"):
-        self.server.run(
+        self.server.instance.run(
             "kick %s %s"
             % (self.username, reason)
         )

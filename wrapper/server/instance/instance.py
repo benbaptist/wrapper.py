@@ -2,8 +2,8 @@ import uuid
 import time
 import os
 
-from ..player import Player
-from ..uuid_cache import UUID_Cache
+from .player import Player
+from .uuid_cache import UUID_Cache
 from .process import Process
 from .parser import Parser
 from .features import Features
@@ -41,7 +41,7 @@ class Instance:
         self.state = SERVER_STARTING
 
         self.uuid_cache = UUID_Cache()
-        self.console_parser = ConsoleParser(self)
+        self.parser = Parser(self)
 
         self._timeout = 0
 
@@ -173,7 +173,7 @@ class Instance:
         # in the event that the server process is dead
         for std, line in self.process.read_console():
             # Parse line
-            if self.console_parser.parse(line) != False:
+            if self.parser.parse(line) != False:
                 # Print line to console
                 print(line)
 

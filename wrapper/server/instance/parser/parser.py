@@ -3,8 +3,8 @@ import time
 
 from uuid import UUID
 
-from wrapper.server.player import Player
-from wrapper.server.world import World
+from wrapper.server.instance.player import Player
+from wrapper.server.instance.world import World
 from wrapper.commons import *
 from wrapper.exceptions import *
 

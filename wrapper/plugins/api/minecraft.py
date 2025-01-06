@@ -1,4 +1,4 @@
-from wrapper.server.commands import Command
+from wrapper.server.instance.commands import Command
 
 class Minecraft:
     def __init__(self, api):
