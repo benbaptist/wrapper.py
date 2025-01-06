@@ -28,6 +28,7 @@ class Server(object):
         self._timeout = 0
 
         # Dummy player used for console user
+        # TODO: Remove this nonsense
         self._console_player = Player(
             self,
             username="$Console$",
@@ -119,21 +120,25 @@ class Server(object):
 
     @property
     def world(self):
+        # TODO: Move to instance object
         if self.mcserver:
             return self.mcserver.world
 
     @property
     def features(self):
+        # TODO: Move to instance object
         if self.mcserver:
             return self.mcserver.features
 
     @property
     def version(self):
+        # TODO: Move to instance object
         if self.mcserver:
             return self.mcserver.server_version
 
     @property
     def online_mode(self):
+        # TODO: Move to instance object
         if self.mcserver:
             return self.mcserver.online_mode
 
@@ -158,15 +163,18 @@ class Server(object):
         return log_files
 
     def tellraw(self, target, message):
+        # TODO: Move to instance object
         raise Exception("Use self.mcserver.features.message ")
 
     def broadcast(self, message):
+        # TODO: Move to instance object
         if len(self.players) < 1:
             return
 
         self.mcserver.features.message("@a", message)
 
     def title(self, message, target="@a", title_type="title", fade_in=None, stay=None, fade_out=None):
+        # TODO: Move to instance object
         if len(self.players) < 1:
             return
 
@@ -188,29 +196,7 @@ class Server(object):
 
     def run(self, cmd, output=False):
         if self.mcserver:
-            # if output:
-            #     if not self.gamerules["logAdminCommands"]:
-            #         self.mcserver.command("gamerule logAdminCommands true")
-            #     if not self.gamerules["sendCommandFeedback"]:
-            #         self.mcserver.command("gamerule sendCommandFeedback true")
-            # else:
-            #     if self.gamerules["logAdminCommands"]:
-            #         self.mcserver.command("gamerule logAdminCommands false")
-            #     if self.gamerules["sendCommandFeedback"]:
-            #         self.mcserver.command("gamerule sendCommandFeedback false")
-
             self.mcserver.command(cmd)
-
-            # if output:
-            #     if not self.gamerules["logAdminCommands"]:
-            #         self.mcserver.command("gamerule logAdminCommands false")
-            #     if not self.gamerules["sendCommandFeedback"]:
-            #         self.mcserver.command("gamerule sendCommandFeedback false")
-            # else:
-            #     if self.gamerules["logAdminCommands"]:
-            #         self.mcserver.command("gamerule logAdminCommands true")
-            #     if self.gamerules["sendCommandFeedback"]:
-            #         self.mcserver.command("gamerule sendCommandFeedback true")
 
     def start(self):
         self.db["server"]["state"] = SERVER_STARTED
