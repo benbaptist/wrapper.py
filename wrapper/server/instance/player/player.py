@@ -281,7 +281,4 @@ class Player:
         self.server.instance.broadcast("<%s> %s" % (self.username, message))
 
     def kick(self, reason="Kicked from server"):
-        self.server.instance.run(
-            "kick %s %s"
-            % (self.username, reason)
-        )
+        self.server.instance.command(f"kick {self.username} {reason}")
