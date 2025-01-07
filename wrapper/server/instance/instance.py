@@ -130,7 +130,8 @@ class Instance:
         players = []
 
         # Load offline players before we begin
-        # TODO: This is a bit of a hack, and should be replaced with a more intelligent way of loading offline players when applicable
+        # TODO: This is a bit of a hack, and should be replaced with a more 
+        # intelligent way of loading offline players when applicable
         for player_data_path in os.listdir("wrapper-data/players"):
             try:
                 name, ext = player_data_path.rsplit(".", 1)
