@@ -18,7 +18,7 @@ class Player:
         if not os.path.exists("wrapper-data/players"):
             os.makedirs("wrapper-data/players")
 
-        self.db = self.server.wrapper.storify.get_db(
+        self.db = self.server.wrapper.storify.get_db_by_path(
             "wrapper-data/players/%s.mpack" % str(self.mcuuid)
         )
 

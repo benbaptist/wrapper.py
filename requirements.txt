@@ -1,7 +1,7 @@
 passlib
 Flask_SocketIO
 Flask
-storify
+storify>=0.0.10
 msgpack
 psutil
 future

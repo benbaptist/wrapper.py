@@ -4,6 +4,7 @@ from .command import Command
 
 from threading import Thread
 
+# TODO: Hardcoded command prefix; will be configurable in the future
 COMMAND_PREFIX = "."
 
 class Commands:
