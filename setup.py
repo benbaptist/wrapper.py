@@ -3,6 +3,9 @@ from setuptools import find_packages, setup, Command
 with open("wrapper/__version__.py", "r") as f:
     exec(f.read())
 
+with open('requirements.txt') as f:
+    install_requires = f.read().splitlines()
+
 setup(
     name='Wrapper.py',
     version=__version__,
@@ -15,18 +18,5 @@ setup(
             'mcwrapper=wrapper.wrapper:main',  # Adjust the import path as necessary
         ],
     },
-    install_requires=[
-        'passlib',
-        'Flask_SocketIO',
-        'Flask',
-        'storify',
-        'msgpack',
-        'psutil',
-        'future',
-        'waitress',
-        'importlib_resources',
-        'nbt',
-        'humanize',
-        'requests',
-    ],
+    install_requires=install_requires
 )
