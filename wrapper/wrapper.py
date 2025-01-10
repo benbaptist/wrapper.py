@@ -101,7 +101,7 @@ class Wrapper:
         self.log.debug("Debug mode is on.")
 
         # Start console input thread
-        t = threading.Thread(target=self.console.read_console)
+        t = threading.Thread(target=self.console.run)
         t.daemon = True
         t.start()
 
