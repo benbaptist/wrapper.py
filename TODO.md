@@ -1,6 +1,6 @@
 # Major Refactor for 0.2.0
 - [ ] Better conformity to PEP8
-- [ ] Reorganizing codebase
+- [x] Reorganizing codebase
 - [ ] Complete rewrite of the server module
 - [ ] Complete rewrite of the dashboard (frontend and backend)
 - [ ] IDEA: Move towards asynchronous operations (e.g. using eventlet, or asyncio)
@@ -44,19 +44,8 @@
 
 # Minor/Specific To-Do List #
 - [ ] Server
-    - [x] MCServer object's life should only be during the server's life; once the server stops, the MCServer object should be destroyed. A new one should be created when the server is started again
-    - [x] Decouple console parsing from MCServer
     - [ ] Throttle server start attempts if failing to start (i.e. invalid CLI arguments, wrong server jar name, etc.)
-    - [x] Respect arguments
-    - [x] Respect auto-restart
-    - [x] Custom java executable
-    - [x] Auto-accept EULA
-    - [x] Automatically turn on gamerule to hide command runs from ops, to prevent chat spam
-    - [x] Pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
-- [ ] Log Management
-    - [x] Rotate logs
-    - [x] Compress old logs using gzip
-    - [x] Respect debug-mode settings
+    - [ ] Regression: Need to re-implement pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
 - [ ] Backups
     - [ ] Respect ingame-notification settings
     - [ ] Ability to mark a backup as "important", so it does not auto-delete during rotation
@@ -75,8 +64,8 @@
         - [x] Persistent storage
         - [ ] Delete persistent player objects if too many are used
 - [ ] Misc. stuff
-    - [ ] Make {"text": ""} objects universally encoded [what? no idea what I meant here. Sometimes I drink while programming...]
-    - [ ] Use curses to make console input a little nicer
+    - [ ] Make {"text": ""} objects universally encoded (I think I meant having a DataClass for Minecraft's Chat objects)
+    - [x] Use curses to make console input a little nicer
 
 # Plugin Ideas #
 - [x] Essentials Clone
