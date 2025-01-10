@@ -18,8 +18,8 @@ class ParsedEvent:
     timestamp: datetime
     logging_level: str
     message: str
-    event_name: str
-    event_data: Dict[str, Any]
+    name: str
+    data: Dict[str, Any]
 
 class BaseLayer:
     """Base class for all parsing layers"""
@@ -43,7 +43,7 @@ class TimestampLayer(BaseLayer):
         time_str, thread, level, message = match.groups()
         
         # Convert time string to datetime (using today's date)
-        current_time = datetime.strptime(time_str, "%H:%M:%S")
+        current_time = datetime.combine(datetime.today(), datetime.strptime(time_str, "%H:%M:%S").time())
         
         return LogEntry(
             timestamp=current_time,
@@ -57,10 +57,19 @@ class MessageLayer(BaseLayer):
     """Second layer: Breaks down the message into constituent parts"""
     
     # Common message patterns
-    PLAYER_CHAT = re.compile(r'^<(\w+)> (.*)$')
+    PLAYER_CHAT = re.compile(r'^(?:\[Not Secure\] )?<(\w+)> (.*)$')
     PLAYER_JOIN = re.compile(
         r'^(\w+)\[/([^:]+):(\d+)\] logged in with entity id (\d+) at \(([-\d.]+), ([-\d.]+), ([-\d.]+)\)$'
     )
+    
+    # New patterns for server events
+    SERVER_START = re.compile(r'^Starting minecraft server version (.+)$')
+    SERVER_PORT = re.compile(r'^Starting Minecraft server on \*:(\d+)$')
+    WORLD_PREPARE = re.compile(r'^Preparing level "([^"]+)"$')
+    SERVER_READY = re.compile(r'^Done \(([\d.]+)s\)! For help, type "help"$')
+    PLAYER_DISCONNECT = re.compile(r'^(\w+) lost connection: (.+)$')
+    PLAYER_TELEPORT = re.compile(r'^\[(\w+): Teleported (\w+) to (\w+)\]$')
+    SERVER_OFFLINE_MODE = re.compile(r'^The server will make no attempt to authenticate usernames\. Beware\.$')
     
     def process(self, entry: LogEntry) -> Tuple[str, Dict[str, Any]]:
         """Returns a tuple of (message_type, extracted_data)"""
@@ -71,7 +80,8 @@ class MessageLayer(BaseLayer):
             username, message = chat_match.groups()
             return "player_chat", {
                 "player": username,
-                "message": message
+                "message": message,
+                "secure": not entry.message.startswith("[Not Secure]")
             }
             
         # Try to match player join
@@ -88,6 +98,51 @@ class MessageLayer(BaseLayer):
                 }
             }
             
+        # Try to match server startup sequence
+        start_match = self.SERVER_START.match(entry.message)
+        if start_match:
+            version = start_match.group(1)
+            return "server_start", {"version": version}
+            
+        port_match = self.SERVER_PORT.match(entry.message)
+        if port_match:
+            port = int(port_match.group(1))
+            return "server_port", {"port": port}
+            
+        world_match = self.WORLD_PREPARE.match(entry.message)
+        if world_match:
+            world_name = world_match.group(1)
+            return "world_prepare", {"world": world_name}
+            
+        ready_match = self.SERVER_READY.match(entry.message)
+        if ready_match:
+            startup_time = float(ready_match.group(1))
+            return "server_ready", {"startup_time": startup_time}
+            
+        # Try to match player disconnect
+        disconnect_match = self.PLAYER_DISCONNECT.match(entry.message)
+        if disconnect_match:
+            username, reason = disconnect_match.groups()
+            return "player_disconnect", {
+                "player": username,
+                "reason": reason
+            }
+            
+        # Try to match teleport command
+        teleport_match = self.PLAYER_TELEPORT.match(entry.message)
+        if teleport_match:
+            executor, player, target = teleport_match.groups()
+            return "player_teleport", {
+                "executor": executor,
+                "player": player,
+                "target": target
+            }
+            
+        # Try to match offline mode warning
+        offline_match = self.SERVER_OFFLINE_MODE.match(entry.message)
+        if offline_match:
+            return "server_offline_mode", {"enabled": True}
+            
         # Default case - unknown message type
         return "unknown", {"raw_message": entry.message}
 
@@ -96,7 +151,14 @@ class EventLayer(BaseLayer):
     
     EVENT_MAPPINGS = {
         "player_chat": "player.message",
-        "player_join": "player.join"
+        "player_join": "player.join",
+        "server_start": "server.start",
+        "server_port": "server.port",
+        "world_prepare": "server.world.prepare",
+        "server_ready": "server.ready",
+        "player_disconnect": "player.disconnect",
+        "player_teleport": "player.teleport",
+        "server_offline_mode": "server.auth.offline",
     }
     
     def process(self, entry: LogEntry, message_data: Tuple[str, Dict[str, Any]]) -> ParsedEvent:
@@ -106,8 +168,8 @@ class EventLayer(BaseLayer):
             timestamp=entry.timestamp,
             logging_level=entry.logging_level,
             message=entry.message,
-            event_name=self.EVENT_MAPPINGS.get(message_type, "unknown"),
-            event_data=data
+            name=self.EVENT_MAPPINGS.get(message_type, "unknown"),
+            data=data
         )
 
 class LogParser:

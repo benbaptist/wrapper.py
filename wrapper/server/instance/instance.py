@@ -5,7 +5,7 @@ import os
 from .player import Player
 from .uuid_cache import UUID_Cache
 from .process import Process
-from .parser import LogParser
+from .parser import LogParser, Handler
 from .features import Features
 from ...commons import *
 from ...exceptions import *
@@ -42,7 +42,7 @@ class Instance:
 
         self.uuid_cache = UUID_Cache()
         self.parser = LogParser()
-
+        self.handler = Handler(self)
         self._timeout = 0
 
         self._resource_analytics = []
@@ -57,7 +57,7 @@ class Instance:
         # Call event
         self.events.call("server.starting")
 
-        # Check EULA, and agree with it
+        # Check EULA, and automatically agree with it
         agree_eula = False
         if os.path.exists("eula.txt"):
             with open("eula.txt", "r") as f:
@@ -106,10 +106,10 @@ class Instance:
         self.abort = time.time()
 
     def freeze(self):
-        return
+        raise NotImplementedError("Freezing server is not supported")
 
     def unfreeze(self):
-        return
+        raise NotImplementedError("Unfreezing server is not supported")
 
     def kill(self):
         self.process.kill()
@@ -177,11 +177,12 @@ class Instance:
             # Parse line
             print(line)
             parsed_event = self.parser.parse_line(line)
+
             if parsed_event:
-                print(parsed_event)
+                self.handler.process(parsed_event)
 
             # Call event for line
-            self.events.call("server.console.output", line=line)
+            self.events.call("server.console.output", line=line, parsed_event=parsed_event)
 
         # Check if server died during start; assume a problem, and
         # stop auto-restarting, to prevent a CPU-hogging bootloop

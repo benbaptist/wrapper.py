@@ -136,10 +136,10 @@ class Wrapper:
 
                 t = time.time()
 
-                while self.server.mcserver.process.process:
+                while self.server.instance.process.process:
                     if time.time() - t > 60:
                         self.log.error("Taking too long for server to shutdown, killing")
-                        self.server.kill()
+                        self.server.instance.kill()
                         break
 
                     time.sleep(1)

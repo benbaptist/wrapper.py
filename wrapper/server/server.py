@@ -85,7 +85,7 @@ class Server(object):
 
             return online_players
 
-    def get_player(self, username=None, mcuuid=None, ip_address=None):
+    def get_player(self, username=None, mcuuid=None, ip_address=None, add_if_not_found=False):
         # TODO: Move to instance object
         for player in self.instance.players:
             if username:
@@ -99,6 +99,13 @@ class Server(object):
             if ip_address:
                 if player.ip_address == ip_address:
                     return player
+        
+        if add_if_not_found:
+            mcuuid = self.instance.uuid_cache.get(username)
+            player = Player(server=self, username=username, mcuuid=mcuuid)
+            self.instance.players.append(player)
+
+            return player
 
         raise PlayerNotFound("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
 

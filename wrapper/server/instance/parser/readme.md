@@ -1,3 +1,14 @@
+# Log Events
+
+`[16:39:07] [Server thread/INFO]: Starting minecraft server version 1.21.4`
+`[16:39:07] [Server thread/INFO]: Starting Minecraft server on *:25565`
+`[16:39:07] [Server thread/INFO]: Preparing level "world"`
+`[16:39:08] [Server thread/INFO]: Done (0.977s)! For help, type "help"`
+`[16:41:42] [Server thread/INFO]: [Not Secure] <benbaptist> test`
+`[16:41:42] [Server thread/INFO]: benbaptist lost connection: Disconnected`
+`[16:42:43] [Server thread/INFO]: [benbaptist: Teleported benbaptist to benbaptist]`
+`[16:42:43] [Server thread/INFO]: The server will make no attempt to authenticate usernames. Beware.`
+
 # Parsing Layers
 
 - Version-determination; assume latest version until server announces version
