@@ -5,18 +5,18 @@ import atexit
 from queue import Queue
 from threading import Lock
 
-from ..exceptions import *
-from ..commons import *
+from ..exceptions import ConsoleError
+from .command_handler import CommandHandler
 
-class Console:
+class ConsoleUI:
     def __init__(self, wrapper):
         self.wrapper = wrapper
-        self.server = wrapper.server
         self.log = wrapper.log_manager.get_logger("console")
         self.message_queue = Queue()
         self.screen_lock = Lock()
         self.input_buffer = ""
         self.cursor_pos = 0
+        self.command_handler = CommandHandler(wrapper)
         atexit.register(self.cleanup)
         
     def cleanup(self):
@@ -30,7 +30,6 @@ class Console:
 
     def run(self):
         try:
-            # Initialize curses
             curses_wrapper(self.curses_main)
         except KeyboardInterrupt:
             self.cleanup()
@@ -116,7 +115,8 @@ class Console:
             elif key == ord('\n'):
                 # Process command
                 if self.input_buffer.strip():
-                    self.process_command(self.input_buffer)
+                    self.handle_output(f"> {self.input_buffer}\n")
+                    self.command_handler.handle_command(self.input_buffer)
                 self.input_buffer = ""
                 self.cursor_pos = 0
             elif key in (curses.KEY_BACKSPACE, 127, 8):  # Handle different backspace keys
@@ -134,81 +134,4 @@ class Console:
                                    self.input_buffer[self.cursor_pos:])
                 self.cursor_pos += 1
         except curses.error:
-            pass
-
-    def process_command(self, data):
-        # Add command to message history
-        self.handle_output(f"> {data}\n")
-
-        def args(i):
-            try:
-                return data.split(" ")[i]
-            except:
-                return None
-
-        def args_after(i):
-            try:
-                return " ".join(data.split(" ")[i:])
-            except:
-                return None
-
-        if len(data) > 0:
-            command = args(0)
-
-            # Remove preceeding slash before processing
-            if command and command[0] == "/":
-                command = command[1:]
-
-            # Commands
-            if command == "start":
-                self.server.start()
-                return
-
-            if command == "restart":
-                self.log.info("Restart initiated from console")
-                self.server.restart()
-                return
-
-            if command == "broadcast":
-                message = args_after(1)
-                if message:
-                    self.server.broadcast(message)
-                else:
-                    self.log.error("Usage: /broadcast <message>")
-                return
-
-            if command == "plugins":
-                subcommand = args(1)
-
-                if subcommand == "list":
-                    plugins = []
-                    for plugin in self.wrapper.plugins.plugins:
-                        plugins.append(plugin.name)
-                    self.log.info("Plugins: %s" % ", ".join(plugins))
-                elif subcommand == "reload":
-                    self.log.info("Reloading plugins")
-                    self.wrapper.plugins.reload_plugins()
-                else:
-                    self.log.info("Usage: /plugins <list/reload>")
-                return
-
-            if command == "stop":
-                self.wrapper.server.stop()
-                return
-
-            if command == "wrapper":
-                subcommand = args(1)
-                if subcommand in ("halt", "stop"):
-                    self.log.info("Wrapper.py shutdown initiated from console")
-                    self.wrapper.shutdown()
-                elif subcommand == "about":
-                    self.log.info("Wrapper.py")
-                else:
-                    self.log.info("Usage: /wrapper <stop/about>")
-                return
-
-        # If no built-in command matched, try to send to server
-        try:
-            self.server.run(data)
-        except ServerStopped:
-            self.log.error("Failed to run command: server is currently stopped")
+            pass 

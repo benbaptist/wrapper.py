@@ -1,3 +1,4 @@
-from .console import Console
+from .ui import ConsoleUI
 
-__all__ = ["Console"]
+# Rename ConsoleUI to Console for backward compatibility
+Console = ConsoleUI
