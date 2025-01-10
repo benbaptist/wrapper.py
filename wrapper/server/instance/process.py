@@ -19,7 +19,7 @@ class Process:
     def start(self, jar_name, java_args=[], java_bin="java",
             jar_args=["nogui"], command=None, java_xms=1024, java_xmx=2048):
         if self.process:
-            raise StartingException("Cannot start java process, because it is \
+            raise ServerStarting("Cannot start java process, because it is \
                                     already running.")
 
         if not command:
