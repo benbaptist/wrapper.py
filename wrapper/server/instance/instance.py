@@ -16,12 +16,11 @@ class Instance:
 
     Duties include abstracting the server and its console output into a consistent interface, and managing the server's features
     """
-    def __init__(self, wrapper, server):
-        self.wrapper = wrapper
+    def __init__(self, server):
         self.server = server
-        self.events = wrapper.events
-        self.config = wrapper.config
-        self.log = wrapper.log_manager.get_logger("instance")
+        self.events = server.wrapper.events
+        self.config = server.wrapper.config
+        self.log = server.wrapper.log_manager.get_logger("instance")
 
         self.players = []
         self.world = None

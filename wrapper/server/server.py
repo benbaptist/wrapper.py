@@ -212,7 +212,7 @@ class Server(object):
                 self.db["server"]["state"] = SERVER_STOPPED
                 return
 
-            self.instance = Instance(self.wrapper, self)
+            self.instance = Instance(self)
             return
 
         if self.instance:

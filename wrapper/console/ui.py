@@ -29,6 +29,8 @@ class ConsoleUI:
     def cleanup(self):
         """Restore terminal settings on exit"""
         try:
+            # Add a small delay to allow reading final messages
+            time.sleep(2)  # 2 second delay before cleanup
             curses.echo()
             curses.nocbreak()
             curses.endwin()
