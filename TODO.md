@@ -1,7 +1,7 @@
 # Major Refactor for 0.2.0
 - [ ] Better conformity to PEP8
 - [x] Reorganizing codebase
-- [ ] Complete rewrite of the server module
+- [x] Huge refactoring of the server and instance modules
 - [ ] Complete rewrite of the dashboard (frontend and backend)
 - [ ] IDEA: Move towards asynchronous operations (e.g. using eventlet, or asyncio)
 - [ ] IDEA: Switch to blitz for event handling, if it's better than the current system

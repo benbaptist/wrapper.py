@@ -104,21 +104,26 @@ class Instance:
 
     # Control server states
     def stop(self):
+        """ Stops the server """
         self.abort = time.time()
 
     def freeze(self):
+        """ Freezes the server """
         raise NotImplementedError("Freezing server is not supported")
 
     def unfreeze(self):
+        """ Unfreezes the server """
         raise NotImplementedError("Unfreezing server is not supported")
 
     def kill(self):
+        """ Kills the server """
         self.process.kill()
         self.process = None
         self.state = SERVER_STOPPED
 
     # Commands
     def run(self, cmd):
+        """ Runs a command on the server """
         if not self.process:
             raise ServerStopped()
 

@@ -66,14 +66,6 @@ class Server(object):
             return SERVER_STOPPED
 
     @property
-    def all_players(self):
-        # TODO: Move to instance object
-        if self.instance:
-            return self.instance.list_players(everyone=True)
-
-        return []
-
-    @property
     def players(self):
         # TODO: Move to instance object
         if self.instance:
