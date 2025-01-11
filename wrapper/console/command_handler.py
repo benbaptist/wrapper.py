@@ -2,6 +2,8 @@ from typing import List, Tuple
 
 from ..exceptions import ServerStopped
 
+from wrapper import __version__
+
 class CommandHandler:
     def __init__(self, wrapper):
         self.wrapper = wrapper
@@ -43,7 +45,7 @@ class CommandHandler:
         else:
             # If no built-in command matched, try to send to server
             try:
-                self.server.run(command)
+                self.server.instance.run(command)
             except ServerStopped:
                 self.log.error("Failed to run command: server is currently stopped")
 
@@ -89,6 +91,6 @@ class CommandHandler:
             self.log.info("Wrapper.py shutdown initiated from console")
             self.wrapper.shutdown()
         elif subcommand == "about":
-            self.log.info("Wrapper.py")
+            self.log.info(f"Wrapper.py {__version__}")
         else:
             self.log.info("Usage: /wrapper <stop/about>") 

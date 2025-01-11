@@ -19,7 +19,7 @@ class API:
         try:
             return self._storage
         except:
-            self._storage = self._wrapper.storify.getDB("plugin_%s" % self._plugin.id)
+            self._storage = self._wrapper.storify.get_db("plugin_%s" % self._plugin.id)
             return self._storage
 
     def __disable__(self):

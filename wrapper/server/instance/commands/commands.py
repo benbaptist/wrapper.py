@@ -1,6 +1,7 @@
 from ....commons import *
 from .builtin import BuiltinCommands
 from .command import Command
+from ..api.types import Message
 
 from threading import Thread
 
@@ -52,12 +53,11 @@ class Commands:
                         % command_name
                     )
 
-                    player.message({
-                        "text":
-                            "An error occured while processing this "
-                            "command. Please try again later.",
-                        "color": "red"
-                    })
+                    player.message(Message(
+                        text="An error occured while processing this "
+                        "command. Please try again later.",
+                        color="red"
+                    ))
 
     def _register(self, name, callback, permission, domain):
         command = Command(name, callback, permission, domain=None)

@@ -6,7 +6,7 @@ from .player import Player
 from .uuid_cache import UUID_Cache
 from .process import Process
 from .parser import LogParser, Handler
-from .features import Features
+from .api import API
 from ...commons import *
 from ...exceptions import *
 
@@ -33,12 +33,11 @@ class Instance:
             "logAdminCommands": True
         }
 
-        self.features = Features(self)
-
-        self.process = None
+        self.process = Process()
         self.abort = False
         self.state = SERVER_STARTING
 
+        self.api = API(self)
         self.uuid_cache = UUID_Cache()
         self.parser = LogParser()
         self.handler = Handler(self)
@@ -50,12 +49,7 @@ class Instance:
 
         self._start()
 
-    def _start(self):
-        self.log.info("Starting server")
-
-        # Call event
-        self.events.call("server.starting")
-
+    def _agree_eula(self):
         # Check EULA, and automatically agree with it
         agree_eula = False
         if os.path.exists("eula.txt"):
@@ -68,6 +62,15 @@ class Instance:
         if agree_eula:
             with open("eula.txt", "w") as f:
                 f.write("eula=true")
+
+    def _start(self):
+        self.log.info("Starting server")
+
+        # Call start event
+        self.events.call("server.starting")
+
+        # Agree to EULA
+        self._agree_eula()
 
         # Start process
         custom_java_bin = self.config["server"]["custom-java-bin"]
@@ -86,7 +89,6 @@ class Instance:
 
         server_jar = self.config["server"]["jar"]
 
-        self.process = Process()
         self.process.start(
             jar_name=server_jar,
             java_args=arguments,
@@ -116,7 +118,7 @@ class Instance:
         self.state = SERVER_STOPPED
 
     # Commands
-    def command(self, cmd):
+    def run(self, cmd):
         if not self.process:
             raise ServerStopped()
 
@@ -210,7 +212,7 @@ class Instance:
         if self.abort:
             # Start server stop, if it hasn't already started
             if self.state == SERVER_STARTED:
-                self.features.stop()
+                self.api.stop()
                 self.state = SERVER_STOPPING
 
             # Check if server stop has been going for too long, and kill server

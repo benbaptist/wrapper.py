@@ -1,4 +1,5 @@
 from wrapper.__version__ import __version__
+from ..api.types import Message
 
 class BuiltinCommands:
     def __init__(self, wrapper, server, commands):
@@ -9,14 +10,14 @@ class BuiltinCommands:
         @self.commands.register("wrapper", permission="wrapper")
         def _wrapper(player, *command_args):
             if len(command_args) < 1:
-                player.message({
-                    "text": "Wrapper.py (%s)" % __version__,
-                    "color": "green",
-                    "clickEvent": {
+                player.message(Message(
+                    text=f"Wrapper.py ({__version__})",
+                    color="green",
+                    click_event={
                         "action": "open_url",
                         "value": "https://github.com/benbaptist/wrapper.py"
                     },
-                    "hoverEvent": {
+                    hover_event={
                         "action": "show_text",
                         "value": [
                             {
@@ -26,4 +27,4 @@ class BuiltinCommands:
                             }
                         ]
                     }
-                })
+                ))

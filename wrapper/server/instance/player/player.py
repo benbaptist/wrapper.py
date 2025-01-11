@@ -155,7 +155,7 @@ class Player:
     def position(self):
         if self.online:
             if time.time() - self.db["position_last_updated"] > 1:
-                self.server.run("execute at %s run tp %s ~ ~ ~"
+                self.server.instance.run("execute at %s run tp %s ~ ~ ~"
                     % (self.username, self.username)
                 )
 
@@ -273,7 +273,7 @@ class Player:
 
     def message(self, message):
         """ Sends a /tellraw message to this player. """
-        self.server.instance.features.message(self.username, message)
+        self.server.instance.api.message(self.username, message)
 
     def message_as_player(self, message):
         """ Simulates sending a message as this player. """
@@ -281,4 +281,4 @@ class Player:
         self.server.instance.broadcast("<%s> %s" % (self.username, message))
 
     def kick(self, reason="Kicked from server"):
-        self.server.instance.command(f"kick {self.username} {reason}")
+        self.server.instance.api.kick(self.username, reason)

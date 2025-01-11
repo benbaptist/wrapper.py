@@ -135,38 +135,6 @@ class Server(object):
 
         return log_files
 
-    def broadcast(self, message):
-        # TODO: Move to instance object
-        if len(self.players) < 1:
-            return
-
-        self.instance.features.message("@a", message)
-
-    def title(self, message, target="@a", title_type="title", fade_in=None, stay=None, fade_out=None):
-        # TODO: Move to instance object
-        if len(self.players) < 1:
-            return
-
-        if fade_in or stay or fade_out:
-            pass
-
-        if type(message) == dict:
-            json_blob = json.dumps(message)
-        else:
-            json_blob = {
-                "text": message
-            }
-            json_blob = json.dumps(json_blob)
-
-        self.run(
-            "title %s %s %s"
-            % (target, title_type, json_blob)
-        )
-
-    def run(self, cmd, output=False):
-        if self.instance:
-            self.instance.command(cmd)
-
     def start(self):
         self.db["server"]["state"] = SERVER_STARTED
 

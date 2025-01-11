@@ -132,7 +132,7 @@ class Wrapper:
             except:
                 self.shutdown()
                 self.log.traceback("Fatal error, shutting down")
-                self.server.instance.features.stop()
+                self.server.instance.api.stop()
 
                 t = time.time()
 

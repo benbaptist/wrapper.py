@@ -138,7 +138,12 @@ class ConsoleUI:
                 # Process command
                 if self.input_buffer.strip():
                     self.handle_output(f"> {self.input_buffer}\n")
-                    self.command_handler.handle_command(self.input_buffer)
+
+                    try:
+                        self.command_handler.handle_command(self.input_buffer)
+                    except Exception as e:
+                        self.handle_output(f"Error: {e}\n")
+
                     self.command_history.append(self.input_buffer)
                     self.history_index = len(self.command_history)
                 self.input_buffer = ""
