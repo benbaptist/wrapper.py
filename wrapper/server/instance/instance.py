@@ -22,7 +22,7 @@ class Instance:
         self.config = server.wrapper.config
         self.log = server.wrapper.log_manager.get_logger("instance")
 
-        self.players = []
+        self._players = []
         self.world = None
         self.server_version = None
         self.server_version_protocol = None
@@ -150,7 +150,7 @@ class Instance:
             mcuuid = uuid.UUID(name)
 
             try:
-                self.server.get_player(mcuuid=mcuuid)
+                self.get_player(mcuuid=mcuuid)
             except PlayerNotFound:
                 player = Player(
                     server=self.server,
@@ -161,7 +161,7 @@ class Instance:
                 print("Adding player %s" % player)
 
         # Filter players
-        for player in self.players:
+        for player in self._players:
 
             if not everyone:
                 # Future criteria filters should go here
@@ -173,6 +173,50 @@ class Instance:
             players.append(player)
 
         return players
+    
+    @property
+    def players(self):
+        online_players = []
+
+        for player in self._players:
+            if player.online:
+                online_players.append(player)
+
+        return online_players
+
+    def get_player(self, username=None, mcuuid=None, ip_address=None, add_if_not_found=False):
+        for player in self._players:
+            if username:
+                if username == player.username:
+                    return player
+
+            if mcuuid:
+                if player.mcuuid == mcuuid:
+                    return player
+
+            if ip_address:
+                if player.ip_address == ip_address:
+                    return player
+        
+        if add_if_not_found:
+            mcuuid = self.uuid_cache.get(username)
+            
+            player = Player(
+                server=self.server, 
+                username=username, 
+                mcuuid=mcuuid
+            )
+
+            self._players.append(player)
+
+            return player
+
+        raise PlayerNotFound("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
+
+    def get_player_(self, mcuuid):
+        for player in self.list_players(everyone=True):
+            if str(player.mcuuid) == mcuuid:
+                return player
 
     # Tick
     def tick(self):

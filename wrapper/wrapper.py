@@ -132,19 +132,21 @@ class Wrapper:
             except:
                 self.shutdown()
                 self.log.traceback("Fatal error, shutting down")
-                self.server.instance.api.stop()
 
-                t = time.time()
+                if self.server.instance:
+                    self.server.instance.api.stop()
 
-                while self.server.instance.process.process:
-                    if time.time() - t > 60:
-                        self.log.error("Taking too long for server to shutdown, killing")
-                        self.server.instance.kill()
-                        break
+                    t = time.time()
 
-                    time.sleep(1)
+                    while self.server.instance.process.process:
+                        if time.time() - t > 60:
+                            self.log.error("Taking too long for server to shutdown, killing")
+                            self.server.instance.kill()
+                            break
 
-                break
+                        time.sleep(1)
+
+                    break
 
     def tick(self):
         if self.initiate_shutdown and self.server.state != SERVER_STOPPING:

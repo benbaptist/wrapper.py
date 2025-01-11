@@ -29,7 +29,7 @@ class Handler:
             self.handle_unknown_event(event)
 
     def handle_player_message(self, event: ParsedEvent):
-        player = self.instance.server.get_player(username=event.data["player"])
+        player = self.instance.get_player(username=event.data["player"])
 
         if not player:
             return
@@ -42,7 +42,7 @@ class Handler:
 
     def handle_player_join(self, event: ParsedEvent):
         raw_player = event.data["player"]
-        player = self.instance.server.get_player(username=raw_player["username"], add_if_not_found=True)
+        player = self.instance.get_player(username=raw_player["username"], add_if_not_found=True)
 
         if not player:
             return
@@ -79,7 +79,7 @@ class Handler:
         self.instance.state = SERVER_STARTED
 
     def handle_player_disconnect(self, event: ParsedEvent):
-        player = self.instance.server.get_player(username=event.data["player"])
+        player = self.instance.get_player(username=event.data["player"])
 
         if not player:
             return
@@ -90,7 +90,7 @@ class Handler:
         )
 
     def handle_player_teleport(self, event: ParsedEvent):
-        player = self.instance.server.get_player(username=event.data["player"])
+        player = self.instance.get_player(username=event.data["player"])
 
         if not player:
             return

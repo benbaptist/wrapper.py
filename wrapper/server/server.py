@@ -66,48 +66,6 @@ class Server(object):
             return SERVER_STOPPED
 
     @property
-    def players(self):
-        # TODO: Move to instance object
-        if self.instance:
-            online_players = []
-
-            for player in self.instance.players:
-                if player.online:
-                    online_players.append(player)
-
-            return online_players
-
-    def get_player(self, username=None, mcuuid=None, ip_address=None, add_if_not_found=False):
-        # TODO: Move to instance object
-        for player in self.instance.players:
-            if username:
-                if username == player.username:
-                    return player
-
-            if mcuuid:
-                if player.mcuuid == mcuuid:
-                    return player
-
-            if ip_address:
-                if player.ip_address == ip_address:
-                    return player
-        
-        if add_if_not_found:
-            mcuuid = self.instance.uuid_cache.get(username)
-            player = Player(server=self, username=username, mcuuid=mcuuid)
-            self.instance.players.append(player)
-
-            return player
-
-        raise PlayerNotFound("Player by criteria %s/%s/%s not found" % (username, mcuuid, ip_address))
-
-    def get_player_(self, mcuuid):
-        # TODO: Move to instance object
-        for player in self.all_players:
-            if str(player.mcuuid) == mcuuid:
-                return player
-
-    @property
     def logs(self):
         files = os.listdir("logs")
         files.sort()
@@ -132,7 +90,7 @@ class Server(object):
 
     def restart(self, reason="Server restarting"):
         if self.instance:
-            for player in self.players:
+            for player in self.instance.players:
                 player.kick(reason)
 
             time.sleep(.1)
@@ -142,7 +100,7 @@ class Server(object):
 
     def stop(self, reason="Server closed", save=True):
         if self.instance:
-            for player in self.players:
+            for player in self.instance.players:
                 player.kick(reason)
 
             self.instance.stop()
@@ -212,7 +170,4 @@ class Server(object):
 
             # Poll every 200ms
             if time.time() - self._timeout > .2:
-                for player in self.players:
-                    pass
-
                 self._timeout = time.time()

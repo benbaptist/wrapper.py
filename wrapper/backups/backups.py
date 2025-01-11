@@ -211,7 +211,7 @@ class Backups:
             return
 
         # Mark server as dirty if needed
-        if len(self.server.players) > 0:
+        if len(self.server.instance.players) > 0:
             self.dirty = True
 
         # If server hasn't had a player join, skip tick
