@@ -39,16 +39,11 @@
 - [ ] Server
     - [ ] Throttle server start attempts if failing to start (i.e. invalid CLI arguments, wrong server jar name, etc.)
     - [ ] Regression: Need to re-implement pre-1.7 (or whatever version) server console parsing (e.g. `[11:11:11] [INFO] ...`)
+    - [ ] FIX: Server jar downloader only works for versions 1.2 and over
 - [ ] Backups
     - [ ] Respect ingame-notification settings
     - [ ] Ability to mark a backup as "important", so it does not auto-delete during rotation
     - [ ] Backups page should be dynamically loaded, show progress bar if during a B/U
-- [ ] Dashboard
-    - [ ] Localize MaterializeCSS dependencies (don't use CDN)
-    - [ ] "400 Bad request" thru nginx proxy
-    - [ ] Occasional deadlock condition shortly after starting
-    - [ ] Get rid of SocketIO bull crap. Too unreliable and crappy. Bah! (No idea what I meant when I wrote this)
-    - [ ] Server jar downloader only works for versions 1.2 and over
 - [ ] Plugins / API
     - [ ] Permissions handling for commands
 - [ ] Player object
