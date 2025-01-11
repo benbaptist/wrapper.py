@@ -7,6 +7,7 @@ from .uuid_cache import UUID_Cache
 from .process import Process
 from .parser import LogParser, Handler
 from .api import API
+from .properties import Properties
 from ...commons import *
 from ...exceptions import *
 
@@ -32,6 +33,13 @@ class Instance:
             "sendCommandFeedback": True,
             "logAdminCommands": True
         }
+
+        # Initialize server properties
+        self.properties = Properties(os.getcwd())
+        
+        # Set initial state from properties
+        self.port = self.properties.get("server-port", 25565)
+        self.online_mode = self.properties.get("online-mode", True)
 
         self.process = Process()
         self.abort = False
@@ -105,6 +113,9 @@ class Instance:
     # Control server states
     def stop(self):
         """ Stops the server """
+        # Ensure properties are saved before stopping
+        if self.properties.dirty:
+            self.properties.save()
         self.abort = time.time()
 
     def freeze(self):
