@@ -1,6 +1,6 @@
 # Dashboard
 
-The dashboard is a web interface for managing wrapper.py and the server. It is built using Flask, Vue.js, and Tailwind CSS.
+The dashboard is a web interface for managing wrapper.py and the server. It is built using Flask-SocketIO, Vue.js, and Tailwind CSS.
 
 ## API
 
@@ -13,6 +13,7 @@ The frontend is a single-page application that allows for the management of wrap
 ## Structure
 
 - `api/`: The API is built using Flask-RESTful. See api.md for more information.
+- `io/`: The SocketIO methods will be stored here.
 - `frontend/`: The frontend is built using Vue.js and Tailwind CSS.
 - `__init__.py`: imports dashboard
 - `dashboard.py`: The main Flask initialization file

@@ -82,7 +82,7 @@ class Player:
         else:
             self.online_mode = self.server.instance.online_mode
 
-        if "is_online_accounat" not in self.db:
+        if "is_online_account" not in self.db:
             self.db["is_online_account"] = True
 
             uuid_cache = UUID_Cache()
