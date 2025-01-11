@@ -22,15 +22,17 @@ pip3 install https://github.com/benbaptist/wrapper.py/archive/master.zip
 pip3 install https://github.com/benbaptist/wrapper.py/archive/development.zip
 ```
 
-Just run `mcwrapper` in the working directory of your Minecraft server to start.
-On first start, it'll present you with a setup wizard. After you complete, re-run `mcwrapper` again,
-and enjoy.
-
-You may need to adjust your shell's $PATH to incorporate your local bin folder, depending on your system or how you installed Wrapper. For some systems, adding this to your .bashrc may work:
-
+Run `mcwrapper` to start wrapper.py.
 ```
-export PATH=$PATH:~/.local/bin
+$ mcwrapper
+* Welcome to Wrapper.py!
+* Before we begin, let's get a few things set up.
+* By continuing, you agree to Mojang's EULA.
+----------------
+Would you like to use the browser-based dashboard? (y/n): 
 ```
+
+On first start, it'll present you with a setup wizard. Once finished, you can run `mcwrapper` again to start the server.
 
 Wrapper.py will automatically accept the Minecraft server EULA on your behalf, if you have not already done so.
 
