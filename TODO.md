@@ -50,5 +50,3 @@
     - [x] Make peristent (accessible when offline)
         - [x] Persistent storage
         - [ ] Delete persistent player objects if too many are used
-- [ ] Misc. stuff
-    - [ ] Make {"text": ""} objects universally encoded (I think I meant having a DataClass for Minecraft's Chat objects)
