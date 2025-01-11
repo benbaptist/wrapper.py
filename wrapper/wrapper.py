@@ -97,13 +97,13 @@ class Wrapper:
         if self.debug:
             self.log_manager.level = logging.DEBUG
 
-        self.log.info("Wrapper starting (%s)" % __version__)
-        self.log.debug("Debug mode is on.")
-
         # Start console input thread
         t = threading.Thread(target=self.console.run)
         t.daemon = True
         t.start()
+
+        self.log.info("Wrapper starting (%s)" % __version__)
+        self.log.debug("Debug mode is on.")
 
         # Load plugins
         self.plugins.load_plugins()
