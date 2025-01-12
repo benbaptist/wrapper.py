@@ -1,7 +1,7 @@
 import json
 import os
 
-# Ben's Configurator v1.2
+# Ben's Configurator v1.3
 # Copyright benbaptist.com 2019
 
 class DummyLogger:
@@ -16,19 +16,23 @@ class Config:
 		if not (type(index) in (str, bytes)):
 			raise Exception("a str/bytes must be passed")
 		return self.data[index]
+	
 	def __setitem__(self, index, value):
 		if not (type(index) in (str, bytes)):
 			raise Exception("a str/bytes must be passed")
 		self.data[index] = value
 		return self.data[index]
+	
 	def __delattr__(self, index):
 		if not (type(index) in (str, bytes)):
 			raise Exception("a str/bytes must be passed")
 		del self.data[index]
+
 	def __delitem__(self, index):
 		if not (type(index) in (str, bytes)):
 			raise Exception("a str/bytes must be passed")
 		del self.data[index]
+
 	def __iter__(self):
 		for i in self.data:
 			yield i
@@ -71,6 +75,12 @@ class Config:
 		# 		self.data[i] = template[i]
 
 		self.save()
+
+	def get(self, key, default=None):
+		return self.data.get(key, default)
+	
+	def update(self, dict):
+		self.data.update(dict)
 
 	def save(self):
 		with open(self.path, "w") as f:

@@ -1,6 +1,8 @@
 passlib
 Flask_SocketIO
 Flask
+flask-restful
+flask-login
 storify>=0.0.11
 msgpack
 psutil

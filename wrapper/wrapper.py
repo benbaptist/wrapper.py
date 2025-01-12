@@ -19,6 +19,8 @@ from .mojang import Mojang
 from .wizard import Wizard
 from .commons import *
 
+from .dashboard import init_app
+
 from builtins import input
 
 class Wrapper:
@@ -56,6 +58,8 @@ class Wrapper:
         self.backups = Backups(self)
         self.scripts = Scripts(self)
         self.wizard = Wizard(self)
+
+        self.dashboard, self.dashboard_socketio = init_app(self)
 
         self.abort = False
         self.initiate_shutdown = False

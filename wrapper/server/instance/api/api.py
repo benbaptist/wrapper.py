@@ -27,7 +27,10 @@ class API:
 
     def stop(self):
         """ Tells the server to shutdown cleanly. """
-        self._run("stop")
+        try:
+            self._run("stop")
+        except ServerStopped:
+            pass
 
     def title(self, message, target="@a", title_type="title", fade_in=None, stay=None, fade_out=None):
         """ Send a title to a player. """
