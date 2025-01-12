@@ -2,7 +2,7 @@ Built with Flask-RESTful. This API must be well-structured, with reusable compon
 
 Authentication will be handled with Flask-Login or a manually-generated API key from within the dashboard.
 
-## Functionality Scope
+# Functionality Scope
 - Server status and controls
     - Start/stop server
     - View server status (e.g. online/offline, version, memory usage, etc.) [Streamable from SocketIO]
@@ -28,14 +28,14 @@ Authentication will be handled with Flask-Login or a manually-generated API key 
     - Reload plugins
 - Manage wrapper.py's own settings
 
-## Authentication
+# Authentication
 
 All endpoints require authentication via token. Include the token in the Authorization header.
 
-## Resources
+# Resources
 All resources are represented as JSON objects. Resources make for reusable building blocks of this API.
 
-### Response
+## Response
 
 This is the root response object. It indicates success or failure, and a payload of data specific to the request. All requests return a response object.
 
@@ -57,7 +57,7 @@ Error example (can be any non-2xx HTTP status code):
 }
 ```
 
-### Error
+## Error
 
 ```json
 {
@@ -66,7 +66,7 @@ Error example (can be any non-2xx HTTP status code):
 }
 ```
 
-### Player
+## Player
 ```json
 {
     "username": "<String: Player's username>",
@@ -80,7 +80,7 @@ Error example (can be any non-2xx HTTP status code):
 }
 ```
 
-### PlayerStats
+## PlayerStats
 
 A player's stats are represented as a JSON object with the following properties:
 
@@ -93,7 +93,7 @@ A player's stats are represented as a JSON object with the following properties:
 }
 ```
 
-### PlayerLogin
+## PlayerLogin
 
 A login is represented as a JSON object with the following properties:
 
@@ -105,7 +105,7 @@ A login is represented as a JSON object with the following properties:
 }
 ```
 
-### Server
+## Server
 
 The server object is represented as a JSON object with the following properties:
 
@@ -119,7 +119,7 @@ The server object is represented as a JSON object with the following properties:
 }
 ```
 
-### Chat
+## Chat
 
 A chat message is represented as a JSON object with the following properties:
 
@@ -131,10 +131,10 @@ A chat message is represented as a JSON object with the following properties:
 }
 ```
 
-## Custom Types
+# Custom Types
 Types that aren't completely self-explanatory, like Strings, Integers, etc.
 
-### UUID
+## UUID
 
 A UUID is represented as a string of 32 hexadecimal characters, with dashes inserted at the 8th, 12th, 16th, and 20th positions. Used for player UUIDs, as well as other UUID-based identifiers.
 
@@ -142,7 +142,7 @@ A UUID is represented as a string of 32 hexadecimal characters, with dashes inse
 "123e4567-e89b-12d3-a456-426614174000"
 ```
 
-### Unix Timestamp
+## Unix Timestamp
 
 A Unix timestamp is a 32-bit integer that represents the number of seconds since the Unix epoch (January 1, 1970).
 
@@ -150,7 +150,7 @@ A Unix timestamp is a 32-bit integer that represents the number of seconds since
 1710332400
 ```
 
-### Position
+## Position
 
 A position is represented as a 3-element array, with the first element being the X coordinate, the second being the Y coordinate, and the third being the Z coordinate.
 
@@ -158,7 +158,7 @@ A position is represented as a 3-element array, with the first element being the
 [100, 100, 100]
 ```
 
-### Skin
+## Skin
 
 A Minecraft skin is represented as a URL.
 
@@ -166,7 +166,7 @@ A Minecraft skin is represented as a URL.
 "https://minecraft.net/path/to/skin.png"
 ```
 
-## Endpoints
+# Endpoints
 
 All endpoints return a [Response](#response) object, and may return a payload of data specific to the request. 
 
@@ -174,20 +174,20 @@ If no payload is specified, the payload will be `null`. If successful, the respo
 
 Input, if provided, must be sent as JSON in the request body as `application/json`.
 
-### GET /v1/server
+## GET /v1/server
 
 Returns the server object, which contains the server's status, as well as other useful information.
 
-#### Payload
+### Payload
 ```
 <Server>
 ```
 
-### GET /v1/server/properties
+## GET /v1/server/properties
 
 Returns the parameters of server.properties.
 
-#### Payload
+### Payload
 ```
 {
     "name": "<String: Name of the server>",
@@ -223,22 +223,22 @@ Returns the parameters of server.properties.
 }
 ```
 
-### PATCH /v1/server/properties
+## PATCH /v1/server/properties
 
 Updates the server's properties. Any properties that are not specified in the input payload will be left unchanged.
 
-#### Input Payload
+### Input Payload
 ```
 {
     <any>
 }
 ```
 
-### GET /v1/server/java
+## GET /v1/server/java
 
 Returns the Java options for the server.
 
-#### Payload
+### Payload
 ```
 {
     "bin": "<String: Path to Java binary>",
@@ -247,72 +247,72 @@ Returns the Java options for the server.
 }
 ```
 
-### PATCH /v1/server/java
+## PATCH /v1/server/java
 
 Updates the server's Java options. Any options that are not specified in the input payload will be left unchanged.
 
-#### Input Payload
+### Input Payload
 ```
 {
     <any>
 }
 ```
 
-### GET /v1/server/whitelist
+## GET /v1/server/whitelist
 
 Returns the whitelist.
 
-#### Payload
+### Payload
 ```
 <Array of Player objects>
 ```
 
-### PATCH /v1/server/whitelist
+## PATCH /v1/server/whitelist
 
 Updates the whitelist. Any players that are not specified in the input payload will be removed from the whitelist.
 
-#### Input Payload
+### Input Payload
 ```
 <Array of UUIDs>
 ```
 
-### GET /v1/server/banned
+## GET /v1/server/banned
 
 Returns the banned players.
 
-#### Payload
+### Payload
 ```
 <Array of Player objects>
 ```
 
-### GET /v1/server/ops
+## GET /v1/server/ops
 
 Returns the operators.
 
-#### Payload
+### Payload
 ```
 <Array of Player objects>
 ```
 
-### PATCH /v1/server/ops
+## PATCH /v1/server/ops
 
 Updates the operators. Any players that are not specified in the input payload will be removed from the operators.
 
-#### Input Payload
+### Input Payload
 ```
 <Array of UUIDs>
 ```
 
-### GET /v1/server/logs
+## GET /v1/server/logs
 
 Returns the server's logs.
 
-#### Payload
+### Payload
 ```
 <Array of Log objects>
 ```
 
-### GET /v1/server/chat
+## GET /v1/server/chat
 
 Returns the server's chat history, since the server was started. If the history exceeds 1000 messages, the oldest messages will be discarded.
 
@@ -321,38 +321,38 @@ Returns the server's chat history, since the server was started. If the history 
 <Array of Chat objects>
 ```
 
-### GET /v1/server/players
+## GET /v1/server/players
 
 Returns the list of players currently on the server.
 
-#### Payload
+### Payload
 ```
 <Array of Player objects>
 ```
 
-### GET /v1/players
+## GET /v1/players
 
 Returns the list of all players that ever logged into the server.
 
-#### Payload
+### Payload
 ```
 <Array of Player objects>
 ```
 
-### GET /v1/players/<UUID>
+## GET /v1/players/<UUID>
 
 Returns the player object for a given player UUID.
 
-#### Payload
+### Payload
 ```
 <Player>
 ```
 
-### GET /v1/players/<UUID>/stats
+## GET /v1/players/<UUID>/stats
 
 Returns the stats of a player.
 
-#### Payload
+### Payload
 ```
 <PlayerStats>
 ```
