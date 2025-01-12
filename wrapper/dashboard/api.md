@@ -28,7 +28,6 @@ Authentication will be handled with Flask-Login or a manually-generated API key 
     - Reload plugins
 - Manage wrapper.py's own settings
 
-
 ## Authentication
 
 All endpoints require authentication via token. Include the token in the Authorization header.
@@ -184,62 +183,124 @@ Returns the server object, which contains the server's status, as well as other 
 <Server>
 ```
 
-### GET /v1/server/settings
+### GET /v1/server/properties
 
-Returns the server's settings, including server.properties, Java options, and other settings.
+Returns the parameters of server.properties.
 
 #### Payload
 ```
 {
-    "properties": {
-        "name": "<String: Name of the server>",
-        "icon": "<String: URL to server icon>",
-        "max_players": <Integer>,
-        "online_mode": true | false,
-        "server_ip": "<String: Server IP address>",
-        "server_port": <Integer>,
-        "whitelist": true | false,
-        "whitelist_players": <Array of Player objects>,
-        "accepts_transfers": true | false,
-        "allow_flight": true | false,
-        "allow_nether": true | false,
-        "difficulty": "easy" | "normal" | "hard",
-        "enable_command_block": true | false,
-        "enable_query": true | false,
-        "enable_rcon": true | false,
-        "entity_broadcast_range_percentage": <Integer>,
-        "resource_pack": "<String: URL to resource pack>",
-        "resource_pack_id": "<String: Resource pack ID>",
-        "resource_pack_prompt": "<String: Resource pack prompt>",
-        "resource_pack_sha1": "<String: Resource pack SHA-1>",
-        "force_gamemode": true | false,
-        "gamemode": "survival" | "creative" | "adventure" | "spectator",
-        "generate_structures": true | false,
-        "hardcore": true | false,
-        "log_ips": true | false,
-        "max_players": <Integer>,
-        "motd": "<String: Message of the day>",
-        "pvp": true | false,
-        "view_distance": <Integer>,
-        "white_list": true | false
-    },
-    "java_options": {
-        "bin": "<String: Path to Java binary>",
-        "xms": <Integer>,
-        "xmx": <Integer>,
-    }
+    "name": "<String: Name of the server>",
+    "icon": "<String: URL to server icon>",
+    "max_players": <Integer>,
+    "online_mode": true | false,
+    "server_ip": "<String: Server IP address>",
+    "server_port": <Integer>,
+    "whitelist": true | false,
+    "whitelist_players": <Array of Player objects>,
+    "accepts_transfers": true | false,
+    "allow_flight": true | false,
+    "allow_nether": true | false,
+    "difficulty": "easy" | "normal" | "hard",
+    "enable_command_block": true | false,
+    "enable_query": true | false,
+    "enable_rcon": true | false,
+    "entity_broadcast_range_percentage": <Integer>,
+    "resource_pack": "<String: URL to resource pack>",
+    "resource_pack_id": "<String: Resource pack ID>",
+    "resource_pack_prompt": "<String: Resource pack prompt>",
+    "resource_pack_sha1": "<String: Resource pack SHA-1>",
+    "force_gamemode": true | false,
+    "gamemode": "survival" | "creative" | "adventure" | "spectator",
+    "generate_structures": true | false,
+    "hardcore": true | false,
+    "log_ips": true | false,
+    "max_players": <Integer>,
+    "motd": "<String: Message of the day>",
+    "pvp": true | false,
+    "view_distance": <Integer>,
+    "white_list": true | false
 }
 ```
 
-### PATCH /v1/server/settings
+### PATCH /v1/server/properties
 
-Updates the server's settings. Any settings that are not specified in the input payload will be left unchanged.
+Updates the server's properties. Any properties that are not specified in the input payload will be left unchanged.
 
 #### Input Payload
 ```
 {
     <any>
 }
+```
+
+### GET /v1/server/java
+
+Returns the Java options for the server.
+
+#### Payload
+```
+{
+    "bin": "<String: Path to Java binary>",
+    "xms": <Integer>,
+    "xmx": <Integer>,
+}
+```
+
+### PATCH /v1/server/java
+
+Updates the server's Java options. Any options that are not specified in the input payload will be left unchanged.
+
+#### Input Payload
+```
+{
+    <any>
+}
+```
+
+### GET /v1/server/whitelist
+
+Returns the whitelist.
+
+#### Payload
+```
+<Array of Player objects>
+```
+
+### PATCH /v1/server/whitelist
+
+Updates the whitelist. Any players that are not specified in the input payload will be removed from the whitelist.
+
+#### Input Payload
+```
+<Array of UUIDs>
+```
+
+### GET /v1/server/banned
+
+Returns the banned players.
+
+#### Payload
+```
+<Array of Player objects>
+```
+
+### GET /v1/server/ops
+
+Returns the operators.
+
+#### Payload
+```
+<Array of Player objects>
+```
+
+### PATCH /v1/server/ops
+
+Updates the operators. Any players that are not specified in the input payload will be removed from the operators.
+
+#### Input Payload
+```
+<Array of UUIDs>
 ```
 
 ### GET /v1/server/logs
