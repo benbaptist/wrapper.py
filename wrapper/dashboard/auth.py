@@ -53,6 +53,12 @@ def migrate_passwords():
     if modified:
         config.save()
 
+def reset_password(password):
+    """Reset the root password."""
+    config = app.wrapper.config
+    config["dashboard"]["root-password"] = hash_password(password)
+    config.save()
+
 def load_users():
     """Load users from config."""
     users = {}

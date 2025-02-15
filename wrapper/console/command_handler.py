@@ -4,6 +4,8 @@ from ..exceptions import ServerStopped
 
 from wrapper import __version__
 
+from wrapper.dashboard.auth import reset_password
+
 class CommandHandler:
     def __init__(self, wrapper):
         self.wrapper = wrapper
@@ -90,6 +92,18 @@ class CommandHandler:
         if subcommand in ("halt", "stop"):
             self.log.info("Wrapper.py shutdown initiated from console")
             self.wrapper.shutdown()
+        elif subcommand == "reset":
+            if len(args) < 2:
+                self.log.error("Usage: /wrapper reset <password>")
+                return
+
+            password = args[1]
+            
+            try:
+                reset_password(password)
+                self.log.info("Dashboard password has been reset.")
+            except AttributeError:
+                self.log.error("Dashboard is not enabled or initialized")
         elif subcommand == "about":
             self.log.info(f"Wrapper.py {__version__}")
         else:
