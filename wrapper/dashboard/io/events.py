@@ -39,6 +39,15 @@ def get_server_status():
         "players": [player.__serialize__() for player in instance.players]
     }
 
+def serialize_parsed_event(event):
+    """Serialize a ParsedEvent object into a dict."""
+    if not event:
+        return None
+    return {
+        "name": event.name,
+        "data": event.data
+    }
+
 def init_events(wrapper):
     """Initialize event hooks. Called after wrapper is attached to app."""
     
@@ -104,6 +113,6 @@ def init_events(wrapper):
         """Emit when there's console output."""
         socketio.emit('logs', {
             "line": line,
-            "parsed": parsed_event._asdict() if parsed_event else None,
+            "parsed": serialize_parsed_event(parsed_event),
             "timestamp": int(time.time())
         }) 

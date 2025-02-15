@@ -3,7 +3,7 @@ Major rewrite of several components, as well as massive code cleanup.
 - `mcserver` is now `instance`
 - Better, clear separation between server module and instance modules' duties
 - New console parser (only works with latest Minecraft versions for now)
-- Removed dashboard
+- Completely removed and rewrote the dashboard from scratch
 - Removed hard-coded storify module, now using proper storify module from pip
 
 ## 2024-12-28 / 0.1.18 Alpha
