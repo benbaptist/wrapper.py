@@ -5,6 +5,7 @@ Major rewrite of several components, as well as massive code cleanup.
 - New console parser (only works with latest Minecraft versions for now)
 - Completely removed and rewrote the dashboard from scratch
 - Removed hard-coded storify module, now using proper storify module from pip
+- Password reset command added to console
 
 ## 2024-12-28 / 0.1.18 Alpha
 - Fixed:
