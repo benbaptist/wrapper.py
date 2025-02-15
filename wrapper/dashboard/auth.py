@@ -3,7 +3,7 @@ import uuid
 from passlib.hash import sha256_crypt
 from functools import wraps
 from flask import request, jsonify
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from . import app, login_manager
 
 class User(UserMixin):
@@ -121,10 +121,16 @@ def check_auth_header():
     return None
 
 def require_auth(f):
-    """Decorator that requires either login or valid API key."""
+    """Decorator that requires either login session or valid API key."""
     @wraps(f)
     def decorated(*args, **kwargs):
+        # First check if user is logged in via session
+        if current_user.is_authenticated:
+            return f(*args, **kwargs)
+            
+        # Then check for API key
         if check_auth_header():
             return f(*args, **kwargs)
+            
         return login_manager.unauthorized()
     return decorated 

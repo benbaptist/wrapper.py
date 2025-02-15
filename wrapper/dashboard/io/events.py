@@ -1,10 +1,20 @@
 import time
-from flask_socketio import emit
-from ..auth import require_auth
+from flask_socketio import emit, disconnect
+from flask_login import current_user
+from ..auth import check_auth_header
 from .. import socketio, app
 
+def authenticated_only(f):
+    """Decorator that checks both session and API key auth for SocketIO."""
+    def wrapped(*args, **kwargs):
+        if not current_user.is_authenticated and not check_auth_header():
+            disconnect()
+            return
+        return f(*args, **kwargs)
+    return wrapped
+
 @socketio.on('connect')
-@require_auth
+@authenticated_only
 def handle_connect():
     """Handle client connection."""
     emit('server', get_server_status())
@@ -69,22 +79,31 @@ def init_events(wrapper):
         """Emit when a player leaves."""
         socketio.emit('server', get_server_status())
 
-    @wrapper.events.hook("server.player.message")
+    @wrapper.events.hook("server.player.chat")
     def on_player_message(player, message):
         """Emit when a player sends a message."""
+        # This event is for raw chat messages from the server
+        # We don't need to handle it since the chat system will create ChatMessage objects
+        pass
+
+    # Chat events - hook into the chat system's events
+    @wrapper.events.hook("server.chat.message")
+    def on_chat_message(message):
+        """Emit when a chat message is sent through the chat system."""
         socketio.emit('chat', {
-            "player": player.__serialize__(),
-            "message": message,
-            "timestamp": int(time.time())
+            "player": message.player.__serialize__(),
+            "message": message.content,
+            "timestamp": int(message.timestamp.timestamp()),
+            "is_private": message.is_private,
+            "recipient": message.recipient.__serialize__() if message.recipient else None
         })
 
     # Console output
     @wrapper.events.hook("server.console.output")
     def on_console_output(line, parsed_event):
         """Emit when there's console output."""
-        pass
-        # socketio.emit('logs', {
-        #     "line": line,
-        #     "parsed": parsed_event._asdict() if parsed_event else None,
-        #     "timestamp": int(time.time())
-        # }) 
+        socketio.emit('logs', {
+            "line": line,
+            "parsed": parsed_event._asdict() if parsed_event else None,
+            "timestamp": int(time.time())
+        }) 

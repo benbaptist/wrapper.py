@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Api
 from flask_socketio import SocketIO
 from flask_login import LoginManager
@@ -7,6 +7,7 @@ import threading
 # Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'dev'  # TODO: Make this configurable
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 # Initialize extensions
 api = Api(app)
@@ -18,6 +19,11 @@ login_manager.init_app(app)
 from .api import routes
 from .io import events
 from .auth import migrate_passwords
+
+@app.route('/test')
+def test_page():
+    """Render the API test page."""
+    return render_template('api_test.html')
 
 def init_app(wrapper):
     """Initialize the dashboard with the wrapper instance."""

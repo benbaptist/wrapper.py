@@ -8,6 +8,7 @@ from .process import Process
 from .parser import LogParser, Handler
 from .api import API
 from .properties import Properties
+from .chat import Chat
 from ...commons import *
 from ...exceptions import *
 
@@ -49,6 +50,7 @@ class Instance:
         self.uuid_cache = UUID_Cache()
         self.parser = LogParser()
         self.handler = Handler(self)
+        self.chat = Chat(self)
         self._timeout = 0
 
         self._resource_analytics = []

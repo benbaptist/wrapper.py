@@ -193,6 +193,66 @@ class LogoutResource(Resource):
         logout_user()
         return success_response()
 
+class ChatResource(Resource):
+    method_decorators = [require_auth]
+    
+    def get(self):
+        """Get chat history since server start."""
+        
+        instance = app.wrapper.server.instance
+        if not instance:
+            return error_response("Server not running", code=3)
+            
+        messages = []
+        for msg in instance.chat:
+            messages.append({
+                "player": msg.player.__serialize__(),
+                "message": msg.content,
+                "timestamp": int(msg.timestamp.timestamp()),
+                "is_private": msg.is_private,
+                "recipient": msg.recipient.__serialize__() if msg.recipient else None
+            })
+            
+        return success_response(messages)
+    
+    def post(self):
+        """Send a chat message."""
+        instance = app.wrapper.server.instance
+        if not instance:
+            return error_response("Server not running", code=3)
+            
+        data = request.get_json()
+        content = data.get('message')
+        player_uuid = data.get('player_uuid')  # UUID of player sending message
+        recipient_uuid = data.get('recipient_uuid')  # Optional: UUID of recipient for private message
+        
+        if not content or not player_uuid:
+            return error_response("Missing required fields", code=7)
+            
+        try:
+            player = instance.get_player_(player_uuid)
+            if not player:
+                return error_response("Player not found", code=5, status_code=404)
+                
+            recipient = None
+            if recipient_uuid:
+                recipient = instance.get_player_(recipient_uuid)
+                if not recipient:
+                    return error_response("Recipient not found", code=5, status_code=404)
+                    
+            msg = instance.chat.send_message(player, content, recipient)
+            
+            return success_response({
+                "player": msg.player.__serialize__(),
+                "message": msg.content,
+                "timestamp": int(msg.timestamp.timestamp()),
+                "is_private": msg.is_private,
+                "recipient": msg.recipient.__serialize__() if msg.recipient else None
+            })
+            
+        except Exception as e:
+            return error_response(str(e), code=6)
+
 # Register routes
 api.add_resource(ServerResource, '/v1/server')
 api.add_resource(ServerPropertiesResource, '/v1/server/properties')
@@ -201,4 +261,5 @@ api.add_resource(PlayerResource, '/v1/players/<string:uuid>')
 api.add_resource(PlayerStatsResource, '/v1/players/<string:uuid>/stats')
 api.add_resource(PlayerActionResource, '/v1/players/<string:uuid>/action')
 api.add_resource(LoginResource, '/v1/auth/login')
-api.add_resource(LogoutResource, '/v1/auth/logout') 
+api.add_resource(LogoutResource, '/v1/auth/logout')
+api.add_resource(ChatResource, '/v1/server/chat') 

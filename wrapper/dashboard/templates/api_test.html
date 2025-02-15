@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrapper API Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/wrapper-api.js') }}"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        #status {
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wrapper API Test Page</h1>
+    
+    <div class="section">
+        <h2>Authentication</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="testLogin()">Login</button>
+        <button onclick="testLogout()">Logout</button>
+    </div>
+
+    <div class="section">
+        <h2>Server Control</h2>
+        <div>Status: <span id="serverStatus">Unknown</span></div>
+        <button onclick="testServerStart()">Start Server</button>
+        <button onclick="testServerStop()">Stop Server</button>
+        <button onclick="testServerRestart()">Restart Server</button>
+    </div>
+
+    <div class="section">
+        <h2>Server Properties</h2>
+        <pre id="serverProperties">Loading...</pre>
+        <button onclick="testGetProperties()">Refresh Properties</button>
+    </div>
+
+    <div class="section">
+        <h2>Players</h2>
+        <pre id="playerList">Loading...</pre>
+        <button onclick="testGetPlayers()">Refresh Players</button>
+    </div>
+
+    <div class="section">
+        <h2>Event Log</h2>
+        <pre id="eventLog"></pre>
+    </div>
+
+    <script>
+        let wrapper;
+
+        // Initialize the API when page loads
+        $(document).ready(() => {
+            wrapper = new WrapperAPI();
+            
+            // Setup event logging
+            function logEvent(event, data) {
+                const log = $('#eventLog');
+                log.prepend(`[${new Date().toISOString()}] ${event}: ${JSON.stringify(data)}\n`);
+            }
+
+            // Subscribe to events
+            wrapper.on('serverStatusChanged', (status) => {
+                $('#serverStatus').text(status.status);
+                logEvent('serverStatusChanged', status);
+            });
+
+            wrapper.on('playerJoined', (player) => {
+                logEvent('playerJoined', player);
+                testGetPlayers();
+            });
+
+            wrapper.on('playerLeft', (player) => {
+                logEvent('playerLeft', player);
+                testGetPlayers();
+            });
+        });
+
+        // Test functions
+        async function testLogin() {
+            try {
+                await wrapper.auth.login($('#username').val(), $('#password').val());
+                alert('Login successful!');
+            } catch (err) {
+                alert('Login failed: ' + err.message);
+            }
+        }
+
+        async function testLogout() {
+            try {
+                await wrapper.auth.logout();
+                alert('Logout successful!');
+            } catch (err) {
+                alert('Logout failed: ' + err.message);
+            }
+        }
+
+        async function testServerStart() {
+            try {
+                await wrapper.server.start();
+            } catch (err) {
+                alert('Failed to start server: ' + err.message);
+            }
+        }
+
+        async function testServerStop() {
+            try {
+                await wrapper.server.stop();
+            } catch (err) {
+                alert('Failed to stop server: ' + err.message);
+            }
+        }
+
+        async function testServerRestart() {
+            try {
+                await wrapper.server.restart();
+            } catch (err) {
+                alert('Failed to restart server: ' + err.message);
+            }
+        }
+
+        async function testGetProperties() {
+            try {
+                // Use the getter first to show cached data
+                let props = wrapper.server.properties;
+                $('#serverProperties').text(JSON.stringify(props, null, 2));
+                
+                // Then fetch fresh data
+                props = await wrapper.server.getProperties();
+                $('#serverProperties').text(JSON.stringify(props, null, 2));
+            } catch (err) {
+                alert('Failed to get properties: ' + err.message);
+            }
+        }
+
+        async function testGetPlayers() {
+            try {
+                // Use the getter which handles fetching transparently
+                const players = wrapper.server.players;
+                $('#playerList').text(JSON.stringify(players, null, 2));
+                
+                // Update again in 1 second to show any new fetched data
+                setTimeout(() => {
+                    const updatedPlayers = wrapper.server.players;
+                    $('#playerList').text(JSON.stringify(updatedPlayers, null, 2));
+                }, 1000);
+            } catch (err) {
+                alert('Failed to get players: ' + err.message);
+            }
+        }
+    </script>
+</body>
+</html> 
