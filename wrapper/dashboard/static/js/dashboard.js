@@ -323,7 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     // Load chat history
                     const chat = await this.api.server.getChat()
-                    this.chatMessages = chat
+                    this.chatMessages = chat || []
                 } catch (error) {
                     console.error('Error loading initial data:', error)
                 }
@@ -335,8 +335,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.isServerRunning = status.status === 'running'
                 this.uptime = formatDuration(status.uptime || 0)
                 this.cpuUsage = status.cpu_usage || 0
-                this.memoryUsage = status.memory_usage || 0
-                this.totalMemory = status.total_memory || 0
+                
+                // Handle memory usage data safely
+                if (status.memory && typeof status.memory === 'object') {
+                    this.memoryUsage = status.memory.used || 0
+                    this.totalMemory = status.memory.total || 0
+                } else {
+                    this.memoryUsage = status.memory_usage || 0
+                    this.totalMemory = status.total_memory || 0
+                }
+                
                 this.playerCount = (status.players || []).length
                 this.maxPlayers = status.max_players || 20
                 this.tps = status.tps || 20
@@ -350,41 +358,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 const time = new Date().toLocaleTimeString()
                 const { tpsChart, memoryChart, playersChart, chunksChart } = this.charts
                 
+                // Create non-reactive copies of the data
+                const tpsValue = Number(status.tps || 20)
+                const memoryValue = Number(status.memory?.used || status.memory_usage || 0)
+                const playerCount = Number((status.players || []).length)
+                const chunkCount = Number(status.chunks || 0)
+                
                 // Update TPS chart
                 tpsChart.data.labels.push(time)
-                tpsChart.data.datasets[0].data.push(status.tps || 20)
+                tpsChart.data.datasets[0].data.push(tpsValue)
                 if (tpsChart.data.labels.length > 20) {
                     tpsChart.data.labels.shift()
                     tpsChart.data.datasets[0].data.shift()
                 }
-                tpsChart.update()
+                tpsChart.update('none') // Use 'none' mode to prevent animations
                 
                 // Update Memory chart
                 memoryChart.data.labels.push(time)
-                memoryChart.data.datasets[0].data.push(status.memory_usage || 0)
+                memoryChart.data.datasets[0].data.push(memoryValue)
                 if (memoryChart.data.labels.length > 20) {
                     memoryChart.data.labels.shift()
                     memoryChart.data.datasets[0].data.shift()
                 }
-                memoryChart.update()
+                memoryChart.update('none')
                 
                 // Update Players chart
                 playersChart.data.labels.push(time)
-                playersChart.data.datasets[0].data.push((status.players || []).length)
+                playersChart.data.datasets[0].data.push(playerCount)
                 if (playersChart.data.labels.length > 20) {
                     playersChart.data.labels.shift()
                     playersChart.data.datasets[0].data.shift()
                 }
-                playersChart.update()
+                playersChart.update('none')
                 
                 // Update Chunks chart
                 chunksChart.data.labels.push(time)
-                chunksChart.data.datasets[0].data.push(status.chunks || 0)
+                chunksChart.data.datasets[0].data.push(chunkCount)
                 if (chunksChart.data.labels.length > 20) {
                     chunksChart.data.labels.shift()
                     chunksChart.data.datasets[0].data.shift()
                 }
-                chunksChart.update()
+                chunksChart.update('none')
             },
             async startServer() {
                 try {

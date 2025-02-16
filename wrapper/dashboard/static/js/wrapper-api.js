@@ -85,7 +85,8 @@ class WrapperAPI {
                 options.body = JSON.stringify(data);
             }
 
-            const response = await fetch(endpoint, options);
+            const baseUrl = '/api'; // Change this to match your API base URL
+            const response = await fetch(`${baseUrl}${endpoint}`, options);
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
