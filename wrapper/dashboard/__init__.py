@@ -1,8 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, Blueprint
 from flask_restful import Api
 from flask_socketio import SocketIO
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 import threading
+
+# Create Blueprint
+dashboard = Blueprint('dashboard', __name__, 
+                     template_folder='templates',
+                     static_folder='static',
+                     static_url_path='/static')
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -14,13 +20,27 @@ api = Api(app)
 socketio = SocketIO(app, cors_allowed_origins="*")
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'dashboard.login'
 
 # Import routes after app initialization to avoid circular imports
 from .api import routes
 from .io import events
-from .auth import migrate_passwords
+from .auth import migrate_passwords, require_auth
 
-@app.route('/test')
+@dashboard.route('/')
+@require_auth
+def index():
+    """Render the main dashboard."""
+    return render_template('dashboard.html')
+
+@dashboard.route('/login')
+def login():
+    """Render the login page."""
+    if current_user.is_authenticated:
+        return redirect(url_for('dashboard.index'))
+    return render_template('login.html')
+
+@dashboard.route('/test')
 def test_page():
     """Render the API test page."""
     return render_template('api_test.html')
@@ -28,6 +48,9 @@ def test_page():
 def init_app(wrapper):
     """Initialize the dashboard with the wrapper instance."""
     app.wrapper = wrapper
+    
+    # Register blueprint
+    app.register_blueprint(dashboard)
     
     # Initialize event hooks
     events.init_events(wrapper)

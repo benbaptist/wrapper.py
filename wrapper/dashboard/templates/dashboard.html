@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Wrapper.py{% endblock %}
+
+{% block content %}
+<div class="min-h-screen">
+    <!-- Top Navigation Bar -->
+    <nav class="bg-gray-800 dark:bg-gray-950 p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- Server Selection -->
+                <select v-model="selectedServer" class="bg-gray-700 text-white rounded px-3 py-1">
+                    <option v-for="server in servers" :value="server.id">[[ server.name ]]</option>
+                </select>
+                
+                <!-- Server Status Indicator -->
+                <div class="flex items-center space-x-2">
+                    <div :class="statusIndicatorClass" class="w-3 h-3 rounded-full"></div>
+                    <span class="text-white">[[ serverStatus ]]</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <!-- Theme Toggle -->
+                <button @click="toggleTheme" class="text-white">
+                    <span v-if="isDarkMode">🌞</span>
+                    <span v-else>🌙</span>
+                </button>
+                
+                <!-- User Menu -->
+                <div class="relative">
+                    <button @click="toggleUserMenu" class="text-white">
+                        <span class="material-icons">account_circle</span>
+                    </button>
+                    <div v-if="showUserMenu" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded shadow-lg">
+                        <!-- User menu items -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-12 gap-4 p-4">
+        <!-- Server Control Panel -->
+        <div class="col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+            <h2 class="text-xl font-bold mb-4">Server Control</h2>
+            
+            <!-- Power Controls -->
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <button @click="startServer" :disabled="isServerRunning" 
+                        class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded">
+                    Start
+                </button>
+                <button @click="stopServer" :disabled="!isServerRunning"
+                        class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded">
+                    Stop
+                </button>
+                <button @click="restartServer" :disabled="!isServerRunning"
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded">
+                    Restart
+                </button>
+                <button @click="freezeServer" :disabled="!isServerRunning"
+                        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded">
+                    Freeze
+                </button>
+            </div>
+
+            <!-- Server Stats -->
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span>Uptime:</span>
+                    <span>[[ uptime ]]</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>CPU Usage:</span>
+                    <span>[[ cpuUsage ]]%</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Memory Usage:</span>
+                    <span>[[ memoryUsage ]]MB / [[ totalMemory ]]MB</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Players:</span>
+                    <span>[[ playerCount ]] / [[ maxPlayers ]]</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>TPS:</span>
+                    <span>[[ tps ]]</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Chat Area -->
+        <div class="col-span-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+            <div class="flex flex-col h-full">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold">Live Chat</h2>
+                    <div class="flex space-x-2">
+                        <button @click="toggleSystemMessages" :class="{ 'bg-blue-500': showSystemMessages }"
+                                class="px-2 py-1 rounded">
+                            System
+                        </button>
+                        <button @click="togglePlayerChat" :class="{ 'bg-blue-500': showPlayerChat }"
+                                class="px-2 py-1 rounded">
+                            Chat
+                        </button>
+                        <button @click="toggleCommands" :class="{ 'bg-blue-500': showCommands }"
+                                class="px-2 py-1 rounded">
+                            Commands
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Chat Messages -->
+                <div class="flex-1 overflow-y-auto mb-4 bg-gray-100 dark:bg-gray-900 rounded p-2">
+                    <div v-for="message in filteredMessages" :key="message.id" 
+                         :class="messageClass(message)"
+                         class="mb-2 p-2 rounded">
+                        <span class="text-gray-500">[[ message.timestamp ]]</span>
+                        <span :class="message.type === 'system' ? 'text-yellow-500' : 'text-white'">
+                            [[ message.content ]]
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="flex space-x-2">
+                    <input v-model="chatInput" @keyup.enter="sendMessage"
+                           class="flex-1 bg-gray-100 dark:bg-gray-900 rounded px-3 py-2"
+                           placeholder="Type a message or command...">
+                    <button @click="sendMessage"
+                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Management -->
+        <div class="col-span-3 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+            <h2 class="text-xl font-bold mb-4">Players</h2>
+            
+            <!-- Player Search -->
+            <input v-model="playerSearch" 
+                   class="w-full bg-gray-100 dark:bg-gray-900 rounded px-3 py-2 mb-4"
+                   placeholder="Search players...">
+
+            <!-- Player List -->
+            <div class="space-y-2">
+                <div v-for="player in filteredPlayers" :key="player.uuid"
+                     class="flex items-center justify-between p-2 bg-gray-100 dark:bg-gray-900 rounded">
+                    <div class="flex items-center space-x-2">
+                        <img :src="player.avatar" class="w-8 h-8 rounded">
+                        <div>
+                            <div class="font-medium">[[ player.name ]]</div>
+                            <div class="text-sm text-gray-500">
+                                [[ player.onlineTime ]] • [[ player.ping ]]ms
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex space-x-1">
+                        <button @click="kickPlayer(player)" 
+                                class="text-red-500 hover:text-red-600">
+                            <span class="material-icons">remove_circle</span>
+                        </button>
+                        <button @click="banPlayer(player)"
+                                class="text-red-500 hover:text-red-600">
+                            <span class="material-icons">block</span>
+                        </button>
+                        <button @click="opPlayer(player)"
+                                class="text-yellow-500 hover:text-yellow-600">
+                            <span class="material-icons">star</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Server Configuration -->
+        <div class="col-span-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+            <h2 class="text-xl font-bold mb-4">Configuration</h2>
+            
+            <!-- Configuration Tabs -->
+            <div class="flex space-x-2 mb-4">
+                <button v-for="tab in configTabs" 
+                        @click="activeConfigTab = tab.id"
+                        :class="{ 'bg-blue-500 text-white': activeConfigTab === tab.id }"
+                        class="px-4 py-2 rounded">
+                    [[ tab.name ]]
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div v-if="activeConfigTab === 'java'" class="space-y-4">
+                <!-- Java Settings -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block mb-2">Memory Allocation</label>
+                        <input v-model="javaSettings.memory" type="text" 
+                               class="w-full bg-gray-100 dark:bg-gray-900 rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block mb-2">Java Version</label>
+                        <select v-model="javaSettings.version"
+                                class="w-full bg-gray-100 dark:bg-gray-900 rounded px-3 py-2">
+                            <option v-for="version in javaVersions" :value="version">
+                                [[ version ]]
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block mb-2">JVM Arguments</label>
+                    <textarea v-model="javaSettings.args"
+                              class="w-full bg-gray-100 dark:bg-gray-900 rounded px-3 py-2"
+                              rows="4"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Monitoring -->
+        <div class="col-span-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
+            <h2 class="text-xl font-bold mb-4">Performance</h2>
+            
+            <!-- Performance Graphs -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="h-48 relative">
+                    <canvas id="tpsChart" class="w-full h-full"></canvas>
+                </div>
+                <div class="h-48 relative">
+                    <canvas id="memoryChart" class="w-full h-full"></canvas>
+                </div>
+                <div class="h-48 relative">
+                    <canvas id="playersChart" class="w-full h-full"></canvas>
+                </div>
+                <div class="h-48 relative">
+                    <canvas id="chunksChart" class="w-full h-full"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% raw %}
+<script>
+    // Configure Vue to use [[ ]] for variables since {{ }} is used by Flask
+    const { createApp } = Vue
+    
+    createApp({
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                // Server state
+                selectedServer: null,
+                servers: [],
+                serverStatus: 'unknown',
+                isServerRunning: false,
+                
+                // Server stats
+                uptime: '0:00:00',
+                cpuUsage: 0,
+                memoryUsage: 0,
+                totalMemory: 0,
+                playerCount: 0,
+                maxPlayers: 0,
+                tps: 20,
+                
+                // Chat
+                chatMessages: [],
+                chatInput: '',
+                showSystemMessages: true,
+                showPlayerChat: true,
+                showCommands: true,
+                
+                // Players
+                players: [],
+                playerSearch: '',
+                
+                // Configuration
+                configTabs: [
+                    { id: 'java', name: 'Java Settings' },
+                    { id: 'properties', name: 'Server Properties' },
+                    { id: 'backup', name: 'Backup Settings' }
+                ],
+                activeConfigTab: 'java',
+                javaSettings: {
+                    memory: '2G',
+                    version: '17',
+                    args: '-XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200'
+                },
+                javaVersions: ['8', '11', '16', '17', '18', '19'],
+                
+                // Theme
+                isDarkMode: document.documentElement.classList.contains('dark'),
+                showUserMenu: false
+            }
+        },
+        computed: {
+            statusIndicatorClass() {
+                const classes = {
+                    'running': 'bg-green-500',
+                    'stopping': 'bg-yellow-500',
+                    'starting': 'bg-yellow-500',
+                    'stopped': 'bg-red-500',
+                    'unknown': 'bg-gray-500'
+                }
+                return classes[this.serverStatus] || classes.unknown
+            },
+            filteredMessages() {
+                return this.chatMessages.filter(msg => {
+                    if (msg.type === 'system' && !this.showSystemMessages) return false
+                    if (msg.type === 'chat' && !this.showPlayerChat) return false
+                    if (msg.type === 'command' && !this.showCommands) return false
+                    return true
+                })
+            },
+            filteredPlayers() {
+                if (!this.playerSearch) return this.players
+                const search = this.playerSearch.toLowerCase()
+                return this.players.filter(p => 
+                    p.name.toLowerCase().includes(search) ||
+                    p.uuid.toLowerCase().includes(search)
+                )
+            }
+        },
+        methods: {
+            async initialize() {
+                this.api = new WrapperAPI()
+                await this.setupEventListeners()
+                await this.loadInitialData()
+                this.setupCharts()
+            },
+            async setupEventListeners() {
+                this.api.on('serverStatusChanged', this.handleServerStatusChange)
+                this.api.on('chat', this.handleChatMessage)
+                this.api.on('playerJoined', this.handlePlayerJoin)
+                this.api.on('playerLeft', this.handlePlayerLeave)
+            },
+            async loadInitialData() {
+                // Load servers
+                const servers = await this.api.server.getAll()
+                this.servers = servers
+                if (servers.length > 0) {
+                    this.selectedServer = servers[0].id
+                }
+                
+                // Load initial server status
+                const status = await this.api.server.getStatus()
+                this.handleServerStatusChange(status)
+                
+                // Load players
+                const players = await this.api.players.getAll()
+                this.players = players
+            },
+            setupCharts() {
+                // Initialize Chart.js graphs
+                this.tpsChart = new Chart(document.getElementById('tpsChart'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'TPS',
+                            data: [],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    }
+                })
+                
+                // Similar setup for other charts...
+            },
+            handleServerStatusChange(status) {
+                this.serverStatus = status.status
+                this.isServerRunning = status.status === 'running'
+                this.uptime = status.uptime
+                this.cpuUsage = status.cpu
+                this.memoryUsage = status.memory.used
+                this.totalMemory = status.memory.total
+                this.playerCount = status.players.length
+                this.maxPlayers = status.maxPlayers
+                this.tps = status.tps
+                
+                // Update charts
+                this.updateCharts(status)
+            },
+            updateCharts(status) {
+                const time = new Date().toLocaleTimeString()
+                
+                // Update TPS chart
+                this.tpsChart.data.labels.push(time)
+                this.tpsChart.data.datasets[0].data.push(status.tps)
+                if (this.tpsChart.data.labels.length > 20) {
+                    this.tpsChart.data.labels.shift()
+                    this.tpsChart.data.datasets[0].data.shift()
+                }
+                this.tpsChart.update()
+                
+                // Similar updates for other charts...
+            },
+            async startServer() {
+                await this.api.server.start()
+            },
+            async stopServer() {
+                await this.api.server.stop()
+            },
+            async restartServer() {
+                await this.api.server.restart()
+            },
+            async freezeServer() {
+                // Implement freeze functionality
+            },
+            async sendMessage() {
+                if (!this.chatInput.trim()) return
+                
+                if (this.chatInput.startsWith('/')) {
+                    await this.api.server.sendCommand(this.chatInput.slice(1))
+                } else {
+                    await this.api.server.sendChat(this.chatInput)
+                }
+                
+                this.chatInput = ''
+            },
+            handleChatMessage(message) {
+                this.chatMessages.push(message)
+                // Keep only last 100 messages
+                if (this.chatMessages.length > 100) {
+                    this.chatMessages.shift()
+                }
+            },
+            async kickPlayer(player) {
+                await this.api.players.kick(player.uuid)
+            },
+            async banPlayer(player) {
+                await this.api.players.ban(player.uuid)
+            },
+            async opPlayer(player) {
+                await this.api.players.op(player.uuid)
+            },
+            toggleTheme() {
+                this.isDarkMode = !this.isDarkMode
+                document.documentElement.classList.toggle('dark')
+                localStorage.theme = this.isDarkMode ? 'dark' : 'light'
+            },
+            toggleUserMenu() {
+                this.showUserMenu = !this.showUserMenu
+            }
+        },
+        mounted() {
+            this.initialize()
+        }
+    }).mount('#app')
+</script>
+{% endraw %}
+{% endblock %} 

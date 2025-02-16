@@ -31,8 +31,9 @@ class WrapperAPI {
     }
 
     _emit(event, data) {
-        if (!this.eventHandlers[event]) return;
-        this.eventHandlers[event].forEach(handler => handler(data));
+        if (this.eventHandlers[event]) {
+            this.eventHandlers[event].forEach(handler => handler(data));
+        }
     }
 
     _setupSocketHandlers() {
@@ -72,25 +73,28 @@ class WrapperAPI {
 
     // Helper for making API requests
     async _request(method, endpoint, data = null) {
-        const options = {
-            method,
-            headers: {
-                'Content-Type': 'application/json'
+        try {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            };
+
+            if (data) {
+                options.body = JSON.stringify(data);
             }
-        };
 
-        if (data) {
-            options.body = JSON.stringify(data);
+            const response = await fetch(endpoint, options);
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error(`API request failed: ${error.message}`);
+            throw error;
         }
-
-        const response = await fetch(`/v1${endpoint}`, options);
-        const json = await response.json();
-
-        if (!json.success) {
-            throw new Error(json.error.message);
-        }
-
-        return json.payload;
     }
 }
 
@@ -103,6 +107,14 @@ class ServerModule {
 
     get status() {
         return this.api.cache.serverStatus?.status || 'unknown';
+    }
+
+    async getStatus() {
+        return await this.api._request('GET', '/v2/server/status');
+    }
+
+    async getChat() {
+        return await this.api._request('GET', '/v2/server/chat');
     }
 
     get players() {
@@ -119,15 +131,15 @@ class ServerModule {
     }
 
     async start() {
-        await this.api._request('POST', '/server', { action: 'start' });
+        return await this.api._request('POST', '/v2/server/action', { action: 'start' });
     }
 
     async stop() {
-        await this.api._request('POST', '/server', { action: 'stop' });
+        return await this.api._request('POST', '/v2/server/action', { action: 'stop' });
     }
 
     async restart() {
-        await this.api._request('POST', '/server', { action: 'restart' });
+        return await this.api._request('POST', '/v2/server/action', { action: 'restart' });
     }
 
     get properties() {
@@ -140,15 +152,23 @@ class ServerModule {
     }
 
     async getProperties() {
-        const props = await this.api._request('GET', '/server/properties');
+        const props = await this.api._request('GET', '/v2/server/properties');
         this.api.cache.properties = props;
         return props;
     }
 
     async updateProperties(changes) {
-        await this.api._request('PATCH', '/server/properties', changes);
+        await this.api._request('PATCH', '/v2/server/properties', changes);
         // Refresh cache
         await this.getProperties();
+    }
+
+    async sendChat(message) {
+        return await this.api._request('POST', '/v2/server/chat', { message });
+    }
+
+    async sendCommand(command) {
+        return await this.api._request('POST', '/v2/server/command', { command });
     }
 }
 
@@ -158,44 +178,46 @@ class PlayersModule {
     }
 
     async getAll() {
-        return await this.api._request('GET', '/server/players');
+        return await this.api._request('GET', '/v2/players');
     }
 
     async get(uuid) {
-        return await this.api._request('GET', `/players/${uuid}`);
+        return await this.api._request('GET', `/v2/players/${uuid}`);
     }
 
     async getStats(uuid) {
-        return await this.api._request('GET', `/players/${uuid}/stats`);
+        return await this.api._request('GET', `/v2/players/${uuid}/stats`);
     }
 
-    async kick(uuid, reason = 'Kicked by admin') {
-        await this.api._request('POST', `/players/${uuid}/action`, {
-            action: 'kick',
-            reason
-        });
+    async kick(uuid) {
+        if (!uuid) {
+            throw new Error('Player UUID is required');
+        }
+        return await this.api._request('POST', `/v2/players/${uuid}/action`, { action: 'kick' });
     }
 
     async ban(uuid) {
-        await this.api._request('POST', `/players/${uuid}/action`, {
-            action: 'ban'
-        });
+        if (!uuid) {
+            throw new Error('Player UUID is required');
+        }
+        return await this.api._request('POST', `/v2/players/${uuid}/action`, { action: 'ban' });
     }
 
     async unban(uuid) {
-        await this.api._request('POST', `/players/${uuid}/action`, {
+        await this.api._request('POST', `/v2/players/${uuid}/action`, {
             action: 'unban'
         });
     }
 
     async op(uuid) {
-        await this.api._request('POST', `/players/${uuid}/action`, {
-            action: 'op'
-        });
+        if (!uuid) {
+            throw new Error('Player UUID is required');
+        }
+        return await this.api._request('POST', `/v2/players/${uuid}/action`, { action: 'op' });
     }
 
     async deop(uuid) {
-        await this.api._request('POST', `/players/${uuid}/action`, {
+        await this.api._request('POST', `/v2/players/${uuid}/action`, {
             action: 'deop'
         });
     }
@@ -207,10 +229,10 @@ class AuthModule {
     }
 
     async login(username, password) {
-        await this.api._request('POST', '/auth/login', { username, password });
+        await this.api._request('POST', '/v2/auth/login', { username, password });
     }
 
     async logout() {
-        await this.api._request('POST', '/auth/logout');
+        await this.api._request('POST', '/v2/auth/logout');
     }
 } 

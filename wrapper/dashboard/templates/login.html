@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Wrapper.py Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold text-center mb-8">Login to Wrapper.py Dashboard</h1>
+        
+        <form id="loginForm" class="space-y-6" @submit.prevent="handleLogin">
+            <!-- Error Alert -->
+            <div v-if="error" class="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded relative">
+                <span class="block sm:inline">[[ error ]]</span>
+            </div>
+            
+            <!-- Username -->
+            <div>
+                <label for="username" class="block text-sm font-medium">Username</label>
+                <input type="text" id="username" v-model="username" required
+                       class="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <!-- Password -->
+            <div>
+                <label for="password" class="block text-sm font-medium">Password</label>
+                <input type="password" id="password" v-model="password" required
+                       class="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" :disabled="isLoading"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
+                <span v-if="isLoading">Logging in...</span>
+                <span v-else>Login</span>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% raw %}
+<script>
+    createApp({
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                username: '',
+                password: '',
+                error: null,
+                isLoading: false
+            }
+        },
+        methods: {
+            async handleLogin() {
+                this.error = null
+                this.isLoading = true
+                
+                try {
+                    const response = await fetch('/v1/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: this.username,
+                            password: this.password
+                        })
+                    })
+                    
+                    const data = await response.json()
+                    
+                    if (data.success) {
+                        // Redirect to dashboard
+                        window.location.href = '/'
+                    } else {
+                        this.error = data.error.message
+                    }
+                } catch (err) {
+                    this.error = 'An error occurred while trying to log in'
+                } finally {
+                    this.isLoading = false
+                }
+            }
+        }
+    }).mount('#app')
+</script>
+{% endraw %}
+{% endblock %} 
