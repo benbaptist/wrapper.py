@@ -7,83 +7,137 @@
     <div class="max-w-md w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold text-center mb-8">Login to Wrapper.py Dashboard</h1>
         
-        <form id="loginForm" class="space-y-6" @submit.prevent="handleLogin">
+        <!-- Simple login form without Vue -->
+        <div class="space-y-6">
             <!-- Error Alert -->
-            <div v-if="error" class="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded relative">
-                <span class="block sm:inline">[[ error ]]</span>
+            <div id="error-message" style="display: none;" class="bg-red-100 dark:bg-red-900 border border-red-400 text-red-700 dark:text-red-200 px-4 py-3 rounded relative">
+                <span id="error-text" class="block sm:inline"></span>
             </div>
             
             <!-- Username -->
             <div>
                 <label for="username" class="block text-sm font-medium">Username</label>
-                <input type="text" id="username" v-model="username" required
+                <input type="text" id="username" required
                        class="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             
             <!-- Password -->
             <div>
                 <label for="password" class="block text-sm font-medium">Password</label>
-                <input type="password" id="password" v-model="password" required
+                <input type="password" id="password" required
                        class="mt-1 block w-full px-3 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             
             <!-- Submit Button -->
-            <button type="submit" :disabled="isLoading"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
-                <span v-if="isLoading">Logging in...</span>
-                <span v-else>Login</span>
+            <button id="login-button" type="button" onclick="handleLogin()"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Login
             </button>
-        </form>
+            
+            <!-- Debug Link -->
+            <div class="text-center mt-4">
+                <a href="/debug" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Debug Session</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
-{% raw %}
 <script>
-    createApp({
-        delimiters: ['[[', ']]'],
-        data() {
-            return {
-                username: '',
-                password: '',
-                error: null,
-                isLoading: false
+    // Simple login function without Vue or Socket.IO
+    function handleLogin() {
+        console.log('Login button clicked');
+        
+        // Get form values
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        
+        // Validate input
+        if (!username || !password) {
+            showError('Username and password are required');
+            return;
+        }
+        
+        console.log('Attempting login with username:', username);
+        
+        // Disable button during login
+        const loginButton = document.getElementById('login-button');
+        loginButton.disabled = true;
+        loginButton.textContent = 'Logging in...';
+        
+        // Clear previous errors
+        hideError();
+        
+        // Send login request
+        fetch('/v1/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            }),
+            credentials: 'include' // Important: include cookies in the request
+        })
+        .then(response => {
+            console.log('Login response status:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('Login response data:', data);
+            
+            if (data.success) {
+                // Login successful
+                console.log('Login successful, redirecting to dashboard');
+                window.location.href = '/';
+            } else {
+                // Login failed
+                showError(data.error ? data.error.message : 'Login failed');
             }
-        },
-        methods: {
-            async handleLogin() {
-                this.error = null
-                this.isLoading = true
-                
-                try {
-                    const response = await fetch('/v1/auth/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            username: this.username,
-                            password: this.password
-                        })
-                    })
-                    
-                    const data = await response.json()
-                    
-                    if (data.success) {
-                        // Redirect to dashboard
-                        window.location.href = '/'
-                    } else {
-                        this.error = data.error.message
-                    }
-                } catch (err) {
-                    this.error = 'An error occurred while trying to log in'
-                } finally {
-                    this.isLoading = false
-                }
+        })
+        .catch(error => {
+            console.error('Login error:', error);
+            showError('An error occurred: ' + error.message);
+        })
+        .finally(() => {
+            // Re-enable button
+            loginButton.disabled = false;
+            loginButton.textContent = 'Login';
+        });
+    }
+    
+    // Helper functions for error display
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        const errorText = document.getElementById('error-text');
+        
+        errorText.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+    
+    function hideError() {
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.style.display = 'none';
+    }
+    
+    // Add event listeners for Enter key
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, adding event listeners');
+        
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                console.log('Enter key pressed');
+                handleLogin();
             }
         }
-    }).mount('#app')
+        
+        usernameInput.addEventListener('keypress', handleKeyPress);
+        passwordInput.addEventListener('keypress', handleKeyPress);
+    });
 </script>
-{% endraw %}
 {% endblock %} 

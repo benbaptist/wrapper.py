@@ -1,7 +1,7 @@
-from flask import jsonify, request
+from flask import jsonify, request, session
 from flask_restful import Resource
 from flask_login import login_user, logout_user
-from ..auth import require_auth, User, hash_password, verify_user
+from ..auth import require_auth, User, hash_password, verify_user, custom_login_user
 from .. import api, app
 
 def success_response(payload=None):
@@ -168,19 +168,40 @@ class PlayerActionResource(Resource):
 class LoginResource(Resource):
     def post(self):
         """Handle user login."""
+        print("Login attempt received")
+        print("Request headers:", {k: v for k, v in request.headers.items()})
+        print("Request method:", request.method)
+        print("Request endpoint:", request.endpoint)
+        print("Request path:", request.path)
+        print("Request cookies:", request.cookies)
+        
+        # Check if we received JSON data
+        if not request.is_json:
+            print("Request is not JSON:", request.content_type)
+            return error_response("Invalid request format, expected JSON", code=6)
+            
         data = request.get_json()
+        print("Login data:", data)
+        
         username = data.get('username')
         password = data.get('password')
         
         if not username or not password:
+            print("Missing username or password")
             return error_response("Missing username or password", code=7)
             
-        if not verify_user(username, password):
+        # Verify credentials
+        is_valid = verify_user(username, password)
+        print(f"Credentials valid: {is_valid}")
+        
+        if not is_valid:
             return error_response("Invalid credentials", code=8, status_code=401)
             
         # Login successful
         user = User(username, username)
-        login_user(user)
+        login_success = custom_login_user(user, remember=True)
+        print(f"User {username} logged in successfully. login_user result: {login_success}")
+        print("Session after login:", {k: v for k, v in session.items()})
         
         return success_response({
             "username": username

@@ -2,14 +2,21 @@ import os
 import uuid
 from passlib.hash import sha256_crypt
 from functools import wraps
-from flask import request, jsonify
-from flask_login import UserMixin, current_user
+from flask import request, jsonify, session
+from flask_login import UserMixin, current_user, login_user
 from . import app, login_manager
 
 class User(UserMixin):
     def __init__(self, user_id, username):
         self.id = user_id
         self.username = username
+    
+    def get_id(self):
+        """Return the user ID as a unicode string."""
+        return str(self.id)
+    
+    def __repr__(self):
+        return f"<User {self.username}>"
 
 class APIKey:
     def __init__(self, key, description=None):
@@ -104,8 +111,11 @@ def verify_user(username, password):
 @login_manager.user_loader
 def load_user(user_id):
     """Load user by ID."""
+    print(f"Loading user with ID: {user_id}")
     users = load_users()
-    return users.get(user_id)
+    user = users.get(user_id)
+    print(f"User found: {user}")
+    return user
 
 def check_auth_header():
     """Check for valid API key in Authorization header."""
@@ -126,17 +136,42 @@ def check_auth_header():
     
     return None
 
+def custom_login_user(user, remember=False):
+    """Custom login function that ensures session is properly set."""
+    result = login_user(user, remember=remember)
+    print(f"Login result: {result}")
+    print(f"Session after login: {session}")
+    print(f"Current user authenticated: {current_user.is_authenticated}")
+    return result
+
 def require_auth(f):
     """Decorator that requires either login session or valid API key."""
     @wraps(f)
     def decorated(*args, **kwargs):
         # First check if user is logged in via session
         if current_user.is_authenticated:
+            print(f"User authenticated: {current_user.username}")
             return f(*args, **kwargs)
             
         # Then check for API key
         if check_auth_header():
+            print("API key authentication successful")
             return f(*args, **kwargs)
+        
+        print(f"Authentication failed for path: {request.path}")
+        
+        # Check if this is an API request
+        if request.path.startswith('/v1/'):
+            response = jsonify({
+                "success": False,
+                "error": {
+                    "message": "Authentication required",
+                    "code": 401
+                }
+            })
+            response.status_code = 401
+            return response
             
+        # For non-API requests, use the standard unauthorized handler
         return login_manager.unauthorized()
     return decorated 

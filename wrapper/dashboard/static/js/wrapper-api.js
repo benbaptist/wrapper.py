@@ -12,8 +12,10 @@ class WrapperAPI {
         this.auth = new AuthModule(this);
         this.players = new PlayersModule(this);
         
-        // Initialize Socket.IO
-        this.socket = io();
+        // Initialize Socket.IO with correct path
+        this.socket = io({
+            path: '/socket.io'
+        });
         this._setupSocketHandlers();
     }
 
@@ -85,13 +87,41 @@ class WrapperAPI {
                 options.body = JSON.stringify(data);
             }
 
-            const baseUrl = '/api'; // Change this to match your API base URL
+            const baseUrl = '/v1'; // Changed from '/api' to '/v1' to match the actual API structure
             const response = await fetch(`${baseUrl}${endpoint}`, options);
+            
+            // Handle different response status codes
             if (!response.ok) {
+                // Check if response is HTML (likely a redirect to login page)
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('text/html')) {
+                    if (response.status === 401 || response.status === 403) {
+                        throw new Error('Unauthorized');
+                    } else {
+                        throw new Error(`Server returned HTML: ${response.statusText}`);
+                    }
+                }
+                
+                // Try to parse error as JSON
+                try {
+                    const errorData = await response.json();
+                    if (errorData.error && errorData.error.message) {
+                        throw new Error(errorData.error.message);
+                    }
+                } catch (parseError) {
+                    // If we can't parse JSON, just use the status text
+                }
+                
                 throw new Error(response.statusText);
             }
 
-            return await response.json();
+            // Parse successful response
+            try {
+                return await response.json();
+            } catch (parseError) {
+                console.error('Error parsing JSON response:', parseError);
+                throw new Error('Invalid JSON response from server');
+            }
         } catch (error) {
             console.error(`API request failed: ${error.message}`);
             throw error;
@@ -111,11 +141,11 @@ class ServerModule {
     }
 
     async getStatus() {
-        return await this.api._request('GET', '/v2/server/status');
+        return await this.api._request('GET', '/server');
     }
 
     async getChat() {
-        return await this.api._request('GET', '/v2/server/chat');
+        return await this.api._request('GET', '/chat');
     }
 
     get players() {
@@ -132,15 +162,15 @@ class ServerModule {
     }
 
     async start() {
-        return await this.api._request('POST', '/v2/server/action', { action: 'start' });
+        return await this.api._request('POST', '/server/action', { action: 'start' });
     }
 
     async stop() {
-        return await this.api._request('POST', '/v2/server/action', { action: 'stop' });
+        return await this.api._request('POST', '/server/action', { action: 'stop' });
     }
 
     async restart() {
-        return await this.api._request('POST', '/v2/server/action', { action: 'restart' });
+        return await this.api._request('POST', '/server/action', { action: 'restart' });
     }
 
     get properties() {
@@ -153,23 +183,23 @@ class ServerModule {
     }
 
     async getProperties() {
-        const props = await this.api._request('GET', '/v2/server/properties');
+        const props = await this.api._request('GET', '/server/properties');
         this.api.cache.properties = props;
         return props;
     }
 
     async updateProperties(changes) {
-        await this.api._request('PATCH', '/v2/server/properties', changes);
+        await this.api._request('PATCH', '/server/properties', changes);
         // Refresh cache
         await this.getProperties();
     }
 
     async sendChat(message) {
-        return await this.api._request('POST', '/v2/server/chat', { message });
+        return await this.api._request('POST', '/server/chat', { message });
     }
 
     async sendCommand(command) {
-        return await this.api._request('POST', '/v2/server/command', { command });
+        return await this.api._request('POST', '/server/command', { command });
     }
 }
 
@@ -179,33 +209,33 @@ class PlayersModule {
     }
 
     async getAll() {
-        return await this.api._request('GET', '/v2/players');
+        return await this.api._request('GET', '/players');
     }
 
     async get(uuid) {
-        return await this.api._request('GET', `/v2/players/${uuid}`);
+        return await this.api._request('GET', `/players/${uuid}`);
     }
 
     async getStats(uuid) {
-        return await this.api._request('GET', `/v2/players/${uuid}/stats`);
+        return await this.api._request('GET', `/players/${uuid}/stats`);
     }
 
     async kick(uuid) {
         if (!uuid) {
             throw new Error('Player UUID is required');
         }
-        return await this.api._request('POST', `/v2/players/${uuid}/action`, { action: 'kick' });
+        return await this.api._request('POST', `/players/${uuid}/action`, { action: 'kick' });
     }
 
     async ban(uuid) {
         if (!uuid) {
             throw new Error('Player UUID is required');
         }
-        return await this.api._request('POST', `/v2/players/${uuid}/action`, { action: 'ban' });
+        return await this.api._request('POST', `/players/${uuid}/action`, { action: 'ban' });
     }
 
     async unban(uuid) {
-        await this.api._request('POST', `/v2/players/${uuid}/action`, {
+        await this.api._request('POST', `/players/${uuid}/action`, {
             action: 'unban'
         });
     }
@@ -214,11 +244,11 @@ class PlayersModule {
         if (!uuid) {
             throw new Error('Player UUID is required');
         }
-        return await this.api._request('POST', `/v2/players/${uuid}/action`, { action: 'op' });
+        return await this.api._request('POST', `/players/${uuid}/action`, { action: 'op' });
     }
 
     async deop(uuid) {
-        await this.api._request('POST', `/v2/players/${uuid}/action`, {
+        await this.api._request('POST', `/players/${uuid}/action`, {
             action: 'deop'
         });
     }
@@ -230,10 +260,36 @@ class AuthModule {
     }
 
     async login(username, password) {
-        await this.api._request('POST', '/v2/auth/login', { username, password });
+        console.log('AuthModule.login called with username:', username);
+        
+        if (!username || !password) {
+            throw new Error('Username and password are required');
+        }
+        
+        try {
+            console.log('Sending login request to /auth/login');
+            const response = await this.api._request('POST', '/auth/login', { 
+                username, 
+                password 
+            });
+            
+            console.log('Login response:', response);
+            
+            // Check if the login was successful
+            if (response && response.success) {
+                console.log('Login successful');
+                return response;
+            } else {
+                console.error('Login failed with response:', response);
+                throw new Error(response.error?.message || 'Login failed');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            throw error;
+        }
     }
 
     async logout() {
-        await this.api._request('POST', '/v2/auth/logout');
+        return await this.api._request('POST', '/auth/logout');
     }
 } 

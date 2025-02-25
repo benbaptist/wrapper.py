@@ -1,5 +1,17 @@
 // Initialize charts for performance monitoring
 function initializeCharts() {
+    // Only initialize charts if we're on the dashboard page
+    const tpsChartEl = document.getElementById('tpsChart');
+    const memoryChartEl = document.getElementById('memoryChart');
+    const cpuChartEl = document.getElementById('cpuChart');
+    const playersChartEl = document.getElementById('playersChart');
+    
+    // If we're on the login page or another page without charts, return empty object
+    if (!tpsChartEl && !memoryChartEl && !cpuChartEl && !playersChartEl) {
+        console.log('No chart elements found, skipping chart initialization');
+        return {};
+    }
+
     const defaultOptions = {
         responsive: true,
         maintainAspectRatio: false,
@@ -55,101 +67,109 @@ function initializeCharts() {
         }
     };
 
+    const charts = {};
+
     // TPS Chart
-    const tpsChart = new Chart(
-        document.getElementById('tpsChart'),
-        {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'TPS',
-                    data: [],
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                ...defaultOptions,
-                scales: {
-                    ...defaultOptions.scales,
-                    y: {
-                        ...defaultOptions.scales.y,
-                        min: 0,
-                        max: 20,
-                        title: {
-                            display: true,
-                            text: 'Ticks per Second'
+    if (tpsChartEl) {
+        charts.tpsChart = new Chart(
+            tpsChartEl,
+            {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'TPS',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    ...defaultOptions,
+                    scales: {
+                        ...defaultOptions.scales,
+                        y: {
+                            ...defaultOptions.scales.y,
+                            min: 0,
+                            max: 20,
+                            title: {
+                                display: true,
+                                text: 'Ticks per Second'
+                            }
                         }
                     }
                 }
             }
-        }
-    );
+        );
+    }
 
     // Memory Chart
-    const memoryChart = new Chart(
-        document.getElementById('memoryChart'),
-        {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Memory Usage',
-                    data: [],
-                    borderColor: 'rgb(153, 102, 255)',
-                    backgroundColor: 'rgba(153, 102, 255, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                ...defaultOptions,
-                scales: {
-                    ...defaultOptions.scales,
-                    y: {
-                        ...defaultOptions.scales.y,
-                        title: {
-                            display: true,
-                            text: 'Memory (MB)'
+    if (memoryChartEl) {
+        charts.memoryChart = new Chart(
+            memoryChartEl,
+            {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Memory Usage',
+                        data: [],
+                        borderColor: 'rgb(153, 102, 255)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    ...defaultOptions,
+                    scales: {
+                        ...defaultOptions.scales,
+                        y: {
+                            ...defaultOptions.scales.y,
+                            title: {
+                                display: true,
+                                text: 'Memory (MB)'
+                            }
                         }
                     }
                 }
             }
-        }
-    );
+        );
+    }
 
     // Players Chart
-    const playersChart = new Chart(
-        document.getElementById('playersChart'),
-        {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Players',
-                    data: [],
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                    fill: true
-                }]
-            },
-            options: {
-                ...defaultOptions,
-                scales: {
-                    ...defaultOptions.scales,
-                    y: {
-                        ...defaultOptions.scales.y,
-                        min: 0,
-                        title: {
-                            display: true,
-                            text: 'Player Count'
+    if (playersChartEl) {
+        charts.playersChart = new Chart(
+            playersChartEl,
+            {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Players',
+                        data: [],
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    ...defaultOptions,
+                    scales: {
+                        ...defaultOptions.scales,
+                        y: {
+                            ...defaultOptions.scales.y,
+                            min: 0,
+                            title: {
+                                display: true,
+                                text: 'Player Count'
+                            }
                         }
                     }
                 }
             }
-        }
-    );
+        );
+    }
 
     // Chunks Chart
     const chunksChart = new Chart(
@@ -183,9 +203,7 @@ function initializeCharts() {
     );
 
     return {
-        tpsChart,
-        memoryChart,
-        playersChart,
+        ...charts,
         chunksChart
     };
 }
@@ -297,13 +315,27 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         methods: {
             async initialize() {
-                this.api = new WrapperAPI()
-                await this.setupEventListeners()
-                await this.loadInitialData()
-                // Initialize charts after Vue is mounted
-                this.$nextTick(() => {
-                    this.charts = initializeCharts()
-                })
+                try {
+                    this.api = new WrapperAPI()
+                    
+                    // Only set up event listeners and load data if we're on the dashboard page
+                    // Check if we have dashboard-specific elements
+                    if (document.getElementById('serverControls')) {
+                        await this.setupEventListeners()
+                        await this.loadInitialData()
+                        
+                        // Initialize charts after Vue is mounted
+                        this.$nextTick(() => {
+                            try {
+                                this.charts = initializeCharts()
+                            } catch (error) {
+                                console.error('Error initializing charts:', error)
+                            }
+                        })
+                    }
+                } catch (error) {
+                    console.error('Error during initialization:', error)
+                }
             },
             async setupEventListeners() {
                 this.api.on('serverStatusChanged', this.handleServerStatusChange)
@@ -314,16 +346,33 @@ document.addEventListener('DOMContentLoaded', () => {
             async loadInitialData() {
                 try {
                     // Load initial server status
-                    const status = await this.api.server.getStatus()
-                    this.handleServerStatusChange(status)
+                    try {
+                        const status = await this.api.server.getStatus()
+                        this.handleServerStatusChange(status)
+                    } catch (error) {
+                        console.warn('Failed to load server status:', error)
+                        // Set default status
+                        this.serverStatus = 'unknown'
+                        this.isServerRunning = false
+                    }
                     
                     // Load players
-                    const players = await this.api.players.getAll()
-                    this.players = players
+                    try {
+                        const players = await this.api.players.getAll()
+                        this.players = players || []
+                    } catch (error) {
+                        console.warn('Failed to load players:', error)
+                        this.players = []
+                    }
                     
                     // Load chat history
-                    const chat = await this.api.server.getChat()
-                    this.chatMessages = chat || []
+                    try {
+                        const chat = await this.api.server.getChat()
+                        this.chatMessages = chat || []
+                    } catch (error) {
+                        console.warn('Failed to load chat history:', error)
+                        this.chatMessages = []
+                    }
                 } catch (error) {
                     console.error('Error loading initial data:', error)
                 }
