@@ -170,3 +170,9 @@ class Wrapper:
         self.events.call("wrapper.tick")
 
         time.sleep(1 / 20.0) # 20 ticks per second
+
+
+def main():
+    """Entry point for the mcwrapper command."""
+    wrapper = Wrapper()
+    wrapper.start()
