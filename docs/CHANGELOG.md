@@ -1,3 +1,6 @@
+## 2026-01-20
+- Refactored to use modern pyproject.toml setup process
+
 ## 2024-12-28 / 0.1.18 Alpha
 - Fixed:
     - Player command parsing causing fatal crash
