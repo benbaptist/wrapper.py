@@ -57,4 +57,4 @@ server.properties
 oops/
 build
 .venv/
-world/
+/world/
