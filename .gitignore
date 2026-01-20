@@ -38,11 +38,10 @@ build/version.json
 *.idea
 test.py
 
-# local test server environment
-# this list is old -update for your config, if applicable
+# Ensure local test environment doesn't get committed
+# Probably better to just use a different directory for local test envs
 wrapper-plugins
 logs
-AllTheWorld
 wrapper-data
 banned-*
 eula.txt
@@ -54,7 +53,6 @@ usercache.json
 whitelist.json
 wrapper.properties
 server.properties
-oops/
 build
 .venv/
 /world/
