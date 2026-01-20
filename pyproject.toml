@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Wrapper.py"
+dynamic = ["version"]
+description = "An easy to use Minecraft server wrapper for adding extra functionality"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+authors = [
+    {name = "Ben Baptist"}
+]
+keywords = ["minecraft", "server", "wrapper", "plugin"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "passlib",
+    "Flask-SocketIO",
+    "Flask",
+    "flask-restful",
+    "flask-login",
+    "storify>=0.0.11",
+    "msgpack",
+    "psutil",
+    "future",
+    "waitress",
+    "importlib_resources",
+    "nbt",
+    "humanize",
+    "requests",
+]
+
+[project.urls]
+Homepage = "https://github.com/benbaptist/wrapper.py"
+Repository = "https://github.com/benbaptist/wrapper.py"
+"Bug Tracker" = "https://github.com/benbaptist/wrapper.py/issues"
+Chat = "https://gitter.im/benbaptist/wrapper.py"
+
+[project.scripts]
+mcwrapper = "wrapper:main"
+
+[tool.setuptools]
+packages = { find = {} }
+include-package-data = true
+
+[tool.setuptools.dynamic]
+version = {attr = "wrapper.__version__.__version__"}
+
+[tool.setuptools.package-data]
+wrapper = [
+    "*.py",
+    "dashboard/static/css/*.css",
+    "dashboard/static/js/*.js",
+    "dashboard/templates/*.html",
+    "commons/files/*.json",
+]

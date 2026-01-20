@@ -1,1 +1,1 @@
-from .wrapper import Wrapper
+from .wrapper import Wrapper, main
