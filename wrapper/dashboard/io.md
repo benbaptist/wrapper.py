@@ -13,5 +13,3 @@ The following methods can be subscribed to via SocketIO:
 - `chat`: Stream the chat history as it occurs.
 - `players`: Stream updates on player status (join/leave events, player stats).
 - `backups`: Stream the current status of backups, including completion notifications.
-
-These methods allow clients to receive real-time updates and notifications from the server, enhancing the interactivity of the dashboard.

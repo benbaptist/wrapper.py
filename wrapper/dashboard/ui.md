@@ -1,24 +1,26 @@
 # UI
 
-The frontend will consist of a single-page application that allows for the management of wrapper.py and the server. It is built using Vue.js and Tailwind CSS.
+The frontend will consist of a single-page Vue application that allows for the management of wrapper.py and the server. It is built using Vue.js and Tailwind CSS.
 
 The API will be interacted with using /static/js/wrapper-api.js.
 
 # Design
 
-The dashboard follows a modern, clean, and intuitive design philosophy with a focus on functionality and user experience. The color scheme should be dark-themed by default (with light theme option) to reduce eye strain during long server management sessions.
+Modern, clean, intuitive. Extremely desktop and mobile friendly. Dark and light themes available. Tight, information dense when appropriate; use stylistic fonts and sizes to inutitively convey data and controls. Touchscreen friendly. Try to avoid a "scrolly" webpagey UI, and instead focus on tabs, proper UI navigation practices, etc.
 
 # Layout
 
 The dashboard is organized into several key sections:
 
-## Top Navigation Bar
-- Server selection dropdown (if multiple servers are configured)
+## Left-side Navigation Bar
+Always-visible on desktop viewports, mobile can open via an easily accessible hamburger menu or gesture.
+
+- Server name
 - Quick server status indicator (green for running, red for stopped, yellow for starting/stopping)
 - User account/settings menu
-- Theme toggle (dark/light)
+- Navigation menu
 
-## Main Content Area (Grid Layout)
+## Landing Dashboard (Grid Layout)
 
 ### 1. Server Control Panel (Top Left)
 - Prominent power control buttons:
@@ -26,18 +28,18 @@ The dashboard is organized into several key sections:
   - Stop
   - Restart
   - Freeze
+  - Force Stop/Kill
 - Current server status details:
   - Uptime
   - CPU usage
   - Memory usage
   - Player count
-  - TPS (Ticks Per Second)
+  - Graph showing temporal history of RAM/CPU/player count, and points for any moments when server output tick lag warnings
 - Quick actions:
   - Backup
-  - Force stop
-  - Schedule restart
+  - Save
 
-### 2. Live Chat Area (Center/Right, Expandable)
+### 2. Live Chat Area (Bottom Left)
 - Real-time server chat feed
 - Chat input field with command autocomplete
 - Toggle buttons for:
@@ -57,48 +59,45 @@ The dashboard is organized into several key sections:
 - Player search
 - Basic player statistics
 
-### 4. Server Configuration (Bottom Left)
-Tabbed interface for different configuration categories:
+## "Config" page
+Interface (tabbed to consolidate on smaller viewports) for different configuration categories:
 - Java Settings:
   - Memory allocation
   - JVM arguments
   - Java version
-- Server Properties:
-  - Essential properties with descriptions
-  - Search/filter options
-  - Quick-edit common properties
-- Backup Settings:
-  - Backup schedule
-  - Retention policy
-  - Backup location
+- Server Settings:
+  - Comprehensive GUI for editing server.properties with descriptions
+  - Common-sense sub-navigation (underneath page's root nav) for organization
+  - Quick-edit area common properties
+  - Server Jar manager
+    - Download vanilla jars quickly from Mojang directly
+    - Download Spigot/Vanilla/Sponge/etc. directly
+    - Delete existing jars
 
-### 5. Performance Monitoring (Bottom Right)
-- Real-time graphs for:
-  - TPS history
-  - Memory usage
-  - Player count
-  - Chunk loading
-- Performance alerts and recommendations
+## "World" page
+...TBD...
+
+## "Players" page
+- Maangement of all players ever logged into server
+- Search/filter
+- Open Player detail modals
+
+## "Backups" page
+...TBD...
 
 ## Responsive Design Considerations
 - Collapsible sidebars for mobile view
-- Responsive grid that stacks elements on smaller screens
+- Responsive UI that feels suitable for smaller screens
 - Touch-friendly controls
 - Persistent essential controls in mobile view
 
-## Modal Windows
-- Detailed player management
-- Advanced configuration editors
-- Backup management
-- Console output viewer
-- Log viewer with search/filter
+## Reusale Modal Windows
+- Detailed Player management
+- Advanced configuration text editors (JSON, YAML, etc.)
+- Console output viewer & log viewer w/ search & filter
 
 ## Quick Access Features
 - Keyboard shortcuts for common actions
 - Customizable dashboard layout
 - Pinnable favorite commands/actions
 - Context menus for quick actions
-
-The layout prioritizes the most commonly used features while keeping advanced options easily accessible. All sections should be collapsible/expandable to allow users to focus on specific aspects of server management as needed.
-
-# etc...
