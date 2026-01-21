@@ -1,7 +1,7 @@
 try:
     # Python 2.x
     import imp
-except DeprecationWarning:
+except (DeprecationWarning, ModuleNotFoundError):
     # Python 3.5+
     imp = None
     import importlib.util
