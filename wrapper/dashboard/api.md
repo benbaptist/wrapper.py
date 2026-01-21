@@ -185,53 +185,20 @@ Returns the server object, which contains the server's status, as well as other 
 
 ## GET /v1/server/properties
 
-Returns the parameters of server.properties.
+Returns the raw server.properties file in its original, unmodified text form.
 
 ### Payload
 ```
-{
-    "name": "<String: Name of the server>",
-    "icon": "<String: URL to server icon>",
-    "max_players": <Integer>,
-    "online_mode": true | false,
-    "server_ip": "<String: Server IP address>",
-    "server_port": <Integer>,
-    "whitelist": true | false,
-    "whitelist_players": <Array of Player objects>,
-    "accepts_transfers": true | false,
-    "allow_flight": true | false,
-    "allow_nether": true | false,
-    "difficulty": "easy" | "normal" | "hard",
-    "enable_command_block": true | false,
-    "enable_query": true | false,
-    "enable_rcon": true | false,
-    "entity_broadcast_range_percentage": <Integer>,
-    "resource_pack": "<String: URL to resource pack>",
-    "resource_pack_id": "<String: Resource pack ID>",
-    "resource_pack_prompt": "<String: Resource pack prompt>",
-    "resource_pack_sha1": "<String: Resource pack SHA-1>",
-    "force_gamemode": true | false,
-    "gamemode": "survival" | "creative" | "adventure" | "spectator",
-    "generate_structures": true | false,
-    "hardcore": true | false,
-    "log_ips": true | false,
-    "max_players": <Integer>,
-    "motd": "<String: Message of the day>",
-    "pvp": true | false,
-    "view_distance": <Integer>,
-    "white_list": true | false
-}
+<text>
 ```
 
-## PATCH /v1/server/properties
+## PUT /v1/server/properties
 
-Updates the server's properties. Any properties that are not specified in the input payload will be left unchanged.
+Overwrites server.properties with this.
 
 ### Input Payload
 ```
-{
-    <any>
-}
+<text>
 ```
 
 ## GET /v1/server/java
