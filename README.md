@@ -34,7 +34,7 @@ Would you like to use the browser-based dashboard? (y/n):
 
 On first start, it'll present you with a setup wizard. Once finished, you can run `mcwrapper` again to start the server.
 
-Wrapper.py will automatically accept the Minecraft server EULA on your behalf, if you have not already done so.
+NOTE: Wrapper.py will automatically accept the Minecraft server EULA on your behalf, if you have not already done so.
 
 # Plugins #
 [Here's a repository filled with plugins](https://github.com/benbaptist/wrapper-plugins) to get you started.
