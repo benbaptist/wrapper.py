@@ -87,7 +87,7 @@ class Wrapper:
 
         # First-time wizard
         if self._is_fresh_start:
-            self.wizard.run()
+            self.wizard.run_wrap()
 
         # Alert user if config was changed from an update, and shutdown
         if not self._is_fresh_start:

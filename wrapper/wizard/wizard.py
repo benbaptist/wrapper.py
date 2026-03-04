@@ -64,6 +64,19 @@ class Wizard:
                     continue
 
             return answer
+        
+    def run_wrap(self):
+        try:
+            self.run()
+        except KeyboardInterrupt:
+            # Cleanup and exit gracefully
+            try:
+                os.remove("wrapper-data/config.json")
+            except FileNotFoundError:
+                pass
+            
+            print("\nWizard cancelled. No changes have been made.")
+            sys.exit(0)
 
     def run(self):
         print("* Welcome to Wrapper.py!")
