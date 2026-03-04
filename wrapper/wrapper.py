@@ -19,7 +19,8 @@ from .mojang import Mojang
 from .wizard import Wizard
 from .commons import *
 
-from .dashboard import init_app
+# TODO: Bring back dashboard
+# from .dashboard import init_app
 
 from builtins import input
 
@@ -59,7 +60,8 @@ class Wrapper:
         self.scripts = Scripts(self)
         self.wizard = Wizard(self)
 
-        self.dashboard, self.dashboard_socketio = init_app(self)
+        # TODO: Bring back dashboard
+        # self.dashboard, self.dashboard_socketio = init_app(self)
 
         self.abort = False
         self.initiate_shutdown = False
@@ -166,7 +168,10 @@ class Wrapper:
 
         self.events.call("wrapper.tick")
 
-        time.sleep(1 / 20.0) # 20 ticks per second
+        # 20 ticks per second
+        # Matches Minecraft's tick rate
+        # Probably doesn't matter though
+        time.sleep(1 / 20.0)
 
 def main():
     wrapper = Wrapper()

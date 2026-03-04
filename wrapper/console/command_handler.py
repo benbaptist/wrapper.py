@@ -4,7 +4,8 @@ from ..exceptions import ServerStopped
 
 from wrapper import __version__
 
-from wrapper.dashboard.auth import reset_password
+# TODO: Gotta this back
+# from wrapper.dashboard.auth import reset_password
 
 class CommandHandler:
     def __init__(self, wrapper):
