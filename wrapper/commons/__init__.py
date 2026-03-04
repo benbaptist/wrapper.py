@@ -1,3 +1,4 @@
+# TODO: Commons/utils-style files are a bad idea and I need to find better homes for everything here
 import json
 
 SERVER_STARTING= 0x00
