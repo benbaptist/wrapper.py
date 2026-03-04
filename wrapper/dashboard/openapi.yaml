@@ -21,6 +21,42 @@ components:
       scheme: bearer
 
   schemas:
+    # ── Auth ────────────────────────────────────────────────────────────────────
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          description: Dashboard username.
+          example: "admin"
+        password:
+          type: string
+          format: password
+          description: Dashboard password.
+          example: "s3cr3t"
+
+    TokenPair:
+      type: object
+      required: [access_token, refresh_token]
+      properties:
+        access_token:
+          type: string
+          description: Short-lived JWT used as the Bearer token for authenticated requests.
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refresh_token:
+          type: string
+          description: Long-lived token used to obtain a new access token without re-entering credentials.
+          example: "dGhpcyBpcyBhIHJlZnJlc2ggdG9rZW4..."
+
+    RefreshRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+          description: A valid refresh token previously issued by /auth/login or /auth/refresh.
+
     # ── Primitives ──────────────────────────────────────────────────────────────
     UUID:
       type: string
@@ -317,6 +353,82 @@ components:
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 paths:
+
+  /auth/login:
+    post:
+      summary: Log in
+      description: Authenticates with username and password and returns an access/refresh token pair.
+      operationId: postAuthLogin
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/TokenPair'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      summary: Log out
+      description: Invalidates the current access token and its associated refresh token.
+      operationId: postAuthLogout
+      tags: [Auth]
+      responses:
+        '200':
+          description: Logged out successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/refresh:
+    post:
+      summary: Refresh access token
+      description: Exchanges a valid refresh token for a new access/refresh token pair. The old refresh token is invalidated.
+      operationId: postAuthRefresh
+      tags: [Auth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Token refreshed successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/TokenPair'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /server:
     get:
@@ -700,6 +812,8 @@ paths:
           $ref: '#/components/responses/NotFound'
 
 tags:
+  - name: Auth
+    description: Authentication — obtain and manage bearer tokens.
   - name: Server
     description: Server status, configuration, and management.
   - name: Players
