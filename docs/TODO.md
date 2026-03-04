@@ -6,19 +6,11 @@
 - [ ] IDEA: Move towards asynchronous operations (e.g. using eventlet, or asyncio)
 - [ ] IDEA: Switch to blitz for event handling, if it's better than the current system
 
-# Design Goals
-- Quick setup
-- Robust, stable, set-it-and-forget-it design
-    - Wrapper should always be able to start without user input (e.g. with a physical server boot)
-    - Updates to Wrapper should never intrude or require user input to fix problems
-    - Resilient to corruption, should repair itself
-- RESTful API & clean web dashboard
-- No excess of functionality; only bare bone features will be implemented
-- Plugin API, to supplement any specific features or use cases not built into the wrapper
-- Python 3.x only
+# Major Refactor for 0.3.0
+- [ ] Backups overhaul
+    - [ ] Native restic support
 
 # Major To-Do
-
 - [ ] Implement backup system
     - [ ] Native support for restic backups
     - [ ] Automatic world rollback through dashboard
