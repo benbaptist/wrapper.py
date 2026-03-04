@@ -4,7 +4,7 @@ from ..exceptions import ServerStopped
 
 from wrapper import __version__
 
-# TODO: Gotta this back
+# TODO: Gotta get this back
 # from wrapper.dashboard.auth import reset_password
 
 class CommandHandler:
