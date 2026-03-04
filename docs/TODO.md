@@ -30,6 +30,7 @@
         - [x] World object
         - [x] Player object
         - [ ] (if proxy mode is implemented) Entity object
+- [ ] Implement server.properties service for modifying the server.properties (permanently) in an abstracted, simple manner for use in configuration UX and the first-time setup wizard
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
 - [ ] Implement Proxy mode
     - Utilize the [Quarry](https://github.com/barneygale/quarry) project to implement Minecraft's protocol
