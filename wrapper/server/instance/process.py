@@ -56,7 +56,13 @@ class Process:
                 self.java_version = r.group(1)
 
     def get_ram_usage(self):
-        with open("/proc/%d/statm" % self.process.pid) as f:
+        statm_path = "/proc/%d/statm" % self.process.pid
+
+        if not os.path.exists(statm_path):
+            # TODO: Raise an exception for better upstream handling instead of just returning 0
+            return 0
+
+        with open(statm_path) as f:
             getbytes = int(f.read().split(" ")[1]) * resource.getpagesize()
 
         return getbytes
