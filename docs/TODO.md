@@ -9,11 +9,9 @@
 # Major Refactor for 0.3.0
 - [ ] Backups overhaul
     - [ ] Native restic support
+    - [ ] Automatic world rollback through dashboard
 
 # Major To-Do
-- [ ] Implement backup system
-    - [ ] Native support for restic backups
-    - [ ] Automatic world rollback through dashboard
 - [x] Implement dashboard using Flask
     - [ ] Multi-user support with permissions
 - [x] Implement plugin API
@@ -42,4 +40,4 @@
 - [ ] Player object
     - [x] Make peristent (accessible when offline)
         - [x] Persistent storage
-        - [ ] Delete persistent player objects if too many are used
+        - [ ] Purge old persistent player objects if it exceeds some defined threshold of total allowed

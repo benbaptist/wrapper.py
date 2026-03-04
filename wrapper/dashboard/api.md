@@ -1,6 +1,6 @@
 Built with Flask-RESTful. This API must be well-structured, with reusable components and well-designed endpoints.
 
-Authentication will be handled with Flask-Login or a manually-generated API key from within the dashboard.
+Authentication will be handled with Flask-Login or with manually-generated API keys managed within the dashboard (with optional expirations).
 
 # Functionality Scope
 - Server status and controls

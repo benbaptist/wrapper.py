@@ -18,6 +18,6 @@ The frontend is a single-page application that allows for the management of wrap
 
 - `api/`: The API is built using Flask-RESTful. See api.md for more information.
 - `io/`: The SocketIO methods will be stored here.
-- `frontend/`: The frontend is built using Vue.js and Tailwind CSS.
+- `frontend/`: Frontend codebase 
 - `__init__.py`: imports dashboard
 - `dashboard.py`: The main Flask initialization file
