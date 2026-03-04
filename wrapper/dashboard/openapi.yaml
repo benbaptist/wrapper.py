@@ -1,0 +1,706 @@
+openapi: 3.1.0
+
+info:
+  title: wrapper.py Dashboard API
+  version: 1.0.0
+  description: >
+    RESTful API for managing a Minecraft server via wrapper.py.
+    Real-time updates for server status, logs, chat, players, and backups
+    are available via SocketIO subscriptions.
+
+servers:
+  - url: /v1
+
+security:
+  - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  schemas:
+    # ── Primitives ──────────────────────────────────────────────────────────────
+    UUID:
+      type: string
+      pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+      example: "123e4567-e89b-12d3-a456-426614174000"
+
+    UnixTimestamp:
+      type: integer
+      format: int64
+      description: Seconds since the Unix epoch (January 1, 1970).
+      example: 1710332400
+
+    Position:
+      type: array
+      items:
+        type: number
+      minItems: 3
+      maxItems: 3
+      description: "[x, y, z] coordinates."
+      example: [100, 64, -200]
+
+    Skin:
+      type: string
+      format: uri
+      description: URL to the player's Minecraft skin texture.
+      example: "https://minecraft.net/path/to/skin.png"
+
+    ServerStatus:
+      type: string
+      description: Current lifecycle state of the Minecraft server process.
+      enum: [stopped, starting, running, stopping, frozen]
+      example: running
+
+    # ── Core objects ────────────────────────────────────────────────────────────
+    Error:
+      type: object
+      required: [message, code]
+      properties:
+        message:
+          type: string
+          description: Human-readable description of the error.
+        code:
+          type: integer
+          description: Internal error code, separate from the HTTP status code.
+      example:
+        message: "Player not found"
+        code: 404
+
+    Response:
+      type: object
+      required: [success]
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request completed successfully.
+        payload:
+          description: Request-specific response data. Null when not applicable.
+        error:
+          $ref: '#/components/schemas/Error'
+          description: Present only on error responses.
+      examples:
+        success:
+          summary: Successful response with no payload
+          value:
+            success: true
+            payload: null
+        error:
+          summary: Error response
+          value:
+            success: false
+            error:
+              message: "Player not found"
+              code: 404
+
+    Player:
+      type: object
+      required: [username, uuid, online]
+      properties:
+        username:
+          type: string
+          description: The player's Minecraft username.
+          example: "Notch"
+        uuid:
+          $ref: '#/components/schemas/UUID'
+          description: The player's unique Minecraft UUID.
+        online:
+          type: boolean
+          description: Whether the player is currently connected to the server.
+          example: true
+        minecraft:
+          type: object
+          description: Extended Minecraft data sourced from the server and the player's .dat file. Present when detailed data is available.
+          required: [op]
+          properties:
+            position:
+              $ref: '#/components/schemas/Position'
+              description: Last known position, read from the player's .dat file when offline or from the live session when online.
+            skin:
+              oneOf:
+                - $ref: '#/components/schemas/Skin'
+                - type: "null"
+              description: URL of the player's current skin texture, or null if unavailable.
+            op:
+              type: boolean
+              description: Whether the player has operator privileges on the server.
+              example: false
+      example:
+        username: "Notch"
+        uuid: "069a79f4-44e9-4726-a5be-fca90e38aaf5"
+        online: true
+        minecraft:
+          position: [0, 64, 0]
+          skin: "https://minecraft.net/path/to/skin.png"
+          op: false
+
+    PlayerLogin:
+      type: object
+      required: [logged_in, logged_out, ip_address]
+      properties:
+        logged_in:
+          $ref: '#/components/schemas/UnixTimestamp'
+          description: Timestamp of when the player logged in.
+        logged_out:
+          oneOf:
+            - $ref: '#/components/schemas/UnixTimestamp'
+            - type: "null"
+          description: Timestamp of when the player logged out, or null if the player is currently logged in.
+        ip_address:
+          type: string
+          description: The IP address used during this session.
+          example: "192.168.1.1"
+      example:
+        logged_in: 1710332400
+        logged_out: 1710336000
+        ip_address: "192.168.1.1"
+
+    PlayerStats:
+      type: object
+      required: [first_login, last_login, total_playtime_seconds, login_history]
+      properties:
+        first_login:
+          $ref: '#/components/schemas/UnixTimestamp'
+          description: Timestamp of the player's very first login.
+        last_login:
+          $ref: '#/components/schemas/UnixTimestamp'
+          description: Timestamp of the player's most recent login.
+        total_playtime_seconds:
+          type: integer
+          minimum: 0
+          description: Total cumulative time the player has spent on the server, in seconds.
+          example: 86400
+        login_history:
+          type: array
+          description: Ordered list of individual login sessions, most recent last.
+          items:
+            $ref: '#/components/schemas/PlayerLogin'
+      example:
+        first_login: 1700000000
+        last_login: 1710332400
+        total_playtime_seconds: 86400
+        login_history:
+          - logged_in: 1710332400
+            logged_out: 1710336000
+            ip_address: "192.168.1.1"
+
+    Server:
+      type: object
+      required: [status, version, cpu_usage, memory_usage, players]
+      properties:
+        status:
+          $ref: '#/components/schemas/ServerStatus'
+          description: Current lifecycle state of the server process.
+        version:
+          type: string
+          description: Minecraft server version string.
+          example: "1.21.4"
+        cpu_usage:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: CPU usage of the server process as a percentage.
+          example: 12
+        memory_usage:
+          type: integer
+          minimum: 0
+          description: Memory usage of the server process in bytes.
+          example: 2147483648
+        players:
+          type: array
+          description: Players currently connected to the server.
+          items:
+            $ref: '#/components/schemas/Player'
+      example:
+        status: running
+        version: "1.21.4"
+        cpu_usage: 12
+        memory_usage: 2147483648
+        players: []
+
+    Chat:
+      type: object
+      required: [player, message, timestamp]
+      properties:
+        player:
+          $ref: '#/components/schemas/Player'
+          description: The player who sent the message.
+        message:
+          type: string
+          description: The chat message text.
+          example: "Hello, world!"
+        timestamp:
+          $ref: '#/components/schemas/UnixTimestamp'
+          description: Timestamp of when the message was sent.
+      example:
+        player:
+          username: "Notch"
+          uuid: "069a79f4-44e9-4726-a5be-fca90e38aaf5"
+          online: true
+        message: "Hello, world!"
+        timestamp: 1710332400
+
+    Log:
+      type: object
+      required: [timestamp, level, message]
+      properties:
+        timestamp:
+          $ref: '#/components/schemas/UnixTimestamp'
+          description: Timestamp of when this log entry was emitted.
+        level:
+          type: string
+          enum: [DEBUG, INFO, WARN, ERROR, FATAL]
+          description: Log severity level.
+          example: INFO
+        message:
+          type: string
+          description: The log entry text.
+          example: "Done (3.141s)! For help, type \"help\""
+      example:
+        timestamp: 1710332400
+        level: INFO
+        message: "Done (3.141s)! For help, type \"help\""
+
+    JavaOptions:
+      type: object
+      required: [bin, xms, xmx]
+      properties:
+        bin:
+          type: string
+          description: Path to the Java binary.
+          example: "/usr/bin/java"
+        xms:
+          type: integer
+          minimum: 0
+          description: Initial heap size in megabytes (-Xms).
+          example: 1024
+        xmx:
+          type: integer
+          minimum: 0
+          description: Maximum heap size in megabytes (-Xmx).
+          example: 4096
+
+  # ── Reusable responses ────────────────────────────────────────────────────────
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
+    NotFound:
+      description: Resource not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
+    BadRequest:
+      description: Invalid request body or parameters.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Response'
+
+  # ── Reusable parameters ───────────────────────────────────────────────────────
+  parameters:
+    PlayerUUID:
+      name: uuid
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UUID'
+      description: The UUID of the player.
+
+# ── Paths ──────────────────────────────────────────────────────────────────────
+paths:
+
+  /server:
+    get:
+      summary: Get server status
+      description: Returns the current server object including status, version, resource usage, and online players.
+      operationId: getServer
+      tags: [Server]
+      responses:
+        '200':
+          description: Server object retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/Server'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/properties:
+    get:
+      summary: Get server.properties
+      description: Returns the raw server.properties file contents as plain text.
+      operationId: getServerProperties
+      tags: [Server]
+      responses:
+        '200':
+          description: Raw server.properties content.
+          content:
+            text/plain:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    put:
+      summary: Overwrite server.properties
+      description: Replaces the entire server.properties file with the provided plain text content.
+      operationId: putServerProperties
+      tags: [Server]
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: server.properties updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/java:
+    get:
+      summary: Get Java options
+      description: Returns the configured Java launch options for the server.
+      operationId: getServerJava
+      tags: [Server]
+      responses:
+        '200':
+          description: Java options retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/JavaOptions'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      summary: Update Java options
+      description: Partially updates the server's Java options. Omitted fields are left unchanged.
+      operationId: patchServerJava
+      tags: [Server]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+              properties:
+                bin:
+                  type: string
+                  description: Path to the Java binary.
+                xms:
+                  type: integer
+                  minimum: 0
+                  description: Initial heap size in megabytes (-Xms).
+                xmx:
+                  type: integer
+                  minimum: 0
+                  description: Maximum heap size in megabytes (-Xmx).
+      responses:
+        '200':
+          description: Java options updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/whitelist:
+    get:
+      summary: Get whitelist
+      description: Returns the list of players on the server whitelist.
+      operationId: getServerWhitelist
+      tags: [Server]
+      responses:
+        '200':
+          description: Whitelist retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Player'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      summary: Replace whitelist
+      description: Replaces the entire whitelist with the provided list of player UUIDs. Players not included will be removed.
+      operationId: patchServerWhitelist
+      tags: [Server]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: Whitelist updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/banned:
+    get:
+      summary: Get banned players
+      description: Returns the list of currently banned players.
+      operationId: getServerBanned
+      tags: [Server]
+      responses:
+        '200':
+          description: Banned players retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Player'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/ops:
+    get:
+      summary: Get operators
+      description: Returns the list of server operators.
+      operationId: getServerOps
+      tags: [Server]
+      responses:
+        '200':
+          description: Operators retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Player'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    patch:
+      summary: Replace operators
+      description: Replaces the entire operator list with the provided list of player UUIDs. Players not included will have op removed.
+      operationId: patchServerOps
+      tags: [Server]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/UUID'
+      responses:
+        '200':
+          description: Operators updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/logs:
+    get:
+      summary: Get server logs
+      description: Returns the server's current session log entries.
+      operationId: getServerLogs
+      tags: [Server]
+      responses:
+        '200':
+          description: Log entries retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Log'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/chat:
+    get:
+      summary: Get chat history
+      description: >
+        Returns chat messages since the server was last started.
+        Capped at 1000 messages; oldest messages are discarded when the limit is exceeded.
+      operationId: getServerChat
+      tags: [Server]
+      responses:
+        '200':
+          description: Chat history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        maxItems: 1000
+                        items:
+                          $ref: '#/components/schemas/Chat'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /server/players:
+    get:
+      summary: Get online players
+      description: Returns the list of players currently connected to the server.
+      operationId: getServerPlayers
+      tags: [Server]
+      responses:
+        '200':
+          description: Online player list retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Player'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /players:
+    get:
+      summary: Get all known players
+      description: Returns every player that has ever logged into the server.
+      operationId: getPlayers
+      tags: [Players]
+      responses:
+        '200':
+          description: Player list retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Player'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /players/{uuid}:
+    parameters:
+      - $ref: '#/components/parameters/PlayerUUID'
+    get:
+      summary: Get player by UUID
+      description: Returns the player object for the given UUID.
+      operationId: getPlayer
+      tags: [Players]
+      responses:
+        '200':
+          description: Player retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/Player'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /players/{uuid}/stats:
+    parameters:
+      - $ref: '#/components/parameters/PlayerUUID'
+    get:
+      summary: Get player stats
+      description: Returns historical stats for the given player.
+      operationId: getPlayerStats
+      tags: [Players]
+      responses:
+        '200':
+          description: Player stats retrieved successfully.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Response'
+                  - type: object
+                    properties:
+                      payload:
+                        $ref: '#/components/schemas/PlayerStats'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+tags:
+  - name: Server
+    description: Server status, configuration, and management.
+  - name: Players
+    description: Player lookup and historical statistics.
