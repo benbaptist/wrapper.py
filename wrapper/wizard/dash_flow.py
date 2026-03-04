@@ -1,3 +1,5 @@
+from .server_props import server_props
+
 def dash_flow(self):
     use_dash = self.ask_bool("Would you like to use the browser-based dashboard?")
 
@@ -99,6 +101,8 @@ def dash_flow(self):
                 )
 
                 self.config["server"]["jar"] = server_jar_path
+        
+        server_props(self)
 
         print("You're all set. Wrapper.py will save and exit. Re-run Wrapper.py"
             "to get started with all your Wrappery wrappness.")
