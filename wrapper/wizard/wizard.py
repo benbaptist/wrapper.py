@@ -229,7 +229,7 @@ class Wizard:
 
                     self.config["server"]["jar"] = server_jar_path
 
-            print("You're all set. Wrapper.py will save and exit. Re-run it"
+            print("You're all set. Wrapper.py will save and exit. Re-run Wrapper.py"
                 "to get started with all your Wrappery wrappness.")
 
             self.config.save()
