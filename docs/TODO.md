@@ -10,6 +10,7 @@
 - [ ] Backups overhaul
     - [ ] Native restic support
     - [ ] Automatic world rollback through dashboard
+    - [ ] /backups cmd for console
 
 # Major To-Do
 - [x] Implement dashboard using Flask
@@ -20,7 +21,6 @@
         - [x] World object
         - [x] Player object
         - [ ] (if proxy mode is implemented) Entity object
-- [ ] /backups cmd for console
 - [ ] Implement server.properties service for modifying the server.properties (permanently) in an abstracted, simple manner for use in configuration UX and the first-time setup wizard
 - [ ] Implement server.properties hijacking (temporarily replace server.properties with custom values before starting server, and putting original one back after server booted)
 - [ ] Implement Proxy mode
