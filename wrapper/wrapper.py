@@ -19,8 +19,8 @@ from .mojang import Mojang
 from .wizard import Wizard
 from .commons import *
 
-# TODO: Bring back dashboard
-# from .dashboard import init_app
+# TODO: Bring back dashboard when it's ready
+# from .dashboard import ??
 
 from builtins import input
 
@@ -60,8 +60,8 @@ class Wrapper:
         self.scripts = Scripts(self)
         self.wizard = Wizard(self)
 
-        # TODO: Bring back dashboard
-        # self.dashboard, self.dashboard_socketio = init_app(self)
+        # TODO: Bring back dashboard when it's ready
+        # self.dashboard, self.dashboard_socketio = ??
 
         self.abort = False
         self.initiate_shutdown = False
