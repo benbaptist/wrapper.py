@@ -1,5 +1,5 @@
 .DS_Store 
-./sync-dev.sh # just for meeeee
+sync-dev.sh
 
 #############
 ## Python
